@@ -1,0 +1,60 @@
+{% extends 'layout.html' %}
+
+{% block title %}Inscription - Maison Connectée{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-center">Inscription</h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('auth.register') }}">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="username" class="form-label">Nom d'utilisateur *</label>
+                                <input type="text" class="form-control" id="username" name="username" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">Email *</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="password" class="form-label">Mot de passe *</label>
+                                <input type="password" class="form-control" id="password" name="password" required>
+                                <div class="form-text">Le mot de passe doit contenir au moins 8 caractères.</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="confirm_password" class="form-label">Confirmer le mot de passe *</label>
+                                <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="house_code" class="form-label">Code de maison *</label>
+                            <input type="text" class="form-control" id="house_code" name="house_code" required>
+                            <div class="form-text">
+                                Entrez le code de la maison à laquelle vous souhaitez vous joindre. 
+                                Ce code vous est fourni par l'administrateur de la maison.
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">S'inscrire</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer text-center">
+                    <p>Vous avez déjà un compte ? <a href="{{ url_for('auth.login') }}">Connectez-vous</a></p>
+                    <p>Vous n'avez pas de code de maison ? <a href="{{ url_for('auth.create_house') }}">Créez votre propre maison</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

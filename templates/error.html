@@ -1,0 +1,29 @@
+{% extends 'layout.html' %}
+
+{% block title %}Erreur {{ error_code }} - Maison Connectée{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h3 class="mb-0">Erreur {{ error_code }}</h3>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-exclamation-triangle text-danger" style="font-size: 5rem;"></i>
+                    </div>
+                    <h4 class="text-center mb-4">{{ error_message }}</h4>
+                    <p class="text-center">Nous sommes désolés pour ce désagrément. Veuillez réessayer plus tard ou contacter l'administrateur si le problème persiste.</p>
+                    <div class="text-center mt-4">
+                        <a href="{{ url_for('info.home') }}" class="btn btn-primary">
+                            <i class="fas fa-home me-2"></i>Retour à l'accueil
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

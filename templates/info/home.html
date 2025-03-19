@@ -1,0 +1,191 @@
+{% extends 'layout.html' %}
+
+{% block title %}Accueil - Maison Connectée{% endblock %}
+
+
+{% block content %}
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="display-4 fw-bold">Bienvenue dans votre maison intelligente</h1>
+                    <p class="lead">Contrôlez tous vos appareils connectés, économisez de l'énergie et profitez d'un confort optimal avec notre plateforme de maison connectée.</p>
+                    <div class="mt-4">
+                        <a href="{{ url_for('auth.register') }}" class="btn btn-light btn-lg me-2">
+                            <i class="fas fa-user-plus me-1"></i> S'inscrire
+                        </a>
+                        <a href="{{ url_for('auth.login') }}" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-sign-in-alt me-1"></i> Se connecter
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6 mt-4 mt-lg-0">
+                    <img src="{{ url_for('static', filename='images/smart-home-illustration.png') }}" alt="Maison Connectée" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <i class="fas fa-archive feature-icon"></i>
+                            <h2 class="fw-bold">{{ stats.objects_count }}</h2>
+                            <p class="text-muted">Objets connectés</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <i class="fas fa-door-open feature-icon"></i>
+                            <h2 class="fw-bold">{{ stats.rooms_count }}</h2>
+                            <p class="text-muted">Pièces intelligentes</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <i class="fas fa-bolt feature-icon"></i>
+                            <h2 class="fw-bold">{{ stats.active_objects }}</h2>
+                            <p class="text-muted">Objets actifs</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <section class="py-5">
+        <div class="container">
+            <div class="row mb-5">
+                <div class="col-12 text-center">
+                    <h2 class="fw-bold">Fonctionnalités principales</h2>
+                    <p class="text-muted">Découvrez ce que notre plateforme peut faire pour vous</p>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card feature-card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-tachometer-alt feature-icon"></i>
+                            <h4>Tableau de bord intelligent</h4>
+                            <p>Visualisez et contrôlez tous vos appareils depuis une interface unique et intuitive.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-4">
+                    <div class="card feature-card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-chart-line feature-icon"></i>
+                            <h4>Analyse énergétique</h4>
+                            <p>Suivez votre consommation en temps réel et recevez des conseils pour économiser l'énergie.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-4">
+                    <div class="card feature-card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-shield-alt feature-icon"></i>
+                            <h4>Sécurité renforcée</h4>
+                            <p>Surveillez votre domicile à distance et recevez des alertes en cas d'activité suspecte.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-4">
+                    <div class="card feature-card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-sliders-h feature-icon"></i>
+                            <h4>Automatisations personnalisées</h4>
+                            <p>Créez des scénarios pour automatiser votre maison selon vos habitudes et préférences.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-4">
+                    <div class="card feature-card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-mobile-alt feature-icon"></i>
+                            <h4>Contrôle à distance</h4>
+                            <p>Pilotez votre maison depuis n'importe où avec notre application mobile.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-4">
+                    <div class="card feature-card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-microphone feature-icon"></i>
+                            <h4>Contrôle vocal</h4>
+                            <p>Compatible avec les assistants vocaux pour un contrôle sans les mains.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Latest News Section -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h2 class="fw-bold">Dernières actualités</h2>
+                    <hr>
+                </div>
+            </div>
+            
+            <div class="row">
+                {% for item in latest_news %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ item.title }}</h5>
+                            <p class="card-text">{{ item.content|truncate(100) }}</p>
+                        </div>
+                        <div class="card-footer bg-white border-0">
+                            <small class="text-muted">{{ item.date }}</small>
+                            <a href="{{ url_for('info.news') }}" class="btn btn-sm btn-primary float-end">Lire plus</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="row mt-3">
+                <div class="col-12 text-center">
+                    <a href="{{ url_for('info.news') }}" class="btn btn-primary">
+                        <i class="fas fa-newspaper me-1"></i> Toutes les actualités
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-5 bg-primary text-white">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8 mb-4 mb-lg-0">
+                    <h2 class="fw-bold">Prêt à transformer votre maison ?</h2>
+                    <p class="lead mb-0">Inscrivez-vous dès maintenant pour commencer à contrôler votre maison intelligente.</p>
+                </div>
+                <div class="col-lg-4 text-lg-end">
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-light btn-lg">
+                        <i class="fas fa-user-plus me-1"></i> S'inscrire gratuitement
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

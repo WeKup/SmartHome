@@ -1,0 +1,85 @@
+/* Styles personnalisés pour la maison connectée */
+
+/* Hero section */
+.hero-section {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: white;
+    padding: 4rem 0;
+}
+
+/* Cards d'objets */
+.feature-card {
+    transition: transform 0.3s ease;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Icônes */
+.feature-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #4facfe;
+}
+
+/* Footer */
+footer {
+    background-color: #2c3e50;
+    color: white;
+    padding: 2rem 0;
+}
+
+/* Badges de niveau */
+.level-badge {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 0.25rem;
+}
+
+.level-debutant {
+    background-color: #28a745;
+    color: white;
+}
+
+.level-intermediaire {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.level-avance {
+    background-color: #fd7e14;
+    color: white;
+}
+
+.level-expert {
+    background-color: #dc3545;
+    color: white;
+}
+
+.card {
+    height: 100%;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+}
+
+.lead {
+    font-weight: 300;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 2rem 0;
+    }
+    
+    .feature-icon {
+        font-size: 2rem;
+    }
+}

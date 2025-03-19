@@ -1,0 +1,84 @@
+{% extends 'layout.html' %}
+
+{% block title %}Créer une maison - Maison Connectée{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-center">Créer votre maison connectée</h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        En créant votre maison, vous deviendrez automatiquement l'administrateur de celle-ci.
+                        Vous recevrez un code unique que vous pourrez partager avec les membres de votre foyer.
+                    </div>
+                    
+                    <form method="POST" action="{{ url_for('auth.create_house') }}">
+                        <h4 class="mt-3 mb-3">Informations personnelles</h4>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="username" class="form-label">Nom d'utilisateur *</label>
+                                <input type="text" class="form-control" id="username" name="username" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">Email *</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="password" class="form-label">Mot de passe *</label>
+                                <input type="password" class="form-control" id="password" name="password" required>
+                                <div class="form-text">Le mot de passe doit contenir au moins 8 caractères.</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="confirm_password" class="form-label">Confirmer le mot de passe *</label>
+                                <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="member_type" class="form-label">Votre rôle dans la maison *</label>
+                            <select class="form-select" id="member_type" name="member_type" required>
+                                <option value="" selected disabled>Sélectionnez votre rôle</option>
+                                <option value="père">Père</option>
+                                <option value="mère">Mère</option>
+                                <option value="parent">Parent</option>
+                                <option value="grand-parent">Grand-parent</option>
+                                <option value="adulte">Adulte</option>
+                                <option value="autre">Autre</option>
+                            </select>
+                        </div>
+                        
+                        <h4 class="mt-4 mb-3">Informations de la maison</h4>
+                        <div class="mb-3">
+                            <label for="house_name" class="form-label">Nom de la maison *</label>
+                            <input type="text" class="form-control" id="house_name" name="house_name" required>
+                            <div class="form-text">Par exemple: "Maison des Dupont"</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="house_description" class="form-label">Description</label>
+                            <textarea class="form-control" id="house_description" name="house_description" rows="3"></textarea>
+                            <div class="form-text">Une brève description de votre maison (optionnel)</div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary">Créer ma maison</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer text-center">
+                    <p>Vous avez déjà un compte ? <a href="{{ url_for('auth.login') }}">Connectez-vous</a></p>
+                    <p>Vous avez un code de maison ? <a href="{{ url_for('auth.register') }}">Inscrivez-vous</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

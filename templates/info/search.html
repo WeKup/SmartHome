@@ -1,0 +1,122 @@
+{% extends 'layout.html' %}
+
+{% block title %}Recherche - Maison Connectée{% endblock %}
+
+{% block content %}
+    <div class="container py-5">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1 class="fw-bold">Recherche d'objets connectés</h1>
+                <p class="lead">Découvrez les objets disponibles dans notre maison intelligente</p>
+                <hr>
+            </div>
+        </div>
+        
+        <!-- Formulaire de recherche -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <form action="{{ url_for('info.search') }}" method="POST">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="query" class="form-label">Mot-clé :</label>
+                                    <input type="text" class="form-control" id="query" name="query" placeholder="Nom ou description de l'objet" value="{{ request.form.query if request.form.query }}">
+                                </div>
+                                
+                                <div class="col-md-3 mb-3">
+                                    <label for="type" class="form-label">Type d'objet :</label>
+                                    <select class="form-select" id="type" name="type">
+                                        <option value="">Tous les types</option>
+                                        {% for type in object_types %}
+                                        <option value="{{ type.id }}" {% if request.form.type == type.id|string %}selected{% endif %}>
+                                            {{ type.name }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-3 mb-3">
+                                    <label for="room" class="form-label">Pièce :</label>
+                                    <select class="form-select" id="room" name="room">
+                                        <option value="">Toutes les pièces</option>
+                                        {% for room in rooms %}
+                                        <option value="{{ room.id }}" {% if request.form.room == room.id|string %}selected{% endif %}>
+                                            {{ room.name }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                
+                                <div class="col-12 text-center">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-search me-1"></i> Rechercher
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Résultats de recherche -->
+        {% if results is not none %}
+        <div class="row">
+            <div class="col-12 mb-4">
+                <h2>{{ results|length }} résultat(s) trouvé(s)</h2>
+                <hr>
+            </div>
+            
+            {% if results %}
+                {% for object in results %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header bg-primary text-white">
+                            <i class="fas {{ object.type.icon }} me-2"></i> {{ object.name }}
+                        </div>
+                        <div class="card-body">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                <i class="fas fa-map-marker-alt me-1"></i> {{ object.room.name }}
+                            </h6>
+                            <p class="card-text">{{ object.description }}</p>
+                            <p class="card-text">
+                                <span class="badge bg-info">{{ object.brand }}</span>
+                                {% if object.model %}
+                                <span class="badge bg-secondary">{{ object.model }}</span>
+                                {% endif %}
+                                <span class="badge {% if object.status == 'active' %}bg-success{% else %}bg-danger{% endif %}">
+                                    {{ 'Actif' if object.status == 'active' else 'Inactif' }}
+                                </span>
+                            </p>
+                        </div>
+                        <div class="card-footer text-center">
+                            <a href="#" class="btn btn-sm btn-outline-primary disabled">
+                                <i class="fas fa-info-circle me-1"></i> Plus de détails
+                            </a>
+                            <div class="text-muted mt-2">
+                                <small><i class="fas fa-lock me-1"></i> Connectez-vous pour voir plus d'informations</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i> Aucun objet ne correspond à votre recherche. Veuillez essayer avec d'autres critères.
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        {% else %}
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-primary">
+                    <i class="fas fa-info-circle me-2"></i> Utilisez le formulaire ci-dessus pour rechercher des objets connectés.
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+{% endblock %}

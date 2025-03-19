@@ -1,0 +1,55 @@
+{% extends 'layout.html' %}
+
+{% block title %}Actualités - Maison Connectée{% endblock %}
+
+{% block content %}
+    <div class="container py-5">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1 class="fw-bold">Actualités</h1>
+                <p class="lead">Découvrez les dernières nouvelles concernant notre plateforme et le monde de la maison connectée.</p>
+                <hr>
+            </div>
+        </div>
+        
+        <div class="row">
+            {% for item in news %}
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h3 class="card-title">{{ item.title }}</h3>
+                        <p class="text-muted">
+                            <i class="far fa-calendar-alt me-1"></i> {{ item.date }}
+                        </p>
+                        <div class="card-text">
+                            {{ item.content|replace('\n', '<br>')|safe }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-12 d-flex justify-content-center">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        <li class="page-item">
+                            <a class="page-link" href="#" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+{% endblock %}
