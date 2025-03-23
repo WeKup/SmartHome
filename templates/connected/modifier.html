@@ -1,0 +1,38 @@
+{% extends 'LayoutCo.html' %}
+{% block title %}Accueil{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>modifie ton profil:</h1>
+    <form action="{{ url_for('connected.modifier') }}" method="POST" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="profile_photo" class="form-label">Photo de profil</label>
+            <input type="file" class="form-control" id="profile_photo" name="profile_picture">
+            {% if current_user.profile_photo %}
+                <div class="mt-2">
+                    <p>Photo actuelle :</p>
+                    <img src="{{ url_for('static', filename=current_user.profile_photo) }}" 
+                         alt="Photo de profil" class="img-thumbnail" style="max-width: 150px;">
+                </div>
+            {% endif %}
+        </div>
+    
+        <label for="username">Username :</label>
+        <input type="text" name="username" id="username" class="input-field" value="{{ user.username }}"><br>
+    
+        <label for="member_type">Type de membre :</label>
+        <select class="form-select" id="member_type" name="member_type">
+            <option value="" selected disabled>Sélectionnez votre rôle</option>
+            <option value="parent" {% if user.member_type == 'parent' %}selected{% endif %}>Parent</option>
+            <option value="grand-parent" {% if user.member_type == 'grand-parent' %}selected{% endif %}>Grand-parent</option>
+            <option value="adulte" {% if user.member_type == 'adulte' %}selected{% endif %}>Adulte</option>
+            <option value="autre" {% if user.member_type == 'autre' %}selected{% endif %}>Autre</option>
+        </select> <br>
+    
+        <label for="email">Email :</label>
+        <input type="email" name="email" id="email" class="input-field" value="{{ user.email }}"><br>
+    
+        <button type="submit" class="btn btn-primary">Mettre à jour</button>
+    </form>
+</div>
+{% endblock %}

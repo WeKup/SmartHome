@@ -1,0 +1,46 @@
+{% extends 'LayoutCo.html' %}
+{% block title %}Accueil{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Bonjour, {{ user.username }}, Voici votre profil:</h1>
+    <div class="card-body">
+        <form>
+            <div class="text-center mb-4">
+                {% if user.profile_photo %}
+                    <img src="{{ url_for('static', filename=user.profile_photo) }}" alt="Photo de profil" class="rounded-circle profile-image" width="150" height="150">
+                {% else %}
+                    <img src="{{ url_for('static', filename='images/default_profile.jpg') }}" alt="Photo par défaut" class="rounded-circle profile-image" width="150" height="150">
+                {% endif %}
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="profile_picture" class="form-label">{{ user.profile_photo}}</label>
+                </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="username" class="form-label">username: {{ user.username}}</label>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="email" class="form-label">Email : {{ user.email}}</label>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="first_name" class="form-label">level : {{ user.level}}</label>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="first_name" class="form-label">points : {{ user.points}}</label>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="first_name" class="form-label">house-id : {{ user.house_id}}</label>
+            </div>
+            
+        </form>
+        <a href="{{ url_for('connected.modifier') }}" method="post">modifier </a>
+    </div>
+</div>
+{% endblock %}

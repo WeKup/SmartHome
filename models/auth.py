@@ -73,34 +73,60 @@ class User(db.Model, UserMixin):
         return check_password_hash(self.password_hash, password)
     
     def get_level_percent(self):
-        """Calcule le pourcentage vers le niveau suivant"""
         levels = {
-            'débutant': {'min': 0, 'max': 10},
-            'intermédiaire': {'min': 10, 'max': 25},
-            'avancé': {'min': 25, 'max': 50},
-            'expert': {'min': 50, 'max': float('inf')}
+            'débutant': 0,
+            'intermédiaire': 3,
+            'avancé': 5,
+            'expert': 7
         }
+        current_level = self.level
+        if current_level == 'expert':
+            return 100
         
-        current_level = levels.get(self.level)
-        if not current_level:
-            return 100  # Par défaut, 100% si niveau non trouvé
+        if current_level == 'débutant':
+            next_level = 'intermédiaire'
+        elif current_level == 'intermédiaire':
+            next_level = 'avancé'
+        elif current_level == 'avancé':
+            next_level = 'expert'
         
-        if self.level == 'expert':
-            return 100  # Expert est le niveau max
+        current_points = self.points
+        points_needed_for_next_level = levels[next_level]
+        points_needed_for_current_level = levels[current_level]
         
-        next_level_key = next((k for k, v in levels.items() if v['min'] > current_level['min']), None)
-        if not next_level_key:
-            return 100  # Pas de niveau suivant
-        
-        next_level = levels[next_level_key]
-        
-        # Calculer le pourcentage
-        total_points_needed = next_level['min'] - current_level['min']
-        points_earned = self.points - current_level['min']
-        
-        percent = min(100, (points_earned / total_points_needed) * 100)
-        return round(percent, 2)
+        total_points_needed = points_needed_for_next_level - points_needed_for_current_level
+        points_earned = current_points - points_needed_for_current_level
+    
+        if total_points_needed == 0:
+            return 100
+        percentage = (points_earned / total_points_needed) * 100
+        return min(max(0, percentage), 100)
 
+    def update_user_points(user, action_type):
+        levels = {
+            'débutant': 0,
+            'intermédiaire': 3,
+            'avancé': 5,
+            'expert': 7
+        }
+        if action_type == 'connection':
+            user.connection_count += 1
+            user.points += 0.25
+        elif action_type == 'view':
+            user.action_count += 1
+            user.points += 0.50
+        elif action_type == 'search':
+            user.action_count += 1
+            user.points += 0.50
+        
+        if user.level == 'débutant' and user.points >= levels['intermédiaire']:
+            user.level = 'intermédiaire'
+        elif user.level == 'intermédiaire' and user.points >= levels['avancé']:
+            user.level = 'avancé'
+        elif user.level == 'avancé' and user.points >= levels['expert']:
+            user.level = 'expert'
+        
+        db.session.commit()
 class Room(db.Model):
     """Modèle pour les pièces"""
     __tablename__ = 'rooms'

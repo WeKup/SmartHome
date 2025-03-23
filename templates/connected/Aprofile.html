@@ -1,0 +1,43 @@
+{% extends 'LayoutCo.html' %}
+{% block title %}Accueil{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Voici le profil de ta famille:</h1>
+    </form>
+    <table>
+        <thead>
+            <tr>
+                <th>image</th>
+                <th>pseudo</th>
+                <th>gender</th>
+                <th>Email</th>
+                <th>level</th>
+                <th>membre</th>
+                <th>nombre de points</th>
+                <th>pourcent</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for personne in user %}
+                <tr>
+                    <td>
+                        {% if user.profile_photo %}
+                            <img src="{{ url_for('static', filename=user.profile_photo) }}" alt="Photo de profil" class="rounded-circle profile-image" width="150" height="150">
+                        {% else %}
+                            pas de pp
+                        {% endif %}
+                    </td>
+                    <td>{{ personne.username }}</td>
+                    <td>{{ personne.gender }}</td>
+                    <td>{{ personne.email }}</td>
+                    <td>{{ personne.level }}</td>
+                    <td>{{ personne.menber_type }}</td>
+                    <td>{{ personne.points }}</td>
+                    <td>{{personne.get_level_percent()}}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

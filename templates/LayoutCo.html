@@ -28,34 +28,27 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link {% if request.endpoint == 'info.home' %}active{% endif %}" href="{{ url_for('info.home') }}">
+                        <a class="nav-link {% if request.endpoint == 'connected.accueil' %}active{% endif %}" href="{{ url_for('connected.accueil') }}">
                             <i class="fas fa-house-user me-1"></i> Accueil
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if request.endpoint == 'info.news' %}active{% endif %}" href="{{ url_for('info.news') }}">
-                            <i class="fas fa-newspaper me-1"></i> Actualités
+                        <a class="nav-link {% if request.endpoint == 'connected.Aprofile' %}active{% endif %}" href="{{ url_for('connected.Aprofile') }}">
+                            <i class="fas fa-newspaper me-1"></i> voir profil de la famille
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if request.endpoint == 'info.search' %}active{% endif %}" href="{{ url_for('info.search') }}">
+                        <a class="nav-link {% if request.endpoint == 'connected.search' %}active{% endif %}" href="{{ url_for('connected.search') }}">
                             <i class="fas fa-search me-1"></i> Recherche
                         </a>
                     </li>
                         <li class="nav-item">
-                            <a class="nav-link {% if request.endpoint == 'auth.login' %}active{% endif %}" href="{{ url_for('auth.login') }}">
-                                <i class="fas fa-sign-in-alt me-1"></i> Connexion
+                            <a class="nav-link {% if request.endpoint == 'connected.profil' %}active{% endif %}" href="{{ url_for('connected.profil') }}">
+                                <i class="fas fa-sign-in-alt me-1"></i> voir profil
                             </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% if request.endpoint == 'auth.register' %}active{% endif %}" href="{{ url_for('auth.register') }}">
-                                <i class="fas fa-user-plus me-1"></i> Inscription
-                            </a>
-                        </li>
-                    </li>
                     <li class="nav-item">
                         <a class="nav-link {% if request.endpoint == 'auth.logout' %}active{% endif %}" href="{{ url_for('auth.logout') }}">
-                            <i class="fas fa-sign-in-alt me-1"></i> deconexion
+                            <i class="fas fa-sign-in-alt me-1"></i> deconnexion
                         </a>
                     </li>
                 </ul>
@@ -89,7 +82,7 @@
                 <div class="col-md-4">
                     <h5>Liens rapides</h5>
                     <ul class="list-unstyled">
-                        <li><a href="{{ url_for('info.home') }}" class="text-white">Accueil</a></li>
+                        <li><a href="{{ url_for('connected.accueil') }}" class="text-white">Accueil</a></li>
                         <li><a href="{{ url_for('info.news') }}" class="text-white">Actualités</a></li>
                         <li><a href="{{ url_for('info.search') }}" class="text-white">Recherche</a></li>
                         <li><a href="{{ url_for('auth.login') }}" class="text-white">Connexion</a></li>

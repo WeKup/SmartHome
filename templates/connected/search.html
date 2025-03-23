@@ -1,0 +1,91 @@
+{% extends 'LayoutCo.html' %}
+
+{% block title %}Recherche d'objets{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Rechercher des objets connectés</h1>
+    
+    <!-- Formulaire de recherche -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('connected.search') }}">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="query" class="form-label">Nom de l'objet</label>
+                        <input type="text" class="form-control" id="query" name="query" value="{{ query }}" placeholder="Rechercher par nom...">
+                    </div>
+                    
+                    <div class="col-md-4 mb-3">
+                        <label for="type" class="form-label">Type d'objet</label>
+                        <select class="form-select" id="type" name="type">
+                            <option value="all" {% if selected_type == 'all' or not selected_type %}selected{% endif %}>Tous les types</option>
+                            {% for type in object_types %}
+                            <option value="{{ type.id }}" {% if selected_type|string == type.id|string %}selected{% endif %}>{{ type.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-4 mb-3">
+                        <label for="room" class="form-label">Pièce</label>
+                        <select class="form-select" id="room" name="room">
+                            <option value="all" {% if selected_room == 'all' or not selected_room %}selected{% endif %}>Toutes les pièces</option>
+                            {% for room in rooms %}
+                            <option value="{{ room.id }}" {% if selected_room|string == room.id|string %}selected{% endif %}>{{ room.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search me-1"></i> Rechercher
+                    </button>
+                    <a href="{{ url_for('connected.search') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-redo me-1"></i> Réinitialiser
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Résultats de recherche -->
+    <div class="row">
+        <div class="col-12">
+            <h2>Résultats {% if query or selected_type != 'all' or selected_room != 'all' %}de recherche{% endif %}</h2>
+                <p class="text-muted">{{ results|length }} objet(s) trouvé(s)</p>
+                <div class="row">
+                    {% for object in results %}
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header bg-primary text-white">
+                                <i class="fas {{ object.type.icon }} me-2"></i> {{ object.name }}
+                            </div>
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2 text-muted">
+                                    <i class="fas fa-map-marker-alt me-1"></i> {{ object.room.name }}
+                                </h6>
+                                <p class="card-text">{{ object.description }}</p>
+                                <p class="card-text">
+                                    <span class="badge bg-info">{{ object.brand }}</span>
+                                    {% if object.model %}
+                                    <span class="badge bg-secondary">{{ object.model }}</span>
+                                    {% endif %}
+                                    <span class="badge {% if object.status == 'active' %}bg-success{% else %}bg-danger{% endif %}">
+                                        {{ 'Actif' if object.status == 'active' else 'Inactif' }}
+                                    </span>
+                                </p>
+                            </div>
+                            <div class="card-footer text-center">
+                                <a href="{{ url_for('connected.view', object_id=object.id) }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-info-circle me-1"></i> Plus de détails
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

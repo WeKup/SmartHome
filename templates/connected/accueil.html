@@ -1,0 +1,47 @@
+{% extends 'LayoutCo.html' %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Bienvenue, {{ user.username }} !</h1>
+    <p>Vous êtes maintenant connecté.</p>
+    <br>
+    <br>
+    {% if connectedObject|length == 0 %}
+        <div class="alert alert-info">
+            <p>Il n'y a aucun objet connecté dans votre maison pour le moment.</p>
+        </div>
+    {% else %}
+    <div class="row">
+        {% for object in connectedObject %}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-primary text-white">
+                <i class="fas {{ object.type.icon }} me-2"></i> {{ object.name }}
+            </div>
+            <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-muted">
+                    <i class="fas fa-map-marker-alt me-1"></i> {{ object.room.name }}
+                </h6>
+                <p class="card-text">{{ object.description }}</p>
+                <p class="card-text">
+                    <span class="badge bg-info">{{ object.brand }}</span>
+                    <span class="badge bg-secondary">{{ object.model }}</span>
+                    <span class="badge bg-primary">{{ object.type.name }}</span>
+                    <span class="badge {% if object.status == 'active' %}bg-success{% else %}bg-danger{% endif %}">
+                        {{ 'Actif' if object.status == 'active' else 'Inactif' }}
+                    </span>
+                </p>
+            </div>
+            <div class="card-footer text-center">
+                <a href="{{ url_for('connected.view', object_id=object.id) }}" class="btn btn-sm btn-outline-primary">
+                    <i class="fas fa-info-circle me-1"></i> Plus de détails
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

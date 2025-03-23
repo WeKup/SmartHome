@@ -4,15 +4,18 @@ from models.auth import db, User, House
 from werkzeug.security import generate_password_hash
 import random
 import string
-
+import os
+import time
+from werkzeug.utils import secure_filename
+from config import *
 # Créer le blueprint
 auth_bp = Blueprint('auth', __name__)
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     """Page de connexion"""
-   # if current_user.is_authenticated:
-    #    return redirect(url_for('info.home'))
+    if current_user.is_authenticated:
+        return redirect(url_for('connected.accueil'))
         
     if request.method == 'POST':
         username = request.form.get('username')
@@ -30,9 +33,7 @@ def login():
             # Connexion réussie
             login_user(user)
             
-            # Incrémenter le compteur de connexions
-            user.connection_count += 1
-            db.session.commit()
+            user.update_user_points('connection')
             
             flash(f'Bienvenue, {user.username} !', 'success')
             
@@ -40,7 +41,7 @@ def login():
             next_page = request.args.get('next')
             if next_page:
                 return redirect(next_page)
-            return redirect(url_for('info.home'))
+            return redirect(url_for('connected.accueil'))
         else:
             flash('Nom d\'utilisateur ou mot de passe incorrect', 'danger')
     
@@ -49,17 +50,16 @@ def login():
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
     """Page d'inscription"""
-   # if current_user.is_authenticated:
-   #     return redirect(url_for('info.home'))
+    if current_user.is_authenticated:
+        return redirect(url_for('connected.accueil'))
         
     if request.method == 'POST':
         username = request.form.get('username')
         email = request.form.get('email')
         password = request.form.get('password')
         confirm_password = request.form.get('confirm_password')
-        house_code = request.form.get('house_code', '').upper()  # Code de maison
+        house_code = request.form.get('house_code', '').upper()
         
-        # Vérifications de base
         if not username or not email or not password:
             flash('Tous les champs sont obligatoires!', 'danger')
             return render_template('auth/register.html')
@@ -68,7 +68,6 @@ def register():
             flash('Les mots de passe ne correspondent pas!', 'danger')
             return render_template('auth/register.html')
         
-        # Vérifier si l'utilisateur existe déjà
         existing_user = User.query.filter_by(username=username).first()
         if existing_user:
             flash('Ce nom d\'utilisateur est déjà utilisé', 'danger')
@@ -79,7 +78,6 @@ def register():
             flash('Cette adresse email est déjà utilisée', 'danger')
             return render_template('auth/register.html')
         
-        # Si un code de maison est fourni, vérifier s'il existe
         house = None
         if house_code:
             house = House.query.filter_by(house_code=house_code).first()
@@ -87,7 +85,6 @@ def register():
                 flash('Code de maison invalide', 'danger')
                 return render_template('auth/register.html')
         
-        # Création de l'utilisateur
         new_user = User(
             username=username,
             email=email,
@@ -97,11 +94,27 @@ def register():
         )
         new_user.set_password(password)
         
-        # Si une maison a été trouvée, associer l'utilisateur
         if house:
             new_user.house_id = house.id
             
         db.session.add(new_user)
+        db.session.flush()
+        if 'profile_picture' in request.files:
+            file = request.files['profile_picture']
+            if file.filename != '':
+                if file and allowed_file(file.filename):
+                    # Générer un nom de fichier unique
+                    filename = secure_filename(f"{new_user.id}_{int(time.time())}_{file.filename}")
+                    
+                    # Sauvegarder le fichier
+                    file_path = os.path.join(UPLOAD_FOLDER, filename)
+                    file.save(file_path)
+                    
+                    # Mettre à jour le chemin dans la base de données
+                    path = os.path.join('images/profile_pictures', filename)
+                    new_user.profile_photo = path.replace('\\', '/')
+                else:
+                    flash('Format de fichier non autorisé. Utilisez PNG, JPG, JPEG ou GIF.', 'danger')
         db.session.commit()
         
         flash('Inscription réussie! Vous pouvez maintenant vous connecter.', 'success')
@@ -112,8 +125,8 @@ def register():
 @auth_bp.route('/create-house', methods=['GET', 'POST'])
 def create_house():
     """Page de création de maison"""
-    #if current_user.is_authenticated:
-     #   return redirect(url_for('info.home'))
+    if current_user.is_authenticated:
+        return redirect(url_for('connected.accueil'))
         
     if request.method == 'POST':
         # Récupérer les données du formulaire
