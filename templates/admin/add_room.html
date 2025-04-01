@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Ajouter une pièce{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4">Ajouter une pièce</h1>
+    
+    <div class="card">
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('admin.add_room') }}">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Nom de la pièce</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="floor" class="form-label">Étage</label>
+                    <input type="number" class="form-control" id="floor" name="floor" value="0" min="-5" max="100">
+                    <div class="form-text">0 = rez-de-chaussée, -1 = sous-sol, etc.</div>
+                </div>
+                
+                <div class="d-flex">
+                    <button type="submit" class="btn btn-primary">Ajouter</button>
+                    <a href="{{ url_for('admin.manage_rooms') }}" class="btn btn-secondary ms-2">Annuler</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

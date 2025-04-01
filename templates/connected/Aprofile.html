@@ -22,11 +22,11 @@
             {% for personne in user %}
                 <tr>
                     <td>
-                        {% if user.profile_photo %}
-                            <img src="{{ url_for('static', filename=user.profile_photo) }}" alt="Photo de profil" class="rounded-circle profile-image" width="150" height="150">
-                        {% else %}
-                            pas de pp
-                        {% endif %}
+                        {% if personne.profile_photo %}
+                    <img src="{{ url_for('static', filename=personne.profile_photo) }}" alt="Photo de profil" class="rounded-circle profile-image" width="150" height="150">
+                {% else %}
+                    <img src="{{ url_for('static', filename='images/default_profile.jpg') }}" alt="Photo par défaut" class="rounded-circle profile-image" width="150" height="150">
+                {% endif %}
                     </td>
                     <td>{{ personne.username }}</td>
                     <td>{{ personne.gender }}</td>

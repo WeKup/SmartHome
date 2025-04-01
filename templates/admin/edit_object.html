@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}Modifier l'objet{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4">Modifier l'objet: {{ object.name }}</h1>
+    
+    <div class="card">
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('admin.edit_object', object_id=object.id) }}">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Nom de l'objet</label>
+                    <input type="text" class="form-control" id="name" name="name" value="{{ object.name }}" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea class="form-control" id="description" name="description" rows="3">{{ object.description }}</textarea>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="object_type_id" class="form-label">Type d'objet</label>
+                    <select class="form-select" id="object_type_id" name="object_type_id" required>
+                        {% for type in object_types %}
+                        <option value="{{ type.id }}" {% if type.id == object.object_type_id %}selected{% endif %}>{{ type.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="room_id" class="form-label">Pièce</label>
+                    <select class="form-select" id="room_id" name="room_id" required>
+                        {% for room in rooms %}
+                        <option value="{{ room.id }}" {% if room.id == object.room_id %}selected{% endif %}>{{ room.name }} (Étage {{ room.floor }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="brand" class="form-label">Marque</label>
+                    <input type="text" class="form-control" id="brand" name="brand" value="{{ object.brand }}">
+                </div>
+                
+                <div class="mb-3">
+                    <label for="model" class="form-label">Modèle</label>
+                    <input type="text" class="form-control" id="model" name="model" value="{{ object.model }}">
+                </div>
+                
+                <div class="mb-3">
+                    <label for="status" class="form-label">Statut</label>
+                    <select class="form-select" id="status" name="status">
+                        <option value="active" {% if object.status == 'active' %}selected{% endif %}>Actif</option>
+                        <option value="inactive" {% if object.status == 'inactive' %}selected{% endif %}>Inactif</option>
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="connection_status" class="form-label">État de connexion</label>
+                    <select class="form-select" id="connection_status" name="connection_status">
+                        <option value="connected" {% if object.connection_status == 'connected' %}selected{% endif %}>Connecté</option>
+                        <option value="disconnected" {% if object.connection_status == 'disconnected' %}selected{% endif %}>Déconnecté</option>
+                    </select>
+                </div>
+                
+                <div class="d-flex">
+                    <button type="submit" class="btn btn-primary">Mettre à jour</button>
+                    <a href="{{ url_for('admin.manage_objects') }}" class="btn btn-secondary ms-2">Annuler</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

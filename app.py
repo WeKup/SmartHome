@@ -5,6 +5,7 @@ from models.auth import db, User
 from routes.info import info_bp
 from routes.auth import auth_bp
 from routes.connected import connected_bp
+from routes.admin import admin_bp
 import datetime
 from config import *
 from werkzeug.utils import secure_filename
@@ -34,6 +35,7 @@ def load_user(user_id):
 app.register_blueprint(info_bp)
 app.register_blueprint(auth_bp, url_prefix='/auth')
 app.register_blueprint(connected_bp)
+app.register_blueprint(admin_bp)
 
 # Context processor pour les templates
 @app.context_processor

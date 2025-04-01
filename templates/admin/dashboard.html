@@ -1,0 +1,61 @@
+<!-- templates/admin/dashboard.html -->
+{% extends 'base.html' %}
+
+{% block title %}Tableau de bord Admin{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">Tableau de bord d'administration</h1>
+            <div class="alert alert-info">
+                <h4>Bienvenue dans le panneau d'administration, {{ current_user.username }}</h4>
+                <p>Vous pouvez gérer ici tous les aspects de votre maison intelligente.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Gestion des utilisateurs</h5>
+                    <p class="card-text">Ajoutez, modifiez ou supprimez des utilisateurs de votre maison.</p>
+                    <a href="{{ url_for('admin.manage_users') }}" class="btn btn-primary">Gérer les utilisateurs</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Gestion des objets</h5>
+                    <p class="card-text">Ajoutez, modifiez ou supprimez des objets connectés.</p>
+                    <a href="{{ url_for('admin.manage_objects') }}" class="btn btn-primary">Gérer les objets</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Types d'objets</h5>
+                    <p class="card-text">Gérez les différentes catégories d'objets connectés.</p>
+                    <a href="{{ url_for('admin.manage_object_types') }}" class="btn btn-primary">Gérer les types</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Gestion des pièces</h5>
+                    <p class="card-text">Ajoutez, modifiez ou supprimez des pièces de votre maison.</p>
+                    <a href="{{ url_for('admin.manage_rooms') }}" class="btn btn-primary">Gérer les pièces</a>
+                </div>
+            </div>
+        </div>
+</div>
+{% endblock %}

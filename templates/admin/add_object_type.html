@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Ajouter un type d'objet{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4">Ajouter un type d'objet</h1>
+    
+    <div class="card">
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('admin.add_object_type') }}">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Nom du type</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="icon" class="form-label">Icône (classe CSS)</label>
+                    <input type="text" class="form-control" id="icon" name="icon" placeholder="fas fa-lightbulb">
+                    <div class="form-text">Utilisez les classes d'icônes Font Awesome (ex: fas fa-lightbulb, fas fa-thermometer-half)</div>
+                </div>
+                
+                <div class="d-flex">
+                    <button type="submit" class="btn btn-primary">Ajouter</button>
+                    <a href="{{ url_for('admin.manage_object_types') }}" class="btn btn-secondary ms-2">Annuler</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

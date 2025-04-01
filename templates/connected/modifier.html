@@ -20,14 +20,28 @@
         <label for="username">Username :</label>
         <input type="text" name="username" id="username" class="input-field" value="{{ user.username }}"><br>
     
-        <label for="member_type">Type de membre :</label>
-        <select class="form-select" id="member_type" name="member_type">
-            <option value="" selected disabled>Sélectionnez votre rôle</option>
-            <option value="parent" {% if user.member_type == 'parent' %}selected{% endif %}>Parent</option>
-            <option value="grand-parent" {% if user.member_type == 'grand-parent' %}selected{% endif %}>Grand-parent</option>
-            <option value="adulte" {% if user.member_type == 'adulte' %}selected{% endif %}>Adulte</option>
-            <option value="autre" {% if user.member_type == 'autre' %}selected{% endif %}>Autre</option>
-        </select> <br>
+        <label for="level">Niveau :</label>
+        <select class="form-select" id="level" name="level">
+            <option value="débutant" {% if current_user.level == 'débutant' %}selected{% endif %}>Débutant</option>
+            
+            <option value="intermédiaire" 
+                    {% if current_user.level == 'intermédiaire' %}selected{% endif %}
+                    {% if current_user.level not in ['intermédiaire', 'avancé', 'expert'] %}disabled{% endif %}>
+                Intermédiaire
+            </option>
+            
+            <option value="avancé" 
+                    {% if current_user.level == 'avancé' %}selected{% endif %}
+                    {% if current_user.level not in ['avancé', 'expert'] %}disabled{% endif %}>
+                Avancé
+            </option>
+            
+            <option value="expert" 
+                    {% if current_user.level == 'expert' %}selected{% endif %}
+                    {% if current_user.level != 'expert' %}disabled{% endif %}>
+                Expert
+            </option>
+        </select>
     
         <label for="email">Email :</label>
         <input type="email" name="email" id="email" class="input-field" value="{{ user.email }}"><br>

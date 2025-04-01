@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Ajouter un utilisateur{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4">Ajouter un utilisateur</h1>
+    
+    <div class="card">
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('admin.add_user') }}">
+                <div class="mb-3">
+                    <label for="username" class="form-label">Nom d'utilisateur</label>
+                    <input type="text" class="form-control" id="username" name="username" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="password" class="form-label">Mot de passe</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="gender" class="form-label">Genre</label>
+                    <select class="form-select" id="gender" name="gender">
+                        <option value="homme">Homme</option>
+                        <option value="femme">Femme</option>
+                        <option value="autre">Autre</option>
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="birthdate" class="form-label">Date de naissance</label>
+                    <input type="date" class="form-control" id="birthdate" name="birthdate" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="member_type" class="form-label">Type de membre</label>
+                    <select class="form-select" id="member_type" name="member_type">
+                        <option value="père">Père</option>
+                        <option value="mère">Mère</option>
+                        <option value="enfant">Enfant</option>
+                        <option value="autre">Autre membre</option>
+                    </select>
+                </div>
+                
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="is_admin" name="is_admin">
+                    <label class="form-check-label" for="is_admin">Administrateur de la maison</label>
+                </div>
+                
+                <div class="d-flex">
+                    <button type="submit" class="btn btn-primary">Ajouter</button>
+                    <a href="{{ url_for('admin.manage_users') }}" class="btn btn-secondary ms-2">Annuler</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -172,9 +172,11 @@ class ObjectType(db.Model):
     description = db.Column(db.Text, nullable=True)
     icon = db.Column(db.String(50), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    house_id = db.Column(db.Integer, db.ForeignKey('houses.id'), nullable=True)
     
     # Relations
     objects = db.relationship('ConnectedObject', backref='type', lazy=True)
+    house = db.relationship('House', backref='object_types', lazy=True)
 
 class ObjectAction(db.Model):
     """Modèle pour les actions sur les objets"""

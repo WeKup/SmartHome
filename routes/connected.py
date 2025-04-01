@@ -10,15 +10,16 @@ connected_bp = Blueprint('connected', __name__, url_prefix='/connected')
 @connected_bp.route('/accueil')
 @login_required
 def accueil():
-    """Page d'accueil pour utilisateurs connectés"""
     connected_objects = ConnectedObject.query.filter_by(house_id=current_user.house_id).all()
     return render_template('connected/accueil.html', user=current_user, connectedObject=connected_objects)
 
 @connected_bp.route('/profil')
+@login_required
 def profil():
     return render_template('connected/profil.html', user=current_user)
 
 @connected_bp.route('/Aprofile')
+@login_required
 def Aprofile():
     Famille= User.query.filter_by(house_id=current_user.house_id).all()
     return render_template('connected/Aprofile.html', user=Famille,)
@@ -38,6 +39,9 @@ def modifier():
         member_type = request.form.get('member_type')
         if member_type and member_type != current_user.member_type:
             current_user.member_type = member_type
+        level = request.form.get('level')
+        if level and level != current_user.level:
+            current_user.level = level
 
         if 'profile_picture' in request.files:
             file = request.files['profile_picture']
@@ -68,7 +72,7 @@ def modifier():
 def search():
     connected_objects = ConnectedObject.query.filter_by(house_id=current_user.house_id).all()
     rooms = Room.query.filter_by(house_id=current_user.house_id).all()
-    object_types = ObjectType.query.all()  
+    object_types = ObjectType.query.filter_by(house_id=current_user.house_id).all() 
     
     results = []
     

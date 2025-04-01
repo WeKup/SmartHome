@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}Modifier l'utilisateur{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4">Modifier l'utilisateur: {{ user.username }}</h1>
+    
+    <div class="card">
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('admin.edit_user', user_id=user.id) }}">
+                <div class="mb-3">
+                    <label for="username" class="form-label">Nom d'utilisateur</label>
+                    <input type="text" class="form-control" id="username" name="username" value="{{ user.username }}" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="password" class="form-label">Mot de passe (laisser vide pour ne pas changer)</label>
+                    <input type="password" class="form-control" id="password" name="password">
+                </div>
+
+                <div class="mb-3">
+                    <label for="gender" class="form-label">Genre</label>
+                    <select class="form-select" id="gender" name="gender">
+                        <option value="homme" {% if user.gender == 'homme' %}selected{% endif %}>Homme</option>
+                        <option value="femme" {% if user.gender == 'femme' %}selected{% endif %}>Femme</option>
+                        <option value="autre" {% if user.gender == 'autre' %}selected{% endif %}>Autre</option>
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="birthdate" class="form-label">Date de naissance</label>
+                    <input type="date" class="form-control" id="birthdate" name="birthdate" value="{{ user.birthdate }}" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="member_type" class="form-label">Type de membre</label>
+                    <select class="form-select" id="member_type" name="member_type">
+                        <option value="père" {% if user.member_type == 'père' %}selected{% endif %}>Père</option>
+                        <option value="mère" {% if user.member_type == 'mère' %}selected{% endif %}>Mère</option>
+                        <option value="enfant" {% if user.member_type == 'enfant' %}selected{% endif %}>Enfant</option>
+                        <option value="autre" {% if user.member_type == 'autre' %}selected{% endif %}>Autre membre</option>
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="level" class="form-label">Niveau (ajustement manuel)</label>
+                    <select class="form-select" id="level" name="level">
+                        <option value="débutant" {% if user.level == 'débutant' %}selected{% endif %}>Débutant</option>
+                        <option value="intermédiaire" {% if user.level == 'intermédiaire' %}selected{% endif %}>Intermédiaire</option>
+                        <option value="avancé" {% if user.level == 'avancé' %}selected{% endif %}>Avancé</option>
+                        <option value="expert" {% if user.level == 'expert' %}selected{% endif %}>Expert</option>
+                    </select>
+                </div>
+                
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="is_admin" name="is_admin" {% if user.is_admin %}checked{% endif %}>
+                    <label class="form-check-label" for="is_admin">Administrateur de la maison</label>
+                </div>
+                
+                <div class="d-flex">
+                    <button type="submit" class="btn btn-primary">Mettre à jour</button>
+                    <a href="{{ url_for('admin.manage_users') }}" class="btn btn-secondary ms-2">Annuler</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
