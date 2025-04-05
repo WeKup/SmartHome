@@ -57,12 +57,12 @@
                         <option value="expert" {% if user.level == 'expert' %}selected{% endif %}>Expert</option>
                     </select>
                 </div>
-                
+                {% if current_user.is_admin == 1 %}
                 <div class="mb-3 form-check">
                     <input type="checkbox" class="form-check-input" id="is_admin" name="is_admin" {% if user.is_admin %}checked{% endif %}>
                     <label class="form-check-label" for="is_admin">Administrateur de la maison</label>
                 </div>
-                
+                {% endif %}
                 <div class="d-flex">
                     <button type="submit" class="btn btn-primary">Mettre à jour</button>
                     <a href="{{ url_for('admin.manage_users') }}" class="btn btn-secondary ms-2">Annuler</a>

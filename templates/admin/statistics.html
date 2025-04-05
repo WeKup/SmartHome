@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+
+{% block title %}Statistiques - Administration{% endblock %}
+
+{% block content %}
+<div class="mb-3">
+    <a href="{{ url_for('admin.accueil') }}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Retour au tableau de bord
+    </a>
+    <a href="{{ url_for('admin.export_objects') }}" class="btn btn-success">
+        <i class="fas fa-file-csv"></i> Exporter tous les objets (CSV)
+    </a>
+</div>
+
+<div class="row">
+    <!-- Résumé Général -->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">Résumé Général</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Utilisateurs
+                        <span class="badge bg-primary rounded-pill" id="total-users">{{ total_users }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Objets connectés
+                        <span class="badge bg-primary rounded-pill" id="total-objects">{{ obj }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Pièces
+                        <span class="badge bg-primary rounded-pill" id="total-rooms">{{ room }}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistiques de Connexion -->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">Statistiques de Connexion</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Total Connexions
+                        <span class="badge bg-primary rounded-pill" id="total-connexions">{{ total_connexion }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Moyenne Connexions
+                        <span class="badge bg-primary rounded-pill" id="avg-connexions">{{ avg }}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Utilisateurs par Niveau -->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">Utilisateurs par Niveau</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="userLevelsChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Connexions des 30 derniers jours -->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">Connexions des 30 derniers jours</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="connexionsByDayChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistiques des Services et Consommation d'Objet (alignées à droite) -->
+    <div class="col-md-8 mb-4">
+        <div class="row">
+            <!-- Statistiques des Services -->
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title mb-0">Statistiques des Services</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="serviceStatsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Consommation d'Objet -->
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title mb-0">Consommation d'Objet</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="conso"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Objets par Type -->
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">Objets par Type</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="objectsByTypeChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Objets par Pièce -->
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">Objets par Pièce</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="objectsByRoomChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='js/stat.js') }}"></script>
+{% endblock %}

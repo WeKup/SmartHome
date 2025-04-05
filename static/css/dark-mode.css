@@ -1,0 +1,125 @@
+
+.dark-mode {
+    background-color: #212529;
+    color: #f8f9fa;
+}
+
+.dark-mode .card {
+    background-color: #343a40;
+    color: #f8f9fa;
+    border-color: #495057;
+}
+
+.dark-mode .navbar {
+    background-color: #121416 !important; 
+}
+
+.dark-mode .table {
+    color: #f8f9fa;
+}
+
+.dark-mode .table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.dark-mode .modal-content {
+    background-color: #343a40;
+    color: #f8f9fa;
+}
+
+.dark-mode .list-group-item {
+    background-color: #343a40;
+    color: #f8f9fa;
+    border-color: #495057;
+}
+
+.dark-mode .form-control {
+    background-color: #495057;
+    color: #f8f9fa;
+    border-color: #6c757d;
+}
+
+.dark-mode .dropdown-menu {
+    background-color: #343a40;
+}
+
+.dark-mode .dropdown-item {
+    color: #f8f9fa;
+}
+
+.dark-mode .dropdown-item:hover {
+    background-color: #495057;
+}
+
+.dark-mode .bg-light {
+    background-color: #343a40 !important;
+}
+
+.dark-mode .text-dark {
+    color: #f8f9fa !important;
+}
+
+.dark-mode .footer {
+    background-color: #121416 !important;
+    color: #f8f9fa;
+}
+
+.dark-mode .table {
+    color: #e2e8f0; 
+}
+
+.dark-mode .table thead th {
+    background-color: #2d3748; 
+    color: #ffffff;
+    border-bottom: 2px solid #4a5568;
+}
+
+
+.dark-mode .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: #2d3748; 
+}
+
+
+.dark-mode .table-striped > tbody > tr:nth-of-type(even) {
+    background-color: #1a202c; 
+}
+
+.dark-mode .table td, .dark-mode .table th {
+    border-color: #4a5568; 
+}
+
+.dark-mode .table tbody tr:hover {
+    background-color: #4a5568; 
+}
+
+.dark-mode * {
+    color: #e2e8f0 !important;
+}
+
+.dark-mode .btn-light,
+.dark-mode .badge-light,
+.dark-mode .alert-light {
+    color: #1a202c !important;
+}
+
+/* Spécifiquement pour les tableaux */
+.dark-mode .table td,
+.dark-mode .table th,
+.dark-mode .table tbody tr td {
+    color: #e2e8f0 !important;
+}
+
+.dark-mode .btn-primary {
+    color: white !important;
+}
+
+.dark-mode .btn-danger {
+    color: white !important;
+}
+.dark-mode select,
+.dark-mode .form-select,
+.dark-mode option {
+    background-color: #2d3748 !important;
+    color: #e2e8f0 !important;
+    border-color: #4a5568 !important;
+}

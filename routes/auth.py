@@ -6,6 +6,7 @@ import random
 import string
 import os
 import time
+from datetime import *
 from werkzeug.utils import secure_filename
 from config import *
 # Créer le blueprint
@@ -59,6 +60,10 @@ def register():
         password = request.form.get('password')
         confirm_password = request.form.get('confirm_password')
         house_code = request.form.get('house_code', '').upper()
+        gender = request.form.get('gender')
+        birthdate = request.form.get('birthdate')
+        member_type = request.form.get('member_type')
+        is_admin = request.form.get('is_admin') == 'on'
         
         if not username or not email or not password:
             flash('Tous les champs sont obligatoires!', 'danger')
@@ -85,12 +90,26 @@ def register():
                 flash('Code de maison invalide', 'danger')
                 return render_template('auth/register.html')
         
+        parsed_birthdate = None
+        if birthdate:
+            try:
+                parsed_birthdate = datetime.strptime(birthdate, '%Y-%m-%d').date()
+            except ValueError:
+                flash('Format de date invalide', 'danger')
+                return render_template('auth/register.html')
+        
+        if member_type in ['père', 'mère']:
+            is_admin = True
+        
         new_user = User(
             username=username,
             email=email,
+            gender=gender,
+            birthdate=parsed_birthdate,
+            member_type=member_type,
             level='débutant',
             points=0,
-            is_admin=False
+            is_admin=is_admin
         )
         new_user.set_password(password)
         
@@ -99,22 +118,21 @@ def register():
             
         db.session.add(new_user)
         db.session.flush()
+        
         if 'profile_picture' in request.files:
             file = request.files['profile_picture']
             if file.filename != '':
                 if file and allowed_file(file.filename):
-                    # Générer un nom de fichier unique
                     filename = secure_filename(f"{new_user.id}_{int(time.time())}_{file.filename}")
                     
-                    # Sauvegarder le fichier
                     file_path = os.path.join(UPLOAD_FOLDER, filename)
                     file.save(file_path)
                     
-                    # Mettre à jour le chemin dans la base de données
                     path = os.path.join('images/profile_pictures', filename)
                     new_user.profile_photo = path.replace('\\', '/')
                 else:
                     flash('Format de fichier non autorisé. Utilisez PNG, JPG, JPEG ou GIF.', 'danger')
+        
         db.session.commit()
         
         flash('Inscription réussie! Vous pouvez maintenant vous connecter.', 'success')

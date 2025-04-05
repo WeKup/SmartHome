@@ -27,6 +27,7 @@ def Aprofile():
 @connected_bp.route('/modifier', methods=['GET', 'POST'])
 @login_required
 def modifier():
+    User.nb(current_user,'nbM')
     if request.method == 'POST':
         username = request.form.get('username')
         if username and username != current_user.username:
@@ -93,6 +94,7 @@ def search():
             search_query = search_query.filter_by(room_id=room_id)
         
         results = search_query.all()
+        User.nb(current_user,'nbR')
         User.update_user_points(current_user,'search')
     
     return render_template('connected/search.html', 

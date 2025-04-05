@@ -1,43 +1,73 @@
 {% extends 'LayoutCo.html' %}
-{% block title %}Accueil{% endblock %}
+{% block title %}Profil de la Famille{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <h1>Voici le profil de ta famille:</h1>
-    </form>
-    <table>
-        <thead>
-            <tr>
-                <th>image</th>
-                <th>pseudo</th>
-                <th>gender</th>
-                <th>Email</th>
-                <th>level</th>
-                <th>membre</th>
-                <th>nombre de points</th>
-                <th>pourcent</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for personne in user %}
-                <tr>
-                    <td>
-                        {% if personne.profile_photo %}
-                    <img src="{{ url_for('static', filename=personne.profile_photo) }}" alt="Photo de profil" class="rounded-circle profile-image" width="150" height="150">
-                {% else %}
-                    <img src="{{ url_for('static', filename='images/default_profile.jpg') }}" alt="Photo par défaut" class="rounded-circle profile-image" width="150" height="150">
-                {% endif %}
-                    </td>
-                    <td>{{ personne.username }}</td>
-                    <td>{{ personne.gender }}</td>
-                    <td>{{ personne.email }}</td>
-                    <td>{{ personne.level }}</td>
-                    <td>{{ personne.menber_type }}</td>
-                    <td>{{ personne.points }}</td>
-                    <td>{{personne.get_level_percent()}}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<div class="container mt-5">
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+            <h2 class="mb-0"><i class="fas fa-users me-2"></i>Profil de votre Famille</h2>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Photo</th>
+                            <th>Pseudo</th>
+                            <th>Genre</th>
+                            <th>Email</th>
+                            <th>Niveau</th>
+                            <th>Type de Membre</th>
+                            <th>Points</th>
+                            <th>Progression</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for personne in user %}
+                        <tr>
+                            <td>
+                                {% if personne.profile_photo %}
+                                <img src="{{ url_for('static', filename=personne.profile_photo) }}" alt="Photo de {{ personne.username }}" class="rounded-circle" width="50" height="50">
+                                {% else %}
+                                <img src="{{ url_for('static', filename='images/default_profile.jpg') }}" alt="Photo par défaut" class="rounded-circle" width="50" height="50">
+                                {% endif %}
+                            </td>
+                            <td><strong>{{ personne.username }}</strong></td>
+                            <td>{{ personne.gender }}</td>
+                            <td><a href="mailto:{{ personne.email }}">{{ personne.email }}</a></td>
+                            <td>
+                                <span class="badge {% if personne.level == 'débutant' %}bg-secondary
+                                      {% elif personne.level == 'intermédiaire' %}bg-info
+                                      {% elif personne.level == 'avancé' %}bg-primary
+                                      {% elif personne.level == 'expert' %}bg-warning text-dark{% endif %}">
+                                    {{ personne.level }}
+                                </span>
+                            </td>
+                            <td>{{ personne.menber_type }}</td>
+                            <td>{{ personne.points }}</td>
+                            <td>
+                                <div class="progress" style="height: 10px;">
+                                    <div class="progress-bar bg-success" role="progressbar" 
+                                         style="width: {{ personne.get_level_percent() }}%"
+                                         aria-valuenow="{{ personne.get_level_percent() }}" 
+                                         aria-valuemin="0" 
+                                         aria-valuemax="100"
+                                         title="{{ personne.get_level_percent() }}%">
+                                    </div>
+                                </div>
+                                <small class="text-muted">{{ personne.get_level_percent() }}%</small>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer bg-light">
+            <a href="{{ url_for('connected.accueil') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-1"></i> Retour à l'accueil
+            </a>
+        </div>
+    </div>
 </div>
 {% endblock %}

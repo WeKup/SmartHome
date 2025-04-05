@@ -1,10 +1,11 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
+from flask import *
 from flask_login import login_required, current_user
-from models.auth import db, House, User, Room, ConnectedObject, ObjectType
+from models.auth import *
 from werkzeug.security import generate_password_hash
 import random
 import string
-from datetime import datetime
+from datetime import *
+from sqlalchemy import func
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
 @admin_bp.route('/')
@@ -22,6 +23,7 @@ def manage_users():
 @admin_bp.route('/users/add', methods=['GET', 'POST'])
 @login_required
 def add_user():
+    User.nb(current_user,'nbAU')
     if request.method == 'POST':
         username = request.form['username']
         email = request.form['email']
@@ -62,6 +64,7 @@ def add_user():
 @admin_bp.route('/users/edit/<int:user_id>', methods=['GET', 'POST'])
 @login_required
 def edit_user(user_id):
+    User.nb(current_user,'nbM')
     user = User.query.get_or_404(user_id)
 
     if request.method == 'POST':
@@ -72,7 +75,10 @@ def edit_user(user_id):
         user.gender = request.form['gender']
         user.birthdate = datetime.strptime(request.form['birthdate'], '%Y-%m-%d').date()
         user.member_type = request.form['member_type']
-        user.is_admin = 'is_admin' in request.form
+        if current_user.is_admin:
+            user.is_admin = 'is_admin' in request.form
+        else:
+            user.is_admin= user.is_admin
         
         if 'level' in request.form and request.form['level'] != user.level:
             user.level = request.form['level']
@@ -86,6 +92,7 @@ def edit_user(user_id):
 @admin_bp.route('/users/delete/<int:user_id>', methods=['POST'])
 @login_required
 def delete_user(user_id):
+    User.nb(current_user,'nbDU')
     user = User.query.get_or_404(user_id)
     
     if user.id == current_user.id:
@@ -113,9 +120,11 @@ def manage_objects():
 @admin_bp.route('/objects/add', methods=['GET', 'POST'])
 @login_required
 def add_object():
+    User.nb(current_user,'nbA')
     house_id = current_user.house_id
     room_list = Room.query.filter_by(house_id=house_id).all()
     object_types = ObjectType.query.filter_by(house_id=house_id).all()
+    
     
     if not room_list:
         flash('Vous devez d\'abord créer au moins une pièce avant d\'ajouter un objet.', 'warning')
@@ -132,7 +141,11 @@ def add_object():
         room_id = request.form['room_id']
         brand = request.form['brand']
         model = request.form['model']
-        
+        conso_min = int(request.form['conso_min'])
+        conso_max = int(request.form['conso_max'])
+
+        conso_actuelle = random.randint(conso_min, conso_max)
+
         new_object = ConnectedObject(
             name=name,
             description=description,
@@ -143,7 +156,10 @@ def add_object():
             model=model,
             status='active',
             connection_status='connected',
-            data={}
+            data={},
+            conso_min=conso_min,
+            conso_max=conso_max,
+            conso_actuelle=conso_actuelle
         )
         
         db.session.add(new_object)
@@ -157,6 +173,7 @@ def add_object():
 @admin_bp.route('/objects/edit/<int:object_id>', methods=['GET', 'POST'])
 @login_required
 def edit_object(object_id):
+    User.nb(current_user,'nbMO')
     obj = ConnectedObject.query.get_or_404(object_id)
     house_id = current_user.house_id
     room_list = Room.query.filter_by(house_id=house_id).all()
@@ -185,6 +202,7 @@ def edit_object(object_id):
 @admin_bp.route('/objects/delete/<int:object_id>', methods=['POST'])
 @login_required
 def delete_object(object_id):
+    User.nb(current_user,'nbD')
     obj = ConnectedObject.query.get_or_404(object_id)
     
     object_name = obj.name
@@ -206,6 +224,7 @@ def manage_object_types():
 @admin_bp.route('/object-types/add', methods=['GET', 'POST'])
 @login_required
 def add_object_type():
+    User.nb(current_user,'nbAtype')
     if request.method == 'POST':
         name = request.form['name'].lower()
         description = request.form['description']
@@ -235,6 +254,7 @@ def add_object_type():
 @admin_bp.route('/object-types/delete/<int:type_id>', methods=['POST'])
 @login_required
 def delete_object_type(type_id):
+    User.nb(current_user,'nbD')
     obj_type = ObjectType.query.get_or_404(type_id)
     type_name = obj_type.name
     
@@ -262,6 +282,7 @@ def manage_rooms():
 @admin_bp.route('/rooms/add', methods=['GET', 'POST'])
 @login_required
 def add_room():
+    User.nb(current_user,'nbAROOM')
     if request.method == 'POST':
         name = request.form['name']
         description = request.form['description']
@@ -286,6 +307,7 @@ def add_room():
 @admin_bp.route('/rooms/delete/<int:room_id>', methods=['POST'])
 @login_required
 def delete_room(room_id):
+    User.nb(current_user,'nbD')
     room = Room.query.get_or_404(room_id)
     
     objects = ConnectedObject.query.filter_by(room_id=room_id).all()
@@ -300,3 +322,150 @@ def delete_room(room_id):
     flash(f'Pièce {room_name} supprimée avec succès!', 'success')
     return redirect(url_for('admin.manage_rooms'))
 
+
+@admin_bp.route('/export/objects')
+def export_objects():
+    from flask import Response
+    import csv
+    import io
+    
+    house_id = current_user.house_id
+    objects = ConnectedObject.query.filter_by(house_id=house_id).all()
+    
+    output = io.StringIO()
+    writer = csv.writer(output)
+    
+    writer.writerow(['ID', 'Nom', 'Type', 'Pièce', 'Marque', 'Modèle', 'Statut', 'État de connexion', 'Nombre d\'actions'])
+    
+    for obj in objects:
+        action_count = ObjectAction.query.filter_by(object_id=obj.id).count()
+        
+        writer.writerow([
+            obj.id,
+            obj.name,
+            obj.type.name,
+            obj.room.name,
+            obj.brand,
+            obj.model,
+            obj.status,
+            obj.connection_status,
+            action_count
+        ])
+    
+    output.seek(0)
+    
+    return Response(
+        output,
+        mimetype="text/csv",
+        headers={"Content-Disposition": "attachment;filename=objets_connectes.csv"}
+    )
+
+@admin_bp.route('/stats')
+@login_required
+def view_stats():
+    house_id=current_user.house_id
+    total_users = User.query.filter_by(house_id=house_id).count()
+    total_connexions = db.session.query(
+            db.func.sum(User.connection_count)
+        ).filter_by(house_id=house_id).scalar() or 0
+    avg_connexions = db.session.query(
+            db.func.avg(User.connection_count)
+        ).filter_by(house_id=house_id).scalar() or 0
+    total_objects = ConnectedObject.query.filter_by(house_id=house_id).count()
+        
+    total_rooms = Room.query.filter_by(house_id=house_id).count()
+
+    return render_template('admin/statistics.html',total_users=total_users,total_connexion=total_connexions,avg=avg_connexions,obj=total_objects,room=total_rooms)
+@admin_bp.route('/stats/data')
+@login_required
+def stats_data():
+    
+    house_id = current_user.house_id
+    
+    try:
+        total_users = User.query.filter_by(house_id=house_id).count()
+        user_levels = db.session.query(
+            User.level, db.func.count(User.id)
+        ).filter_by(house_id=house_id).group_by(User.level).all()
+        
+        user_types = db.session.query(
+            User.member_type, db.func.count(User.id)
+        ).filter_by(house_id=house_id).group_by(User.member_type).all()
+        
+        total_connexions = db.session.query(
+            db.func.sum(User.connection_count)
+        ).filter_by(house_id=house_id).scalar() or 0
+        
+        avg_connexions = db.session.query(
+            db.func.avg(User.connection_count)
+        ).filter_by(house_id=house_id).scalar() or 0
+        
+        most_connected_users = db.session.query(
+            User.username, User.connection_count
+        ).filter_by(house_id=house_id).order_by(User.connection_count.desc()).limit(5).all()
+        
+        total_objects = ConnectedObject.query.filter_by(house_id=house_id).count()
+        objects_by_type = db.session.query(
+            ObjectType.name, db.func.count(ConnectedObject.id)
+        ).join(ObjectType).filter(ConnectedObject.house_id == house_id).group_by(ObjectType.name).all()
+        
+        total_rooms = Room.query.filter_by(house_id=house_id).count()
+        objects_by_room = db.session.query(
+            Room.name, db.func.count(ConnectedObject.id)
+        ).join(Room).filter(ConnectedObject.house_id == house_id).group_by(Room.name).all()
+        
+        thirty_days_ago = datetime.utcnow() - timedelta(days=30)
+        connexions_by_day = db.session.query(
+            db.func.date(User.created_at).label('date'), 
+            db.func.count(User.id).label('count')
+        ).filter(
+            User.house_id == house_id,
+            User.created_at >= thirty_days_ago
+        ).group_by(db.func.date(User.created_at)).all()
+
+        conso = db.session.query(
+            ConnectedObject.name, 
+            ConnectedObject.conso_actuelle
+        ).filter(ConnectedObject.house_id == house_id).all()
+
+        service_stats = db.session.query(
+            func.sum(User.nbR).label('recherches'),
+            func.sum(User.nbAU).label('ajout_utilisateurs'),
+            func.sum(User.nbDU).label('delete_utilisateur'),
+            func.sum(User.nbA).label('ajout_objet'),
+            func.sum(User.nbAROOM).label('ajout_room'),
+            func.sum(User.nbAType).label('ajout_type'),
+            func.sum(User.nbD).label('delete'),
+            func.sum(User.nbM).label('modifications'),
+            func.sum(User.nbMO).label('modifObjet')
+            ).filter_by(house_id=house_id).first()
+
+        return jsonify({
+            'total_users': total_users,
+            'user_levels': [list(item) for item in user_levels],
+            'user_types': [list(item) for item in user_types],
+            'total_connexions': total_connexions,
+            'avg_connexions': round(avg_connexions, 2),
+            'most_connected_users': [list(item) for item in most_connected_users],
+            'total_objects': total_objects,
+            'objects_by_type': [list(item) for item in objects_by_type],
+            'total_rooms': total_rooms,
+            'objects_by_room': [list(item) for item in objects_by_room],
+            'connexions_by_day': [list(item) for item in connexions_by_day],
+            'conso': [list(item) for item in conso],
+            'service_stats': {
+                    'recherches': service_stats.recherches or 0,
+                    'ajout_utilisateurs': service_stats.ajout_utilisateurs or 0,
+                    'delete_utilisateur': service_stats.delete_utilisateur or 0,
+                    'ajout_objet': service_stats.ajout_objet or 0,
+                    'ajout_room': service_stats.ajout_room or 0,
+                    'ajout_type': service_stats.ajout_type or 0,
+                    'delete': service_stats.delete or 0,
+                    'modifications': service_stats.modifications or 0,
+                    'modifObjet': service_stats.modifObjet or 0
+                    }
+        })
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': str(e)}), 500

@@ -6,9 +6,9 @@
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="text-center">Inscription</h3>
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="text-center mb-0">Inscription</h3>
                 </div>
                 <div class="card-body">
                     <form method="POST" action="{{ url_for('auth.register') }}" enctype="multipart/form-data">
@@ -34,8 +34,38 @@
                                 <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
                             </div>
                         </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="gender" class="form-label">Genre</label>
+                                <select class="form-select" id="gender" name="gender">
+                                    <option value="" selected disabled>Choisir un genre</option>
+                                    <option value="homme">Homme</option>
+                                    <option value="femme">Femme</option>
+                                    <option value="autre">Autre</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="birthdate" class="form-label">Date de naissance</label>
+                                <input type="date" class="form-control" id="birthdate" name="birthdate">
+                            </div>
+                        </div>
+                        
                         <div class="mb-3">
-                            <label for="profile_picture" class="form-label">Photo de profil (optionnel)</label>
+                            <label for="member_type" class="form-label">Type de membre</label>
+                            <select class="form-select" id="member_type" name="member_type">
+                                <option value="" selected disabled>Choisir votre rôle dans la maison</option>
+                                <option value="père">Père</option>
+                                <option value="mère">Mère</option>
+                                <option value="enfant">Enfant</option>
+                                <option value="grand-parent">Grand-parent</option>
+                                <option value="autre">Autre membre</option>
+                            </select>
+                            <div class="form-text">Ce rôle définit votre relation avec les autres membres de la maison</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="profile_picture" class="form-label">Photo de profil</label>
                             <input type="file" class="form-control" id="profile_picture" name="profile_picture">
                             <div class="form-text">Choisissez une photo pour personnaliser votre profil</div>
                         </div>
@@ -49,14 +79,15 @@
                             </div>
                         </div>
                         
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary">S'inscrire</button>
+                        
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">S'inscrire</button>
                         </div>
                     </form>
                 </div>
                 <div class="card-footer text-center">
-                    <p>Vous avez déjà un compte ? <a href="{{ url_for('auth.login') }}">Connectez-vous</a></p>
-                    <p>Vous n'avez pas de code de maison ? <a href="{{ url_for('auth.create_house') }}">Créez votre propre maison</a></p>
+                    <p class="mb-1">Vous avez déjà un compte ? <a href="{{ url_for('auth.login') }}">Connectez-vous</a></p>
+                    <p class="mb-0">Vous n'avez pas de code de maison ? <a href="{{ url_for('auth.create_house') }}">Créez votre propre maison</a></p>
                 </div>
             </div>
         </div>

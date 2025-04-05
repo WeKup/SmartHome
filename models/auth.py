@@ -54,6 +54,16 @@ class User(db.Model, UserMixin):
     points = db.Column(db.Float, default=0)
     connection_count = db.Column(db.Integer, default=0)
     action_count = db.Column(db.Integer, default=0)
+    nbR=db.Column(db.Integer, default=0)
+    nbAU=db.Column(db.Integer, default=0)
+    nbDU=db.Column(db.Integer, default=0)
+    nbA=db.Column(db.Integer, default=0)
+    nbAROOM=db.Column(db.Integer, default=0)
+    nbAType=db.Column(db.Integer, default=0)
+    nbD=db.Column(db.Integer, default=0)
+    nbM=db.Column(db.Integer, default=0)
+    nbMO=db.Column(db.Integer, default=0)
+
     
     # Relation avec la maison
     house_id = db.Column(db.Integer, db.ForeignKey('houses.id'), nullable=True)
@@ -127,6 +137,26 @@ class User(db.Model, UserMixin):
             user.level = 'expert'
         
         db.session.commit()
+    
+    def nb(user,typeA):
+        if typeA == 'nbR':
+            user.nbR = (user.nbR or 0) + 1
+        elif typeA == 'nbA':
+            user.nbA = (user.nbA or 0) + 1
+        elif typeA == 'nbAU':
+            user.nbAU = (user.nbAU or 0) + 1
+        elif typeA == 'nbD':
+            user.nbD = (user.nbD or 0) + 1
+        elif typeA == 'nbDU':
+            user.nbDU = (user.nbDU or 0) + 1
+        elif typeA == 'nbAROOM':
+            user.nbAROOM = (user.nbAROOM or 0) + 1
+        elif typeA == 'nbAType':
+            user.nbAType = (user.nbAType or 0) + 1
+        elif typeA == 'nbM':
+            user.nbM = (user.nbM or 0) + 1
+
+        db.session.commit()
 class Room(db.Model):
     """Modèle pour les pièces"""
     __tablename__ = 'rooms'
@@ -153,6 +183,9 @@ class ConnectedObject(db.Model):
     room_id = db.Column(db.Integer, db.ForeignKey('rooms.id'), nullable=False)
     house_id = db.Column(db.Integer, db.ForeignKey('houses.id'), nullable=False)
     brand = db.Column(db.String(50), nullable=True)
+    conso_min = db.Column(db.Integer, nullable=False, default=0)
+    conso_max = db.Column(db.Integer, nullable=False, default=100)
+    conso_actuelle = db.Column(db.Integer, nullable=True)
     model = db.Column(db.String(50), nullable=True)
     status = db.Column(db.String(20), default='active')
     connection_status = db.Column(db.String(20), default='connected')
