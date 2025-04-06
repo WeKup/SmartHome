@@ -224,3 +224,15 @@ class ObjectAction(db.Model):
     
     # Relations
     user = db.relationship('User', backref='actions', lazy=True)
+
+class ObjetHistorique(db.Model):
+    __tablename__ = 'objet_historique'
+
+    id = db.Column(db.Integer, primary_key=True)
+    object_id = db.Column(db.Integer, db.ForeignKey('connected_objects.id'), nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    action = db.Column(db.String(400), nullable=False)  # "Modification", "Activation", "Désactivation"
+    status = db.Column(db.String(250), nullable=True)  # "active" ou "inactive"
+    details = db.Column(db.Text, nullable=True)  # Description des changements
+
+
