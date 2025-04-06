@@ -40,11 +40,3 @@ function truncateText(text, maxLength) {
 function confirmAction(message) {
     return confirm(message);
 }
-
-// Gestion des tooltips Bootstrap (à activer si nécessaire)
-/*
-var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-    return new bootstrap.Tooltip(tooltipTriggerEl)
-})
-*/

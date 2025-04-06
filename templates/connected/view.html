@@ -38,6 +38,10 @@
                             <td>{{ object.model }}</td>
                         </tr>
                         <tr>
+                            <th>Consommation :</th>
+                            <td>{{ object.conso_actuelle }} W</td>
+                        </tr>
+                        <tr>
                             <th>État :</th>
                             <td>
                                 <span class="badge {% if object.status == 'active' %}bg-success{% else %}bg-danger{% endif %}">

@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request
 from services.news_service import NewsService
+from services.serviceR import *
 from models.demo_data import get_demo_stats
 
 info_bp = Blueprint('info', __name__)
@@ -40,3 +41,16 @@ def search():
                           object_types=object_types, 
                           rooms=rooms, 
                           results=results)
+
+@info_bp.route('/searchS')
+def searchS():
+    category = request.args.get('category', '')
+    upcoming_only = request.args.get('upcoming', '') == '1'
+    services = get_services(category, upcoming_only)
+    categories = list(SERVICES_BY_CATEGORY.keys())
+    
+    return render_template('info/searchService.html', 
+                          services=services,
+                          selected_category=category,
+                          upcoming_only=upcoming_only,
+                          categories=categories)

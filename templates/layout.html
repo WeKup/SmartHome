@@ -43,6 +43,11 @@
                             <i class="fas fa-search me-1"></i> Recherche
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'info.searchS' %}active{% endif %}" href="{{ url_for('info.searchS') }}">
+                            <i class="fas fa-search me-1"></i> Recherche des services
+                        </a>
+                    </li>
                         <li class="nav-item">
                             <a class="nav-link {% if request.endpoint == 'auth.login' %}active{% endif %}" href="{{ url_for('auth.login') }}">
                                 <i class="fas fa-sign-in-alt me-1"></i> Connexion

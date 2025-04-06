@@ -1,0 +1,82 @@
+{% extends 'layout.html' %}
+
+{% block title %}Recherche de services{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4">Recherche de services</h1>
+    
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Filtres de recherche</h5>
+        </div>
+        <div class="card-body">
+            <form method="GET" action="{{ url_for('info.searchS') }}">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="category" class="form-label">Catégorie</label>
+                        <select class="form-select" id="category" name="category">
+                            <option value="">Toutes les catégories</option>
+                            {% for category in categories %}
+                            <option value="{{ category }}" {% if selected_category == category %}selected{% endif %}>
+                                {{ category|capitalize }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-3 mb-3">
+                        <div class="form-check mt-4">
+                            <input class="form-check-input" type="checkbox" id="upcoming" name="upcoming" value="1" 
+                                  {% if upcoming_only %}checked{% endif %}>
+                            <label class="form-check-label" for="upcoming">
+                                Services à venir uniquement
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3 d-flex align-items-end mb-3">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-search me-2"></i>Rechercher
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-header bg-light">
+            <h5 class="mb-0">
+                Résultats 
+                {% if selected_category %}
+                pour "{{ selected_category|capitalize }}"
+                {% endif %}
+                {% if upcoming_only %}
+                (à venir uniquement)
+                {% endif %}
+            </h5>
+        </div>
+        <div class="card-body">
+            {% if services %}
+                <div class="list-group">
+                    {% for service in services %}
+                    <div class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">{{ service.name }}</h5>
+                            <span class="badge {% if service.is_upcoming %}bg-success{% else %}bg-secondary{% endif %}">
+                                {% if service.is_upcoming %}À venir{% else %}Disponible{% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    Aucun service ne correspond à vos critères de recherche.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

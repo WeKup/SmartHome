@@ -150,25 +150,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (serviceStatsCtx) {
                     const labels = [
                         'Recherches', 
-                        'Actions Utilisateur', 
-                        'Données Utilisateur', 
-                        'Actions', 
-                        'Actions Room', 
-                        'Actions Type', 
-                        'Données', 
+                        'Ajout Utilisateur', 
+                        'Delete Utilisateur', 
+                        'Ajout', 
+                        'Ajout Room', 
+                        'Ajout Type', 
+                        'delete ', 
                         'Modifications', 
-                        'Mouvements'
+                        'modification d objet'
                     ];
                     const counts = [
                         data.service_stats.recherches || 0,
-                        data.service_stats.actions_utilisateur || 0,
-                        data.service_stats.donnees_utilisateur || 0,
-                        data.service_stats.actions || 0,
-                        data.service_stats.actions_room || 0,
-                        data.service_stats.actions_type || 0,
-                        data.service_stats.donnees || 0,
+                        data.service_stats.ajout_utilisateurs || 0,
+                        data.service_stats.delete_utilisateur || 0,
+                        data.service_stats.ajout_objet || 0,
+                        data.service_stats.ajout_room || 0,
+                        data.service_stats.ajout_type || 0,
+                        data.service_stats.delete || 0,
                         data.service_stats.modifications || 0,
-                        data.service_stats.mouvements || 0
+                        data.service_stats.modifObjet || 0
                     ];
                     
                     createChart(
