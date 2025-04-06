@@ -1,0 +1,14 @@
+{% extends 'LayoutCo.html' %}
+{% block title %}Suppression d'objet{% endblock %}
+
+{% block content %}
+<form method="POST">
+    <select class="form-select" name="objet_id">
+        <option selected>Choisissez l'objet que vous voulez supprimer</option>
+        {% for obj in listeObj %}
+            <option value="{{ obj.id }}">{{ obj.name }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Demander la suppression</button>
+</form>
+{% endblock %}

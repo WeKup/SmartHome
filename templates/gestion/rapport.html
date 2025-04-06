@@ -1,0 +1,14 @@
+{% extends "LayoutCo.html" %}
+{% block content %}
+<h2>Rapport d'activité de {{ objet.name }}</h2>
+
+<ul>
+    {% for entry in activations %}
+        <li>{{ entry.timestamp }} - Statut: {{ entry.status or "Inconnu" }}</li>
+    {% else %}
+        <li>Aucune donnée disponible.</li>
+    {% endfor %}
+</ul>
+
+<a href="{{ url_for('gestion.analyse') }}">Retour</a>
+{% endblock %}

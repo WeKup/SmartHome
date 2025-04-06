@@ -1,0 +1,28 @@
+{% extends 'LayoutCo.html' %}
+{% block title %}modification de l'objet{% endblock %}
+{% block content %}
+<form action="{{ url_for('gestion.modifiedObj') }}" method="POST">
+    
+    <input type="text" name="Id" value="{{ obj.id }}" hidden>
+
+    <label for="name">Nom :</label>
+    <input type="text" name="name" value="{{ obj.name }}" required>
+
+    <label for="description">Description :</label>
+    <textarea name="description">{{ obj.description }}</textarea>
+
+    <label for="brand">brand :</label>
+    <input type="text" name="brand" value="{{ obj.brand }}">
+
+    <label for="model">model :</label>
+    <input type="text" name="model" value="{{ obj.model }}">
+    
+    <label for="status">Statut :</label>
+    <select name="status">
+        <option value="active" {% if obj.status == "active" %}selected{% endif %}>Actif</option>
+        <option value="inactive" {% if obj.status == "inactive" %}selected{% endif %}>Inactif</option>
+    </select>
+
+    <button type="submit">Enregistrer les modifications</button>
+</form>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'LayoutCo.html' %}
+{% block title %}Gestion{% endblock %}
+
+{% block content %}
+<h1>Gestion</h1>
+<div class="btn-group gestion">
+    <a href="{{ url_for('gestion.add') }}" class="btn btn-primary active" aria-current="page">Ajouter un objet</a><br>
+    <a href="{{url_for('gestion.delete')}}" class="btn btn-primary">Solliciter la suppression d'un objet connecté</a><br>
+    <a href="{{url_for('gestion.modif')}}" class="btn btn-primary">Modifier les informations et attributs d'un objet connecté</a><br>
+    <a href="{{url_for('gestion.analyse')}}" class="btn btn-primary">Statistiques de objets</a>
+</div>
+{% endblock %}
