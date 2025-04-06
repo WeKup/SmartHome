@@ -1,0 +1,21 @@
+{% extends 'LayoutCo.html' %}
+{% block title %}Confirmation suppression{% endblock %}
+
+{% block content %}
+<h3>Demande de suppression en cours</h3>
+<p>Vous voulez la suppression de l'objet : <strong>{{ objet.name }}</strong></p>
+
+<p>
+    <a 
+        href="mailto:{{ admin_emails }}?subject={{ 'Demande de suppression d\'objet' | urlencode }}&body={{ ('Bonjour,%0D%0A%0D%0AUn utilisateur demande la suppression de l\'objet suivant : ' + objet.name + ' (' + objet.brand + ' - ' + objet.model + ').%0D%0AMerci de valider cette demande.') | urlencode }}"
+        onclick="document.getElementById('confirmation-message').style.display = 'block';"
+        class="btn btn-primary"
+    >
+        Envoyer la demande aux administrateurs
+    </a>
+</p>
+
+<p id="confirmation-message" style="display:none; color: green; font-weight: bold;">
+    ✅ Le message a été transmis via votre messagerie par défaut.
+</p>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "LayoutCo.html" %}
+{% block content %}
+<h2>Historique de {{ objet.name }}</h2>
+
+<ul>
+    {% for entry in modifications %}
+        <li>{{ entry.timestamp }} - {{ entry.action }} (Statut: {{ entry.status or "Inconnu" }})</li>
+    {% else %}
+        <li>Aucune modification enregistrée.</li>
+    {% endfor %}
+</ul>
+
+<a href="{{ url_for('gestion.analyse') }}">Retour</a>
+{% endblock %}

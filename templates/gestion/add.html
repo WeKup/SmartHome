@@ -1,0 +1,28 @@
+{% extends 'LayoutCo.html' %}
+{% block title %}ajout objet{% endblock %}
+
+{% block content %}
+    <form action="{{url_for('gestion.added')}}" method="POST">
+        <div class="mb-3">
+          <label for="nomObj" class="form-label">Nom de l'objet</label>
+          <input type="text" class="form-control" name="nomObj" id="nomObj">
+        </div>
+        <div class="mb-3">
+          <label for="salleObj" class="form-label">Salle</label>
+          <input type="text" class="form-control" name="salleObj" id="salleObj">
+        </div>
+        <div class="mb-3">
+            <label for="brandObj" class="form-label">Marque</label>
+            <input type="text" class="form-control" name="brandObj" id="brandObj">
+        </div>
+        <div class="mb-3">
+            <label for="modeleObj" class="form-label">Modele</label>
+            <input type="text" class="form-control" name="modeleObj" id="modeleObj">
+        </div>
+        <div class="mb-3">
+            <label for="descriptionObj"> description</label>
+           <textarea class="form-control" name="descriptionObj" id="descriptionObj"> </textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Ajouter objet</button>
+      </form>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "LayoutCo.html" %}
+{% block content %}
+<h2>Statistiques pour {{ objet.name }}</h2>
+
+<h3>Activité sur les 7 derniers jours</h3>
+
+{% if total_time_active > 0 %}
+    <p>Temps total actif : {{ total_time_active | round(2) }} secondes</p>
+{% else %}
+    <p>Aucune activité récente.</p>
+{% endif %}
+
+<a href="{{ url_for('gestion.analyse') }}">Retour</a>
+{% endblock %}

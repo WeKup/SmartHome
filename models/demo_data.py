@@ -19,6 +19,18 @@ def get_object_types():
         {'id': 8, 'name': 'Énergie', 'icon': 'fa-bolt'}
     ]
 
+
+def get_room_id_by_name(name):
+    rooms = get_demo_rooms()
+    for room in rooms:
+        if room['name'].strip().lower() == name.strip().lower():
+            return room['id']
+    
+    # Si la salle n'existe pas, retourne le max ID + 1
+    max_id = max(room['id'] for room in rooms)
+    return max_id + 1
+
+
 def get_demo_rooms():
     """Retourne les pièces de la maison de démo"""
     return [

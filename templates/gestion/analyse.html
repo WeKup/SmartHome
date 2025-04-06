@@ -1,0 +1,22 @@
+{% extends "LayoutCo.html" %}
+{% block content %}
+<h2>Analyse des objets connectés</h2>
+
+<form method="POST">
+    <label for="objet_id">Choisir un objet :</label>
+    <select name="objet_id" required>
+        {% for objet in listeObj %}
+            <option value="{{ objet.id }}">{{ objet.name }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="action">Choisir une action :</label>
+    <select name="action" required>
+        <option value="stats">Générer des statistiques</option>
+        <option value="rapport">Générer un rapport</option>
+        <option value="historique">Accéder à l'historique</option>
+    </select>
+
+    <button type="submit">Valider</button>
+</form>
+{% endblock %}

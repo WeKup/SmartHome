@@ -1,0 +1,18 @@
+{% extends 'LayoutCo.html' %}
+{% block title %}modification de l'objet{% endblock %}
+
+{% block content %}
+<form action="{{url_for('gestion.modified')}}" method="POST">
+    <p></p>
+        <select class="form-select" aria-label="Default select example" name="objet_id">
+            <option selected>Choississez l'objet que vous voulez modifier</option>
+            {% for objet in listeObj%}
+            <option value="{{objet.id}}">{{objet.name}}</option>
+            {% endfor%}
+        </select>
+        <button type="submit">Choisir cet objet</button>
+</form>
+
+
+
+{% endblock %}
