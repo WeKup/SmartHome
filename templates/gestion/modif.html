@@ -1,18 +1,35 @@
 {% extends 'LayoutCo.html' %}
-{% block title %}modification de l'objet{% endblock %}
+{% block title %}Modification de l'objet{% endblock %}
 
 {% block content %}
-<form action="{{url_for('gestion.modified')}}" method="POST">
-    <p></p>
-        <select class="form-select" aria-label="Default select example" name="objet_id">
-            <option selected>Choississez l'objet que vous voulez modifier</option>
-            {% for objet in listeObj%}
-            <option value="{{objet.id}}">{{objet.name}}</option>
-            {% endfor%}
-        </select>
-        <button type="submit">Choisir cet objet</button>
-</form>
-
-
-
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0"><i class="fas fa-edit me-2"></i>Modifier un objet connecté</h2>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('gestion.modified') }}" method="POST">
+                        <div class="mb-3">
+                            <label for="objet_id" class="form-label">Choisissez l'objet à modifier</label>
+                            <select class="form-select" id="objet_id" name="objet_id" required>
+                                <option selected disabled>Choisissez un objet</option>
+                                {% for objet in listeObj %}
+                                    <option value="{{ objet.id }}">{{ objet.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-arrow-right me-1"></i>Choisir cet objet
+                        </button>
+                        <a href="{{ url_for('gestion.gestion') }}" class="btn btn-secondary ms-2">
+                            <i class="fas fa-arrow-left me-1"></i>Retour
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
