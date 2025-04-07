@@ -1,14 +1,39 @@
 {% extends "LayoutCo.html" %}
+{% block title %}Historique - {{ objet.name }}{% endblock %}
+
 {% block content %}
-<h2>Historique de {{ objet.name }}</h2>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">
+                        <i class="fas fa-history me-2"></i>Historique de {{ objet.name }}
+                    </h2>
+                </div>
+                <div class="card-body">
+                    {% if modifications %}
+                        <ul class="list-group">
+                            {% for entry in modifications %}
+                                <li class="list-group-item">
+                                    <i class="fas fa-edit text-primary me-2"></i>
+                                    {{ entry.timestamp }} — {{ entry.action }} 
+                                    <span class="badge bg-info ms-2">Statut : {{ entry.status or "Inconnu" }}</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <div class="alert alert-info" role="alert">
+                            Aucune modification enregistrée.
+                        </div>
+                    {% endif %}
 
-<ul>
-    {% for entry in modifications %}
-        <li>{{ entry.timestamp }} - {{ entry.action }} (Statut: {{ entry.status or "Inconnu" }})</li>
-    {% else %}
-        <li>Aucune modification enregistrée.</li>
-    {% endfor %}
-</ul>
-
-<a href="{{ url_for('gestion.analyse') }}">Retour</a>
+                    <a href="{{ url_for('gestion.analyse') }}" class="btn btn-secondary mt-3">
+                        <i class="fas fa-arrow-left me-1"></i> Retour
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
