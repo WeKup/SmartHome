@@ -12,6 +12,13 @@ from datetime import datetime, timedelta
 from sqlalchemy import and_, func
 from models.demo_data import get_room_id_by_name
 
+from pytz import timezone, UTC  # Ajout pour gérer les fuseaux horaires
+from datetime import datetime, timedelta
+
+
+"""
+utc_dt = some_object.timestamp  # exemple d'une date en UTC
+local_dt = utc_dt.astimezone(paris) """
 
 @gestion_bp.route('/gestion')
 @login_required
