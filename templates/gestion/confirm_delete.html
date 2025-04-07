@@ -1,21 +1,44 @@
 {% extends 'LayoutCo.html' %}
-{% block title %}Confirmation suppression{% endblock %}
+{% block title %}Confirmation de suppression{% endblock %}
 
 {% block content %}
-<h3>Demande de suppression en cours</h3>
-<p>Vous voulez la suppression de l'objet : <strong>{{ objet.name }}</strong></p>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0"><i class="fas fa-check-circle me-2"></i>Confirmation de la demande</h2>
+                </div>
+                <div class="card-body">
+                    <p class="fs-5">Vous avez demandé la suppression de l’objet suivant :</p>
+                    <p class="fw-bold">
+                        <i class="fas fa-cube me-2"></i>{{ objet.name }} ({{ objet.brand }} - {{ objet.model }})
+                    </p>
 
-<p>
-    <a 
-        href="mailto:{{ admin_emails }}?subject={{ 'Demande de suppression d\'objet' | urlencode }}&body={{ ('Bonjour,%0D%0A%0D%0AUn utilisateur demande la suppression de l\'objet suivant : ' + objet.name + ' (' + objet.brand + ' - ' + objet.model + ').%0D%0AMerci de valider cette demande.') | urlencode }}"
-        onclick="document.getElementById('confirmation-message').style.display = 'block';"
-        class="btn btn-primary"
-    >
-        Envoyer la demande aux administrateurs
-    </a>
-</p>
+                    <p class="mb-4">Cliquez sur le bouton ci-dessous pour envoyer une demande de validation aux administrateurs :</p>
 
-<p id="confirmation-message" style="display:none; color: green; font-weight: bold;">
-    ✅ Le message a été transmis via votre messagerie par défaut.
-</p>
+                    <a 
+                        href="mailto:{{ admin_emails }}?subject={{ 'Demande de suppression d\'objet' | urlencode }}&body={{ ('Bonjour,%0D%0A%0D%0AUn utilisateur demande la suppression de l\'objet suivant : ' + objet.name + ' (' + objet.brand + ' - ' + objet.model + ').%0D%0AMerci de valider cette demande.') | urlencode }}"
+                        onclick="document.getElementById('confirmation-message').style.display = 'block';"
+                        class="btn btn-primary"
+                    >
+                        <i class="fas fa-envelope me-1"></i>Envoyer la demande aux administrateurs
+                    </a>
+
+                    <p id="confirmation-message" class="mt-3 text-success fw-bold" style="display:none;">
+                        ✅ Le message a été transmis via votre messagerie par défaut.
+                    </p>
+
+                    <div class="text-end mt-4">
+                        <a href="{{ url_for('gestion.gestion') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Retour à la gestion
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
+    
+
