@@ -1,28 +1,50 @@
 {% extends 'LayoutCo.html' %}
-{% block title %}ajout objet{% endblock %}
+{% block title %}Ajout d'un objet connecté{% endblock %}
 
 {% block content %}
-    <form action="{{url_for('gestion.added')}}" method="POST">
-        <div class="mb-3">
-          <label for="nomObj" class="form-label">Nom de l'objet</label>
-          <input type="text" class="form-control" name="nomObj" id="nomObj">
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0"><i class="fas fa-plus-circle me-2"></i>Ajouter un nouvel objet</h2>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('gestion.added') }}" method="POST">
+                        <div class="mb-3">
+                            <label for="nomObj" class="form-label">Nom de l'objet</label>
+                            <input type="text" class="form-control" name="nomObj" id="nomObj" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="salleObj" class="form-label">Salle</label>
+                            <input type="text" class="form-control" name="salleObj" id="salleObj" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="brandObj" class="form-label">Marque</label>
+                            <input type="text" class="form-control" name="brandObj" id="brandObj" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="modeleObj" class="form-label">Modèle</label>
+                            <input type="text" class="form-control" name="modeleObj" id="modeleObj" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="descriptionObj" class="form-label">Description</label>
+                            <textarea class="form-control" name="descriptionObj" id="descriptionObj" rows="4"></textarea>
+                        </div>
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-check me-1"></i>Ajouter l'objet
+                            </button>
+                            <a href="{{ url_for('gestion.gestion') }}" class="btn btn-secondary ms-2">
+                                <i class="fas fa-arrow-left me-1"></i>Retour
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-        <div class="mb-3">
-          <label for="salleObj" class="form-label">Salle</label>
-          <input type="text" class="form-control" name="salleObj" id="salleObj">
-        </div>
-        <div class="mb-3">
-            <label for="brandObj" class="form-label">Marque</label>
-            <input type="text" class="form-control" name="brandObj" id="brandObj">
-        </div>
-        <div class="mb-3">
-            <label for="modeleObj" class="form-label">Modele</label>
-            <input type="text" class="form-control" name="modeleObj" id="modeleObj">
-        </div>
-        <div class="mb-3">
-            <label for="descriptionObj"> description</label>
-           <textarea class="form-control" name="descriptionObj" id="descriptionObj"> </textarea>
-        </div>
-        <button type="submit" class="btn btn-primary">Ajouter objet</button>
-      </form>
+    </div>
+</div>
 {% endblock %}
+
+

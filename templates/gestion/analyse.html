@@ -1,22 +1,44 @@
 {% extends "LayoutCo.html" %}
+{% block title %}Analyse des objets{% endblock %}
+
 {% block content %}
-<h2>Analyse des objets connectés</h2>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Analyse des objets connectés</h2>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="objet_id" class="form-label">Choisir un objet :</label>
+                            <select name="objet_id" id="objet_id" class="form-select" required>
+                                {% for objet in listeObj %}
+                                    <option value="{{ objet.id }}">{{ objet.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
 
-<form method="POST">
-    <label for="objet_id">Choisir un objet :</label>
-    <select name="objet_id" required>
-        {% for objet in listeObj %}
-            <option value="{{ objet.id }}">{{ objet.name }}</option>
-        {% endfor %}
-    </select>
+                        <div class="mb-3">
+                            <label for="action" class="form-label">Choisir une action :</label>
+                            <select name="action" id="action" class="form-select" required>
+                                <option value="stats">📊 Générer des statistiques</option>
+                                <option value="rapport">📄 Générer un rapport</option>
+                                <option value="historique">🕒 Accéder à l'historique</option>
+                            </select>
+                        </div>
 
-    <label for="action">Choisir une action :</label>
-    <select name="action" required>
-        <option value="stats">Générer des statistiques</option>
-        <option value="rapport">Générer un rapport</option>
-        <option value="historique">Accéder à l'historique</option>
-    </select>
-
-    <button type="submit">Valider</button>
-</form>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-check me-1"></i> Valider
+                        </button>
+                        <a href="{{ url_for('gestion.gestion') }}" class="btn btn-secondary ms-2">
+                            <i class="fas fa-arrow-left me-1"></i>Retour
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

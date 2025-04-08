@@ -1,14 +1,37 @@
 {% extends "LayoutCo.html" %}
+{% block title %}Statistiques - {{ objet.name }}{% endblock %}
+
 {% block content %}
-<h2>Statistiques pour {{ objet.name }}</h2>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>Statistiques pour {{ objet.name }}
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <h5 class="mb-3">Activité sur les 7 derniers jours</h5>
 
-<h3>Activité sur les 7 derniers jours</h3>
+                    {% if total_time_active > 0 %}
+                        <p>
+                            <i class="fas fa-clock text-primary me-2"></i>
+                            Temps total actif :
+                            <span class="badge bg-success">{{ total_time_active | round(2) }} secondes</span>
+                        </p>
+                    {% else %}
+                        <div class="alert alert-info" role="alert">
+                            Aucune activité récente.
+                        </div>
+                    {% endif %}
 
-{% if total_time_active > 0 %}
-    <p>Temps total actif : {{ total_time_active | round(2) }} secondes</p>
-{% else %}
-    <p>Aucune activité récente.</p>
-{% endif %}
-
-<a href="{{ url_for('gestion.analyse') }}">Retour</a>
+                    <a href="{{ url_for('gestion.analyse') }}" class="btn btn-secondary mt-3">
+                        <i class="fas fa-arrow-left me-1"></i> Retour
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

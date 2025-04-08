@@ -1,14 +1,38 @@
 {% extends "LayoutCo.html" %}
+{% block title %}Rapport de {{ objet.name }}{% endblock %}
+
 {% block content %}
-<h2>Rapport d'activité de {{ objet.name }}</h2>
-
-<ul>
-    {% for entry in activations %}
-        <li>{{ entry.timestamp }} - Statut: {{ entry.status or "Inconnu" }}</li>
-    {% else %}
-        <li>Aucune donnée disponible.</li>
-    {% endfor %}
-</ul>
-
-<a href="{{ url_for('gestion.analyse') }}">Retour</a>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">
+                        <i class="fas fa-file-alt me-2"></i>Rapport d'activité de {{ objet.name }}
+                    </h2>
+                </div>
+                <div class="card-body">
+                    {% if activations %}
+                        <ul class="list-group">
+                            {% for entry in activations %}
+                                <li class="list-group-item">
+                                    <i class="fas fa-clock me-2 text-primary"></i>
+                                    {{ entry.timestamp }} — <strong>Statut :</strong> {{ entry.status or "Inconnu" }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <div class="alert alert-info" role="alert">
+                            Aucune donnée disponible.
+                        </div>
+                    {% endif %}
+                    <a href="{{ url_for('gestion.analyse') }}" class="btn btn-secondary mt-3">
+                        <i class="fas fa-arrow-left me-1"></i> Retour
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
+

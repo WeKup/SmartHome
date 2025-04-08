@@ -1,12 +1,37 @@
 {% extends 'LayoutCo.html' %}
-{% block title %}Gestion{% endblock %}
+{% block title %}Gestion des objets{% endblock %}
 
 {% block content %}
-<h1>Gestion</h1>
-<div class="btn-group gestion">
-    <a href="{{ url_for('gestion.add') }}" class="btn btn-primary active" aria-current="page">Ajouter un objet</a><br>
-    <a href="{{url_for('gestion.delete')}}" class="btn btn-primary">Solliciter la suppression d'un objet connecté</a><br>
-    <a href="{{url_for('gestion.modif')}}" class="btn btn-primary">Modifier les informations et attributs d'un objet connecté</a><br>
-    <a href="{{url_for('gestion.analyse')}}" class="btn btn-primary">Statistiques de objets</a>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0"><i class="fas fa-cogs me-2"></i>Gestion des objets connectés</h2>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-3">
+                        <a href="{{ url_for('gestion.add') }}" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-plus-circle me-2"></i>Ajouter un objet
+                        </a>
+                        <a href="{{ url_for('gestion.delete') }}" class="btn btn-outline-danger btn-lg">
+                            <i class="fas fa-trash-alt me-2"></i>Solliciter la suppression d’un objet
+                        </a>
+                        <a href="{{ url_for('gestion.modif') }}" class="btn btn-outline-warning btn-lg">
+                            <i class="fas fa-edit me-2"></i>Modifier les informations d’un objet
+                        </a>
+                        <a href="{{ url_for('gestion.analyse') }}" class="btn btn-outline-info btn-lg">
+                            <i class="fas fa-chart-bar me-2"></i>Statistiques des objets
+                        </a>
+                    </div>
+                </div>
+                <div class="card-footer text-end bg-light">
+                    <a href="{{ url_for('connected.accueil') }}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left me-1"></i>Retour
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
