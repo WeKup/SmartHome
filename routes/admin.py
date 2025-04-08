@@ -330,43 +330,6 @@ def delete_room(room_id):
     return redirect(url_for('admin.manage_rooms'))
 
 
-@admin_bp.route('/export/objects')
-def export_objects():
-    from flask import Response
-    import csv
-    import io
-    
-    house_id = current_user.house_id
-    objects = ConnectedObject.query.filter_by(house_id=house_id).all()
-    
-    output = io.StringIO()
-    writer = csv.writer(output)
-    
-    writer.writerow(['ID', 'Nom', 'Type', 'Pièce', 'Marque', 'Modèle', 'Statut', 'État de connexion', 'Nombre d\'actions'])
-    
-    for obj in objects:
-        action_count = ObjectAction.query.filter_by(object_id=obj.id).count()
-        
-        writer.writerow([
-            obj.id,
-            obj.name,
-            obj.type.name,
-            obj.room.name,
-            obj.brand,
-            obj.model,
-            obj.status,
-            obj.connection_status,
-            action_count
-        ])
-    
-    output.seek(0)
-    
-    return Response(
-        output,
-        mimetype="text/csv",
-        headers={"Content-Disposition": "attachment;filename=objets_connectes.csv"}
-    )
-
 @admin_bp.route('/stats')
 @login_required
 def view_stats():
@@ -422,13 +385,14 @@ def stats_data():
         ).join(Room).filter(ConnectedObject.house_id == house_id).group_by(Room.name).all()
         
         thirty_days_ago = datetime.utcnow() - timedelta(days=30)
+
         connexions_by_day = db.session.query(
-            db.func.date(User.created_at).label('date'), 
-            db.func.count(User.id).label('count')
-        ).filter(
-            User.house_id == house_id,
-            User.created_at >= thirty_days_ago
-        ).group_by(db.func.date(User.created_at)).all()
+                User.username,
+                User.connection_count
+            ).filter(
+                User.house_id == house_id,
+                User.created_at >= thirty_days_ago
+            ).all()
 
         conso = db.session.query(
             ConnectedObject.name, 

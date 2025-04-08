@@ -99,7 +99,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.warn('Aucune donnée pour les niveaux utilisateurs');
             }
 
-            // Graphique des objets par type
             if (data.objects_by_type && data.objects_by_type.length) {
                 const objectsByTypeCtx = document.getElementById('objectsByTypeChart');
                 if (objectsByTypeCtx) {
@@ -137,14 +136,13 @@ document.addEventListener('DOMContentLoaded', function() {
                             plugins: {
                                 title: {
                                     display: true,
-                                    text: 'Objets par pièce'
+                                    text: 'consommation des objet en W'
                                 },
                             }
                         }
                     );
                 }
             }
-            // Graphique des services
             if (data.service_stats) {
                 const serviceStatsCtx = document.getElementById('serviceStatsChart');
                 if (serviceStatsCtx) {
@@ -227,7 +225,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             plugins: {
                                 title: {
                                     display: true,
-                                    text: 'Connexion par jour'
+                                    text: 'Connexion les 30 derniers jours'
                                 }
                             }
                         }
