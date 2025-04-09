@@ -1,0 +1,69 @@
+{% extends 'layout.html' %}
+
+{% block title %}Paramètres - Maison Connectée{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Configuration des paramètres</h2>
+
+    <!-- Formulaire pour sélectionner une pièce -->
+    <form action="{{ url_for('gestion.parametres') }}" method="POST">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="room">Pièce :</label>
+                <select name="room" id="room" class="form-control" required>
+                    {% if room_for_object %}
+                        {% for room in room_for_object %}
+                        <option value="{{ room.id }}" {% if selected_room and selected_room.id == room.id %}selected{% endif %}>
+                            {{ room.name }}
+                        </option>
+                        {% endfor %}
+                    {% else %}
+                        <option value="" disabled>Aucune pièce disponible</option>
+                    {% endif %}
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label for="object">Objet connecté :</label>
+                <select name="object" id="object" class="form-control" {% if not selected_room %}disabled{% endif %} required>
+                    {% if selected_room and objects %}
+                        {% for obj in objects %}
+                        <option value="{{ obj.id }}" {% if selected_object and selected_object.id == obj.id %}selected{% endif %}>
+                            {{ obj.name }} ({{ obj.object_type.name if obj.object_type else 'Type non défini' }})
+                        </option>
+                        {% endfor %}
+                    {% else %}
+                        <option value="" disabled>{% if not selected_room %}Sélectionnez une pièce d'abord{% else %}Aucun objet associé à cette pièce{% endif %}</option>
+                    {% endif %}
+                </select>
+            </div>
+        </div>
+        {% if not selected_room %}
+            <button type="submit">Suivant</button>
+        {% elif selected_room and not selected_object %}
+            <button type="submit">Suivant</button>
+        {% else %}
+            <button type="submit">Afficher paramètres</button>
+        {% endif %}
+
+    </form>
+
+    <!-- Affichage des paramètres -->
+    {% if selected_object and selected_room %}
+    <h3>Paramètres pour {{ selected_object.name }} dans {{ selected_room.name }}</h3>
+    <form action="{{ url_for('gestion.traitement') }}" method="POST">
+        <input type="hidden" name="object" value="{{ selected_object.id }}">
+        <input type="hidden" name="room" value="{{ selected_room.id }}">
+
+        {% for param in parametres %}
+        <div class="mb-3">
+            <label>{{ param.parametre }} :</label>
+            <input type="text" name="{{ param.parametre }}" value="{{ param.value }}" class="form-control">
+        </div>
+        {% endfor %}
+
+        <button type="submit" class="btn btn-success">Enregistrer les paramètres</button>
+    </form>
+    {% endif %}
+</div>
+{% endblock %}
