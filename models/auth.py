@@ -173,6 +173,7 @@ class Room(db.Model):
     
     # Relations
     objects = db.relationship('ConnectedObject', backref='room', lazy=True)
+    #je veux plutot connected_objects_in_room = db.relationship('ConnectedObject', back_populates='room', lazy=True)
 
 class ConnectedObject(db.Model):
     """Modèle pour les objets connectés"""
