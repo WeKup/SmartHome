@@ -34,6 +34,16 @@
                         </div>
 
                         <div class="mb-3">
+                            <label for="conso_min" class="form-label">Consommation minimale (W)</label>
+                            <input type="number" class="form-control" name="conso_min" id="conso_min" value="{{ obj.conso_min }}" required min="0">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="conso_max" class="form-label">Consommation maximale (W)</label>
+                            <input type="number" class="form-control" name="conso_max" id="conso_max" value="{{ obj.conso_max }}" required min="0">
+                        </div>
+
+                        <div class="mb-3">
                             <label for="status" class="form-label">Statut</label>
                             <select class="form-select" name="status" id="status">
                                 <option value="active" {% if obj.status == "active" %}selected{% endif %}>Actif</option>
