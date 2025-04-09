@@ -1,0 +1,58 @@
+{% extends 'layout.html' %}
+{% block title %}Rapports - Maison Connectée{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Générer un rapport</h1>
+
+    <!-- Formulaire de sélection de pièce (GET) -->
+    <form method="GET" class="mb-4">
+        <label for="room_id">Choisir une pièce :</label>
+        <select name="room_id" id="room_id" class="form-select" onchange="this.form.submit()" required>
+            <option value="">-- Sélectionner une pièce --</option>
+            {% for room in rooms %}
+                <option value="{{ room.id }}" {% if selected_room_id and room.id == selected_room_id|int %}selected{% endif %}>
+                    {{ room.name }}
+                </option>
+            {% endfor %}
+        </select>
+    </form>
+
+    {% if connected_objects %}
+    <!-- Formulaire de création de rapport (POST) -->
+    <form method="POST">
+        <input type="hidden" name="room_id" value="{{ selected_room_id }}">
+
+        <label for="connected_object_id">Choisir un objet :</label>
+        <select name="connected_object_id" id="connected_object_id" class="form-select" required>
+            {% for obj in connected_objects %}
+                <option value="{{ obj.id }}">{{ obj.name }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="contenu" class="mt-3">Contenu du rapport :</label>
+        <textarea name="contenu" id="contenu" rows="5" class="form-control" placeholder="Décris ici l'état ou les détails du rapport..." required></textarea>
+
+        <button type="submit" class="btn btn-primary mt-3">Générer le rapport</button>
+    </form>
+    {% endif %}
+
+    <hr class="my-5">
+
+    <h2>Rapports existants</h2>
+
+    {% if rapports %}
+        <ul class="list-group mt-3">
+            {% for r in rapports %}
+                <li class="list-group-item">
+                    <strong>Date :</strong> {{ r.date_creation.strftime('%Y-%m-%d %H:%M:%S') }}<br>
+                    <strong>Objet :</strong> {{ r.connected_object.name }}<br>
+                    <strong>Contenu :</strong> {{ r.contenu }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="text-muted mt-3">Aucun rapport généré pour l’instant.</p>
+    {% endif %}
+</div>
+{% endblock %}
