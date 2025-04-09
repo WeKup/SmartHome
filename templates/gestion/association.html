@@ -1,0 +1,71 @@
+{% extends 'layout.html' %}
+{% block title %}Associations - Maison Connectée{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">Associations Objets-Pièces</div>
+        <div class="card-body">
+            <form action="{{ url_for('gestion.association') }}" method="POST">
+                <div class="row mb-3">
+                    <div class="col-md-5">
+                        <select name="object" class="form-control" required>
+                            <option value="">Sélectionner un objet</option>
+                            {% for obj in objects %}
+                            <option value="{{ obj.id }}">{{ obj.name }} ({{ obj.object_type.name }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-5">
+                        <select name="room" class="form-control" required>
+                            <option value="">Sélectionner une pièce</option>
+                            {% for room in rooms %}
+                            <option value="{{ room.id }}">{{ room.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" name="action" value="add" class="btn btn-success w-100">
+                            Associer
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <hr>
+
+            <h5>Associations existantes</h5>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Objet</th>
+                            <th>Type</th>
+                            <th>Pièce</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for assoc in associations %}
+                        <tr>
+                            <td>{{ assoc.object.name }}</td>
+                            <td>{{ assoc.object.object_type.name }}</td>
+                            <td>{{ assoc.room.name }}</td>
+                            <td>
+                                <form action="{{ url_for('gestion.association') }}" method="POST" style="display:inline;">
+                                    <input type="hidden" name="object" value="{{ assoc.object_id }}">
+                                    <input type="hidden" name="room" value="{{ assoc.room_id }}">
+                                    <button type="submit" name="action" value="remove" class="btn btn-danger btn-sm">
+                                        Supprimer
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
