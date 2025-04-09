@@ -10,9 +10,17 @@ from routes.gestion import gestion_bp
 import datetime
 from config import *
 from werkzeug.utils import secure_filename
+from flask_mail import Mail
 
 app = Flask(__name__)
+mail = Mail()
 app.config.from_object('config.Config')
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'smarthomepy01@gmail.com'
+app.config['MAIL_PASSWORD'] = 'rrzo fwsr oscp nyux'
+app.config['MAIL_DEFAULT_SENDER'] = 'smarthomepy01@gmail.com'
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -27,6 +35,8 @@ login_manager.init_app(app)
 login_manager.login_view = 'auth.login'
 login_manager.login_message = 'Veuillez vous connecter pour accéder à cette page.'
 login_manager.login_message_category = 'info'
+
+mail.init_app(app)
 
 @login_manager.user_loader
 def load_user(user_id):

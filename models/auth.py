@@ -17,6 +17,7 @@ class House(db.Model):
     is_demo = db.Column(db.Boolean, default=False)
     # Code unique pour rejoindre la maison
     house_code = db.Column(db.String(10), unique=True, nullable=False)
+    Join= db.Column(db.String(20), default='mail')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     # Relations

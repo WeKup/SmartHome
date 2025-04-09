@@ -9,7 +9,7 @@ from datetime import *
 from sqlalchemy import func
 import matplotlib.pyplot as plt
 import matplotlib
-matplotlib.use('Agg')  # Pour utiliser matplotlib sans interface graphique
+matplotlib.use('Agg')  
 import numpy as np
 import base64
 from io import BytesIO
@@ -490,24 +490,19 @@ def export_stats_pdf():
 
     avg = round(total_connexion / total_users, 2) if total_users > 0 else 0
     
-    # Données pour les graphiques
     
-    # 1. Utilisateurs par niveau
     user_levels = db.session.query(
         User.level, db.func.count(User.id)
     ).filter_by(house_id=house_id).group_by(User.level).all()
     
-    # 2. Objets par type
     objects_by_type = db.session.query(
         ObjectType.name, db.func.count(ConnectedObject.id)
     ).join(ObjectType).filter(ConnectedObject.house_id == house_id).group_by(ObjectType.name).all()
     
-    # 3. Objets par pièce
     objects_by_room = db.session.query(
         Room.name, db.func.count(ConnectedObject.id)
     ).join(Room).filter(ConnectedObject.house_id == house_id).group_by(Room.name).all()
     
-    # Génération des graphiques en tant qu'images base64
     graph_images = {
         'user_levels': generate_pie_chart(user_levels, "Utilisateurs par niveau"),
         'Bon_service_data': generate_pie_chart(service_data_tuples, "statistique des services utiliser"),
@@ -516,7 +511,6 @@ def export_stats_pdf():
         'consomation': generate_bar_chart(conso,'consomation','conso')
     }
     
-    # Générer le HTML pour le PDF avec les images des graphiques
     html = render_template('admin/pdf/stats_report.html', 
                           total_users=total_users,
                           obj=obj,
@@ -528,12 +522,10 @@ def export_stats_pdf():
                           current_date=datetime.utcnow(),
                           graph_images=graph_images)
     
-    # Créer le PDF
     pdf_file = BytesIO()
     HTML(string=html).write_pdf(pdf_file)
     pdf_file.seek(0)
     
-    # Créer une réponse avec le PDF
     response = make_response(pdf_file.getvalue())
     response.headers['Content-Type'] = 'application/pdf'
     response.headers['Content-Disposition'] = 'inline; filename=statistiques-maison.pdf'
@@ -541,38 +533,31 @@ def export_stats_pdf():
 
 def generate_pie_chart(data, title):
     """Génère un diagramme circulaire à partir des données"""
-    # Extraire les étiquettes et les valeurs
     labels = [item[0] for item in data]
     values = [item[1] for item in data]
     
-    # Créer la figure et les axes
     plt.figure(figsize=(8, 6))
     plt.pie(values, labels=labels, autopct='%1.1f%%', startangle=90, 
             colors=['#54A0FF', '#FFDA79', '#4BCFFA', '#FF7675'])
-    plt.axis('equal')  # Pour que le cercle soit affiché comme un cercle
+    plt.axis('equal') 
     plt.title(title)
     
-    # Convertir le graphique en image base64
     buffer = BytesIO()
     plt.savefig(buffer, format='png', bbox_inches='tight')
     plt.close()
     buffer.seek(0)
     
-    # Encoder l'image en base64 pour l'inclure dans le HTML
     image_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
     return f"data:image/png;base64,{image_base64}"
 
 def generate_bar_chart(data, title,n= None):
     """Génère un diagramme en barres à partir des données"""
-    # Extraire les étiquettes et les valeurs
     labels = [item[0] for item in data]
     values = [item[1] for item in data]
     
-    # Créer la figure et les axes
     plt.figure(figsize=(10, 6))
     plt.bar(labels, values, color='#54A0FF')
     
-    # Ajouter des étiquettes et un titre
     plt.xlabel('Catégories')
     if n == 'conso':
         plt.ylabel('Consomation en Watts')
@@ -580,18 +565,14 @@ def generate_bar_chart(data, title,n= None):
         plt.ylabel('Nombre')
     plt.title(title)
     
-    # Rotation des étiquettes pour une meilleure lisibilité
     plt.xticks(rotation=45, ha='right')
     
-    # Ajuster la mise en page
     plt.tight_layout()
     
-    # Convertir le graphique en image base64
     buffer = BytesIO()
     plt.savefig(buffer, format='png', bbox_inches='tight')
     plt.close()
     buffer.seek(0)
     
-    # Encoder l'image en base64 pour l'inclure dans le HTML
     image_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
     return f"data:image/png;base64,{image_base64}"

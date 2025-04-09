@@ -7,7 +7,6 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 class Config:
-    """Configuration de base"""
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-key-very-secret'
     DEBUG = True
     
@@ -20,4 +19,10 @@ class Config:
     SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
-    SESSION_TYPE = 'filesystem'
+    MAIL_SERVER = 'smtp.gmail.com'
+    MAIL_PORT = 587
+    MAIL_USE_TLS = True
+    MAIL_USERNAME = 'smarthomepy01@gmail.com'
+    MAIL_PASSWORD = 'rrzo fwsr oscp nyux'
+    MAIL_DEFAULT_SENDER = 'smarthomepy01@gmail.com'
+    

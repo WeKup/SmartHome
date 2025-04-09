@@ -21,7 +21,7 @@ from datetime import datetime, timedelta
 def gestion():
     if current_user.level not in ['avancé', 'expert']:
         flash("Vous n'avez pas les droits pour accéder à cette page.", "danger")
-        return redirect(url_for('connected.accueil'))  # Redirige vers la page d'accueil        
+        return redirect(url_for('connected.accueil'))     
     """Page de gestion pour utilisateurs connectés"""
     return render_template('gestion/gestion.html', user=current_user)
 
@@ -125,7 +125,6 @@ def delete():
         objet_id = request.form.get("objet_id")
         objet = ConnectedObject.query.get_or_404(objet_id)
 
-        # Chercher tous les admins de la même maison
         admins = User.query.filter_by(house_id=current_user.house_id, is_admin=True).all()
         admin_emails = ",".join([admin.email for admin in admins])
 
@@ -167,7 +166,6 @@ def modifiedObj():
     old_conso_min = objet.conso_min
     old_conso_max = objet.conso_max
 
-    # Nouvelles valeurs
     objet.name = request.form.get("name")
     objet.description = request.form.get("description")
     objet.status = request.form.get("status")
@@ -386,11 +384,9 @@ def stats():
             total_time_active += (action.timestamp - last_active_time).total_seconds()
             last_active_time = None
 
-    # ✅ Gérer le cas où l’objet est encore actif maintenant
     if last_active_time:
         total_time_active += (datetime.utcnow() - last_active_time).total_seconds()
 
-    # ✅ Convertir le temps en jours, heures, minutes, secondes
     total_seconds = int(total_time_active)
     days, remainder = divmod(total_seconds, 86400)
     hours, remainder = divmod(remainder, 3600)
@@ -419,7 +415,6 @@ def rapport():
         ObjetHistorique.timestamp >= start_date
     ).order_by(ObjetHistorique.timestamp.desc()).all()
 
-    # ➕ Décalage de 2 heures
     activations = [
         type('Obj', (object,), {"timestamp": a.timestamp + timedelta(hours=2), "status": a.status})()
         for a in activations
@@ -437,7 +432,6 @@ def historique():
         ObjetHistorique.object_id == objet.id
     ).order_by(ObjetHistorique.timestamp.desc()).all()
 
-    # ➕ Décalage de 2 heures
     modifications = [
         type('Obj', (object,), {
             "timestamp": m.timestamp + timedelta(hours=2),
