@@ -1,3 +1,5 @@
+
+
 {% extends "LayoutCo.html" %}
 {% block title %}Statistiques - {{ objet.name }}{% endblock %}
 
@@ -14,11 +16,16 @@
                 <div class="card-body">
                     <h5 class="mb-3">Activité sur les 7 derniers jours</h5>
 
-                    {% if total_time_active > 0 %}
+                    {% if time_breakdown.days or time_breakdown.hours or time_breakdown.minutes or time_breakdown.seconds %}
                         <p>
                             <i class="fas fa-clock text-primary me-2"></i>
                             Temps total actif :
-                            <span class="badge bg-success">{{ total_time_active | round(2) }} secondes</span>
+                            <span class="badge bg-success">
+                                {{ time_breakdown.days }} j,
+                                {{ time_breakdown.hours }} h,
+                                {{ time_breakdown.minutes }} min,
+                                {{ time_breakdown.seconds }} sec
+                            </span>
                         </p>
                     {% else %}
                         <div class="alert alert-info" role="alert">

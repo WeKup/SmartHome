@@ -18,7 +18,7 @@
                     <p class="mb-4">Cliquez sur le bouton ci-dessous pour envoyer une demande de validation aux administrateurs :</p>
 
                     <a 
-                        href="mailto:{{ admin_emails }}?subject={{ 'Demande de suppression d\'objet' | urlencode }}&body={{ ('Bonjour,%0D%0A%0D%0AUn utilisateur demande la suppression de l\'objet suivant : ' + objet.name + ' (' + objet.brand + ' - ' + objet.model + ').%0D%0AMerci de valider cette demande.') | urlencode }}"
+                        href="mailto:{{ admin_emails }}?subject={{ 'Demande de suppression d\'objet' | urlencode }}&body={{ ('Bonjour,AUn utilisateur demande la suppression de l\'objet suivant : ' + objet.name + ' (' + objet.brand + ' - ' + objet.model + ').Merci de valider cette demande.') | urlencode }}"
                         onclick="document.getElementById('confirmation-message').style.display = 'block';"
                         class="btn btn-primary"
                     >
@@ -41,4 +41,3 @@
 </div>
 {% endblock %}
     
-
