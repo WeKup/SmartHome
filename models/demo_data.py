@@ -198,6 +198,21 @@ def get_demo_objects():
         }
     ]
 
+def get_default_object_parametres():
+    """Retourne les paramètres par défaut pour chaque type d'objet connecté"""
+    return [
+        {'type_id': 1, 'parametre': 'température_min', 'default_value': '18'},
+        {'type_id': 1, 'parametre': 'température_max', 'default_value': '23'},
+        {'type_id': 2, 'parametre': 'luminosité', 'default_value': '75'},
+        {'type_id': 2, 'parametre': 'couleur', 'default_value': 'blanc'},
+        {'type_id': 3, 'parametre': 'sensibilité', 'default_value': 'moyenne'},
+        {'type_id': 4, 'parametre': 'niveau_sécurité', 'default_value': 'élevé'},
+        {'type_id': 5, 'parametre': 'vitesse', 'default_value': 'moyenne'},
+        {'type_id': 6, 'parametre': 'niveau_alerte', 'default_value': 'normal'},
+        {'type_id': 7, 'parametre': 'volume', 'default_value': '50'},
+        {'type_id': 8, 'parametre': 'seuil_alerte', 'default_value': '5000W'},
+    ]
+
 def search_demo_objects(query='', type_id='', room_id=''):
     """
     Recherche dans les objets connectés de démo
