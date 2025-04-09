@@ -5,8 +5,8 @@ from werkzeug.security import generate_password_hash
 import random
 import string
 import os
-import time
 from datetime import *
+import time
 from werkzeug.utils import secure_filename
 from config import *
 # Créer le blueprint
