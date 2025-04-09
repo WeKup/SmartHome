@@ -13,6 +13,7 @@ from sqlalchemy import and_, func
 from models.demo_data import get_room_id_by_name
 
 
+from datetime import datetime, timedelta
 
 
 @gestion_bp.route('/gestion')
@@ -27,8 +28,96 @@ def gestion():
 @gestion_bp.route('/add')
 @login_required
 def add():
+    liste_salle=Room.query.filter_by(house_id=current_user.house_id).all()
+    return render_template('gestion/add.html', user=current_user,listeRoom=liste_salle)
+
+@gestion_bp.route('/added', methods=["POST"])
+@login_required
+def added():
+    nomObj = request.form.get("nomObj")
+    salleObj = request.form.get("salleObj")
+    brandObj = request.form.get("brandObj")
+    modeleObj = request.form.get("modeleObj")
+    descriptionObj = request.form.get("descriptionObj")
+    conso_min = int(request.form.get("conso_min", 0))
+    conso_max = int(request.form.get("conso_max", 100))
+
+    max_id = db.session.query(func.max(ConnectedObject.id)).scalar() or 0
+    new_id = max_id + 1
+
+    Objet = ConnectedObject(
+        id=new_id,
+        name=nomObj + " " + salleObj,
+        object_type_id=new_id,
+        room_id=get_room_id_by_name(salleObj),
+        description=descriptionObj,
+        brand=brandObj,
+        model=modeleObj,
+        house_id=current_user.house_id,
+        conso_min=conso_min,
+        conso_max=conso_max,
+        status="active"
+    )
+
+    db.session.add(Objet)
+    db.session.commit()
+
+    historique = ObjetHistorique(
+        object_id=Objet.id,
+        timestamp=datetime.utcnow(),
+        action="Création",
+        status="active"
+    )
+    db.session.add(historique)
+    db.session.commit()
+
+    flash("Objet ajouté avec succès", "success")
     return render_template('gestion/add.html', user=current_user)
-    
+
+
+"""
+@gestion_bp.route('/added', methods=["POST"])
+@login_required
+def added():
+    nomObj = request.form.get("nomObj")
+    salleObj = request.form.get("salleObj")
+    brandObj = request.form.get("brandObj")
+    modeleObj = request.form.get("modeleObj")
+    descriptionObj = request.form.get("descriptionObj")
+
+    max_id = db.session.query(func.max(ConnectedObject.id)).scalar() or 0
+    new_id = max_id + 1
+
+    # 👇 On crée l'objet AVEC un statut initial "active"
+    Objet = ConnectedObject(
+        id=new_id,
+        name=nomObj + " " + salleObj,
+        object_type_id=new_id,
+        room_id=get_room_id_by_name(salleObj),
+        description=descriptionObj,
+        brand=brandObj,
+        model=modeleObj,
+        house_id=current_user.house_id,
+        status="active"  # 👈 si tu as ce champ dans ton modèle
+    )
+
+    db.session.add(Objet)
+    db.session.commit()
+
+    # ✅ 👇 Ajouter une entrée dans l'historique dès la création
+    historique = ObjetHistorique(
+        object_id=Objet.id,
+        timestamp=datetime.utcnow(),
+        action="Création",
+        status="active"
+    )
+    db.session.add(historique)
+    db.session.commit()
+
+    flash("Objet ajouté avec succès", "success")
+    return render_template('gestion/add.html', user=current_user)
+"""
+   
 @gestion_bp.route('/delete', methods=["GET", "POST"])
 @login_required
 def delete():
@@ -46,28 +135,6 @@ def delete():
     return render_template('gestion/delete.html', listeObj=connected_objects)
 
 
-@gestion_bp.route('/added',methods=["POST"])
-@login_required
-def added():
-    nomObj=request.form.get("nomObj")
-    salleObj=request.form.get("salleObj")
-    brandObj=request.form.get("brandObj")
-    modeleObj=request.form.get("modeleObj")
-    descriptionObj=request.form.get("descriptionObj")
-    max_id= db.session.query(func.max(ConnectedObject.id)).scalar() +1
-    Objet=ConnectedObject(
-        name=nomObj + " " + salleObj,
-        object_type_id= max_id,
-        room_id=get_room_id_by_name(salleObj),
-        description=descriptionObj,
-        brand=brandObj,
-        model=modeleObj,
-        house_id=current_user.house_id
-    )
-    db.session.add(Objet)
-    db.session.commit()
-    flash("Objet ajouté avec succès", "success")
-    return render_template('gestion/add.html', user=current_user)
     
 @gestion_bp.route('/modif',methods=["POST","GET"])
 @login_required
@@ -82,82 +149,63 @@ def modified():
     objet = ConnectedObject.query.get_or_404(objet_id)
     return render_template('gestion/modified.html', obj=objet)
 
-"""
-@gestion_bp.route('/modifiedObj',methods=["POST","GET"])
-@login_required
-def modifiedObj():
-    objet_id = request.form.get("Id")
-    objet = ConnectedObject.query.get_or_404(objet_id)
-
-    # Vérifier que l'utilisateur appartient bien à la maison de cet objet
-    if objet.house_id != current_user.house_id:
-        flash("Vous n'avez pas l'autorisation de modifier cet objet.", "danger")
-        return redirect(url_for("connected.accueil"))
-
-    # Récupérer les nouvelles valeurs
-    objet.name = request.form.get("name")
-    objet.description = request.form.get("description")
-    objet.status = request.form.get("status")
-    objet.brand = request.form.get("brand")
-    objet.model = request.form.get("model")
-    db.session.commit()
-    flash("Objet modifié avec succès !", "success")
-    return render_template('gestion/gestion.html')
-
-
-    
 @gestion_bp.route('/modifiedObj', methods=["POST", "GET"])
 @login_required
 def modifiedObj():
     objet_id = request.form.get("Id")
     objet = ConnectedObject.query.get_or_404(objet_id)
 
-    # Vérifier que l'utilisateur appartient bien à la maison de cet objet
     if objet.house_id != current_user.house_id:
         flash("Vous n'avez pas l'autorisation de modifier cet objet.", "danger")
         return redirect(url_for("connected.accueil"))
 
-    # Liste pour stocker les modifications
-    modifications = []
+    old_name = objet.name
+    old_description = objet.description
+    old_status = objet.status
+    old_brand = objet.brand
+    old_model = objet.model
+    old_conso_min = objet.conso_min
+    old_conso_max = objet.conso_max
 
-    # Vérifier et enregistrer les changements
-    if objet.name != request.form.get("name"):
-        modifications.append(f"Nom changé de {objet.name} à {request.form.get('name')}")
-        objet.name = request.form.get("name")
+    # Nouvelles valeurs
+    objet.name = request.form.get("name")
+    objet.description = request.form.get("description")
+    objet.status = request.form.get("status")
+    objet.brand = request.form.get("brand")
+    objet.model = request.form.get("model")
+    objet.conso_min = int(request.form.get("conso_min", 0))
+    objet.conso_max = int(request.form.get("conso_max", 100))
 
-    if objet.description != request.form.get("description"):
-        modifications.append(f"Description modifiée")
-        objet.description = request.form.get("description")
+    changes = []
+    if old_name != objet.name:
+        changes.append(f"Nom changé de '{old_name}' à '{objet.name}'")
+    if old_description != objet.description:
+        changes.append("Description changée")
+    if old_status != objet.status:
+        changes.append(f"Statut changé de '{old_status}' à '{objet.status}'")
+    if old_brand != objet.brand:
+        changes.append(f"Marque changée de '{old_brand}' à '{objet.brand}'")
+    if old_model != objet.model:
+        changes.append(f"Modèle changé de '{old_model}' à '{objet.model}'")
+    if old_conso_min != objet.conso_min:
+        changes.append(f"Conso min changée de {old_conso_min} à {objet.conso_min}")
+    if old_conso_max != objet.conso_max:
+        changes.append(f"Conso max changée de {old_conso_max} à {objet.conso_max}")
 
-    if objet.status != request.form.get("status"):
-        modifications.append(f"Status changé de {objet.status} à {request.form.get('status')}")
-        objet.status = request.form.get("status")
-
-    if objet.brand != request.form.get("brand"):
-        modifications.append(f"Marque changée de {objet.brand} à {request.form.get('brand')}")
-        objet.brand = request.form.get("brand")
-
-    if objet.model != request.form.get("model"):
-        modifications.append(f"Modèle changé de {objet.model} à {request.form.get('model')}")
-        objet.model = request.form.get("model")
-
-    # Sauvegarder les changements dans la BDD
-    db.session.commit()
-
-    # Enregistrer les modifications dans ObjetHistorique
-    for modif in modifications:
+    if changes:
         historique = ObjetHistorique(
             object_id=objet.id,
-            action="Modification",
-            details=modif
+            timestamp=datetime.utcnow(),
+            action="; ".join(changes),
+            status=objet.status
         )
         db.session.add(historique)
 
     db.session.commit()
-
     flash("Objet modifié avec succès !", "success")
-    return render_template('gestion/gestion.html')
+    return redirect(url_for("gestion.analyse"))
 """
+
 @gestion_bp.route('/modifiedObj', methods=["POST", "GET"])
 @login_required
 def modifiedObj():
@@ -208,7 +256,7 @@ def modifiedObj():
     db.session.commit()
     flash("Objet modifié avec succès !", "success")
     return redirect(url_for("gestion.analyse"))  # Retourner sur analyse après modification
-
+"""
 
 @gestion_bp.route('/analyse', methods=["GET", "POST"])
 @login_required
@@ -229,7 +277,7 @@ def analyse():
 
     return render_template("gestion/analyse.html", listeObj=connected_objects)
 
-
+"""
 @gestion_bp.route('/stats', methods=['GET'])
 @login_required
 def stats():
@@ -281,6 +329,123 @@ def historique():
     modifications = db.session.query(ObjetHistorique.timestamp, ObjetHistorique.action, ObjetHistorique.status).filter(
         ObjetHistorique.object_id == objet.id
     ).order_by(ObjetHistorique.timestamp.desc()).all()
+
+    return render_template("gestion/historique.html", objet=objet, modifications=modifications)
+"""
+
+"""
+
+@gestion_bp.route('/stats', methods=['GET'])
+@login_required
+def stats():
+    objet_id = request.args.get("objet_id")
+    objet = ConnectedObject.query.get_or_404(objet_id)
+
+    start_date = datetime.utcnow() - timedelta(days=7)
+
+    changements = db.session.query(ObjetHistorique.timestamp, ObjetHistorique.status).filter(
+        ObjetHistorique.object_id == objet.id,
+        ObjetHistorique.timestamp >= start_date
+    ).order_by(ObjetHistorique.timestamp.asc()).all()
+
+    total_time_active = 0
+    last_active_time = None
+
+    # ➕ Décalage des timestamps
+    changements = [(c.timestamp + timedelta(hours=2), c.status) for c in changements]
+
+    for timestamp, status in changements:
+        if status == "active":
+            last_active_time = timestamp
+        elif status == "inactive" and last_active_time:
+            total_time_active += (timestamp - last_active_time).total_seconds()
+            last_active_time = None
+
+    return render_template("gestion/stats.html", objet=objet, total_time_active=total_time_active)
+"""
+@gestion_bp.route('/stats', methods=['GET'])
+@login_required
+def stats():
+    objet_id = request.args.get("objet_id")
+    objet = ConnectedObject.query.get_or_404(objet_id)
+
+    start_date = datetime.utcnow() - timedelta(days=7)
+
+    changements = db.session.query(ObjetHistorique.timestamp, ObjetHistorique.status).filter(
+        ObjetHistorique.object_id == objet.id,
+        ObjetHistorique.timestamp >= start_date,
+    ).order_by(ObjetHistorique.timestamp.asc()).all()
+
+    total_time_active = 0
+    last_active_time = None
+
+    for action in changements:
+        if action.status == "active":
+            last_active_time = action.timestamp
+        elif action.status == "inactive" and last_active_time:
+            total_time_active += (action.timestamp - last_active_time).total_seconds()
+            last_active_time = None
+
+    # ✅ Gérer le cas où l’objet est encore actif maintenant
+    if last_active_time:
+        total_time_active += (datetime.utcnow() - last_active_time).total_seconds()
+
+    # ✅ Convertir le temps en jours, heures, minutes, secondes
+    total_seconds = int(total_time_active)
+    days, remainder = divmod(total_seconds, 86400)
+    hours, remainder = divmod(remainder, 3600)
+    minutes, seconds = divmod(remainder, 60)
+
+    time_breakdown = {
+        "days": days,
+        "hours": hours,
+        "minutes": minutes,
+        "seconds": seconds
+    }
+
+    return render_template("gestion/stats.html", objet=objet, time_breakdown=time_breakdown)
+
+
+@gestion_bp.route('/rapport', methods=['GET'])
+@login_required
+def rapport():
+    objet_id = request.args.get("objet_id")
+    objet = ConnectedObject.query.get_or_404(objet_id)
+
+    start_date = datetime.utcnow() - timedelta(days=7)
+
+    activations = db.session.query(ObjetHistorique.timestamp, ObjetHistorique.status).filter(
+        ObjetHistorique.object_id == objet.id,
+        ObjetHistorique.timestamp >= start_date
+    ).order_by(ObjetHistorique.timestamp.desc()).all()
+
+    # ➕ Décalage de 2 heures
+    activations = [
+        type('Obj', (object,), {"timestamp": a.timestamp + timedelta(hours=2), "status": a.status})()
+        for a in activations
+    ]
+
+    return render_template("gestion/rapport.html", objet=objet, activations=activations)
+
+@gestion_bp.route('/historique', methods=['GET'])
+@login_required
+def historique():
+    objet_id = request.args.get("objet_id")
+    objet = ConnectedObject.query.get_or_404(objet_id)
+
+    modifications = db.session.query(ObjetHistorique.timestamp, ObjetHistorique.action, ObjetHistorique.status).filter(
+        ObjetHistorique.object_id == objet.id
+    ).order_by(ObjetHistorique.timestamp.desc()).all()
+
+    # ➕ Décalage de 2 heures
+    modifications = [
+        type('Obj', (object,), {
+            "timestamp": m.timestamp + timedelta(hours=2),
+            "action": m.action,
+            "status": m.status
+        })()
+        for m in modifications
+    ]
 
     return render_template("gestion/historique.html", objet=objet, modifications=modifications)
 
