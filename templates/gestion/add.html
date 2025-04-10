@@ -16,11 +16,20 @@
                             <input type="text" class="form-control" name="nomObj" id="nomObj" required>
                         </div>
                         <div class="mb-3">
-                            <label for="salleObj" class="form-label">Salle</label>
-                            <select class="form-select" name="salleObj" id="salleObj" required>
+                            <label for="room_id" class="form-label">Salle</label>
+                            <select class="form-select" name="room_id" id="room_id" required>
                                 <option selected disabled>Choisissez une salle</option>
                                 {% for salle in listeRoom %}
-                                    <option value="{{ salle.name }}">{{ salle.name }}</option>
+                                    <option value="{{ salle.id }}">{{ salle.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="Typeobj" class="form-label">Type</label>
+                            <select class="form-select" name="typeobj" id="typeobj" required>
+                                <option selected disabled>Choisissez un type</option>
+                                {% for o in obj %}
+                                    <option value="{{ o.id }}">{{ o.name }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -43,6 +52,23 @@
                         <div class="mb-3">
                             <label for="conso_max" class="form-label">Consommation maximale (W)</label>
                             <input type="number" class="form-control" name="conso_max" id="conso_max" required min="0" placeholder="Ex: 100">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="conso_visé" class="form-label">Consommation visé (W)</label>
+                            <input type="number" name="conso_visé" id="conso_visé" class="form-control" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="temp_min" class="form-label">température Minimum (degré)</label>
+                            <input type="number" name="temp_min" id="temp_min" class="form-control" required>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="temp_max" class="form-label">température Maximum (degré)</label>
+                            <input type="number" name="temp_max" id="temp_max" class="form-control" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="temp_visé" class="form-label">température visé (degré)</label>
+                            <input type="number" name="temp_visé" id="temp_visé" class="form-control" required>
                         </div>
                         <div class="text-end">
                             <button type="submit" class="btn btn-primary">

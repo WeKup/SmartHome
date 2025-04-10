@@ -6,6 +6,8 @@ import string
 from datetime import datetime
 
 db = SQLAlchemy()
+def random_battery_level():
+    return random.randint(0, 100)
 
 class House(db.Model):
     """Modèle pour les maisons"""
@@ -17,14 +19,12 @@ class House(db.Model):
     is_demo = db.Column(db.Boolean, default=False)
     # Code unique pour rejoindre la maison
     house_code = db.Column(db.String(10), unique=True, nullable=False)
-    Join= db.Column(db.String(20), default='mail')
+    Join_method= db.Column(db.String(20), default='mail')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     # Relations
     users = db.relationship('User', backref='house', lazy=True)
     rooms = db.relationship('Room', backref='house', lazy=True)
-    house_objects = db.relationship('ConnectedObject', backref='object_house', lazy=True, cascade="all, delete-orphan")
-    house_reports = db.relationship('Rapport', backref='report_house', lazy=True, cascade="all, delete-orphan")
     
     @staticmethod
     def generate_unique_code():
@@ -66,6 +66,7 @@ class User(db.Model, UserMixin):
     nbD=db.Column(db.Integer, default=0)
     nbM=db.Column(db.Integer, default=0)
     nbMO=db.Column(db.Integer, default=0)
+    requete=db.Column(db.Integer, default=0)
 
     
     # Relation avec la maison
@@ -174,7 +175,6 @@ class Room(db.Model):
     
     # Relations
     objects = db.relationship('ConnectedObject', backref='room', lazy=True)
-    #je veux plutot connected_objects_in_room = db.relationship('ConnectedObject', back_populates='room', lazy=True)
 
 class ConnectedObject(db.Model):
     """Modèle pour les objets connectés"""
@@ -190,6 +190,12 @@ class ConnectedObject(db.Model):
     conso_min = db.Column(db.Integer, nullable=False, default=0)
     conso_max = db.Column(db.Integer, nullable=False, default=100)
     conso_actuelle = db.Column(db.Integer, nullable=True)
+    conso_visé = db.Column(db.Integer, nullable=True)
+    temp_min = db.Column(db.Integer, nullable=False, default=0)
+    temp_max = db.Column(db.Integer, nullable=False, default=100)
+    temp_actuelle = db.Column(db.Integer, nullable=True)
+    temp_visé = db.Column(db.Integer, nullable=True)
+    batterie = db.Column(db.Integer, default=random_battery_level)
     model = db.Column(db.String(50), nullable=True)
     status = db.Column(db.String(20), default='active')
     connection_status = db.Column(db.String(20), default='connected')
@@ -198,9 +204,7 @@ class ConnectedObject(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     # Relations
-    actions = db.relationship('ObjectAction', backref='object', lazy=True, cascade="all, delete-orphan")
-    object_type = db.relationship('ObjectType', backref='connected_objects', lazy=True)
-    room = db.relationship('Room', back_populates='connected_objects_in_room', lazy=True)
+    actions = db.relationship('ObjectAction', backref='object', lazy=True)
 
 class ObjectType(db.Model):
     """Modèle pour les types d'objets"""
@@ -240,52 +244,5 @@ class ObjetHistorique(db.Model):
     action = db.Column(db.String(400), nullable=False)  # "Modification", "Activation", "Désactivation"
     status = db.Column(db.String(250), nullable=True)  # "active" ou "inactive"
     details = db.Column(db.Text, nullable=True)  # Description des changements
-
-
-class ObjectParametres(db.Model):
-    """Modèle pour les paramètres des objets"""
-    __tablename__ = 'parametres'
-    
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    object_id = db.Column(db.Integer, db.ForeignKey('connected_objects.id'), nullable=False)
-    room_id = db.Column(db.Integer, db.ForeignKey('rooms.id'), nullable=False)
-    parametre = db.Column(db.String(200), nullable=False)
-    value = db.Column(db.String(50), nullable=False)
-    unite = db.Column(db.String(50), nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-class Rapport(db.Model):
-    """Modèle pour les rapports"""
-    __tablename__ = 'rapports'
-    
-    id = db.Column(db.Integer, primary_key=True)
-    object_id = db.Column(db.Integer, db.ForeignKey('connected_objects.id'), nullable=False)
-    house_id = db.Column(db.Integer, db.ForeignKey('houses.id'), nullable=False)
-    contenu = db.Column(db.Text, nullable=False)
-    date_creation = db.Column(db.DateTime, default=datetime.utcnow)
-    date_maj = db.Column(db.DateTime, onupdate=datetime.utcnow)
-
-    connected_object = db.relationship('ConnectedObject', backref='rapports', lazy=True)
-
-    
-
-class Association(db.Model):
-    """Table d'association entre objets et pièces"""
-    __tablename__ = 'object_room_associations'
-    
-    id = db.Column(db.Integer, primary_key=True)
-    room_id = db.Column(db.Integer, db.ForeignKey('rooms.id', ondelete="CASCADE"), nullable=False)
-    object_id = db.Column(db.Integer, db.ForeignKey('connected_objects.id', ondelete="CASCADE"), nullable=False)
-
-    object = db.relationship('ConnectedObject', backref='associations', lazy=True)
-    room = db.relationship('Room', backref='associations', lazy=True)
-
-class DefaultObjectParametre(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    type_id = db.Column(db.Integer, nullable=False)  # type_id de l'objet
-    parametre = db.Column(db.String(100), nullable=False)
-    default_value = db.Column(db.String(255), nullable=True)
-
 
 

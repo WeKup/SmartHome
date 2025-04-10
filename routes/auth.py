@@ -16,9 +16,13 @@ mail = Mail()
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
-    house=
-    if current_user.is_authenticated and current_user.email_verified:
-        return redirect(url_for('connected.accueil'))
+    if current_user.is_authenticated:
+        house = House.query.get(current_user.house_id)
+        if house.Join_method == 'mail' and current_user.email_verified:
+            return redirect(url_for('connected.accueil'))
+        elif house.Join_method == 'Approbation' and current_user.requete == 0:
+            return redirect(url_for('connected.accueil'))
+        
         
     if request.method == 'POST':
         username = request.form.get('username')
@@ -33,12 +37,17 @@ def login():
         
         if user and user.check_password(password):
             login_user(user)
-            
+            house = House.query.get(current_user.house_id)
             user.update_user_points('connection')
-            
-            if not user.email_verified:
-                flash('Veuillez vérifier votre email avant de vous connecter. Vérifiez votre boîte de réception.', 'warning')
-                return render_template('auth/login.html')
+            if house.Join_method== 'mail':
+                if not user.email_verified:
+                    flash('Veuillez vérifier votre email avant de vous connecter. Vérifiez votre boîte de réception.', 'warning')
+                    return render_template('auth/login.html')
+
+            if house.Join_method== 'Approbation':
+                if current_user.requete == 1:
+                    flash('Veuillez attendre que un administrateur vous valide.', 'warning')
+                    return render_template('auth/login.html')
             next_page = request.args.get('next')
             if next_page:
                 return redirect(next_page)
@@ -51,9 +60,12 @@ def login():
 
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
-    """Page d'inscription"""
-    if current_user.is_authenticated and current_user.email_verified:
-        return redirect(url_for('connected.accueil'))
+    if current_user.is_authenticated:
+        house = House.query.get(current_user.house_id)
+        if house.Join_method == 'mail' and current_user.email_verified:
+            return redirect(url_for('connected.accueil'))
+        elif house.Join_method == 'Approbation' and current_user.requete == 0:
+            return redirect(url_for('connected.accueil'))
         
     if request.method == 'POST':
         username = request.form.get('username')
@@ -134,11 +146,19 @@ def register():
                     new_user.profile_photo = path.replace('\\', '/')
                 else:
                     flash('Format de fichier non autorisé. Utilisez PNG, JPG, JPEG ou GIF.', 'danger')
-        send_verification_email(new_user, mail)
-        db.session.commit()
+
+        if house.Join_method == 'mail':
+            send_verification_email(new_user, mail)
+            db.session.commit()
+            flash('Plus qu' 'a valider grace a votre mail est c' 'est bon')
+            return redirect(url_for('auth.login'))
+        if house.Join_method == 'Approbation':
+            new_user.requete=1
+            db.session.commit()
+            flash('Plus qu' 'a attendre qu' 'un admin vous valide')
+            return redirect(url_for('auth.login'))
         
-        flash('Inscription réussie! Vous pouvez maintenant vous connecter.', 'success')
-        return redirect(url_for('auth.login'))
+        
     
     return render_template('auth/register.html')
 

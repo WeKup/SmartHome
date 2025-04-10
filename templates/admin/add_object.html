@@ -1,78 +1,115 @@
 {% extends 'base.html' %}
 
-{% block title %}Ajouter un objet connecté{% endblock %}
+{% block title %}Modifier l'objet{% endblock %}
 
 {% block content %}
 <div class="container py-4">
-    <h1 class="mb-4">Ajouter un objet connecté</h1>
+    <h1 class="mb-4">Ajouet un objet:</h1>
     
     <div class="card">
         <div class="card-body">
-            <form method="POST" action="{{ url_for('admin.add_object') }}">
-                <div class="mb-3">
-                    <label for="name" class="form-label">Nom de l'objet</label>
-                    <input type="text" class="form-control" id="name" name="name" required>
+            <div style="max-height: 70vh; overflow-y: auto; padding-right: 10px;">
+                <form method="POST" action="{{ url_for('admin.add_object') }}">
+                    <h5 class="border-bottom pb-2 mb-3">Informations générales</h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                                <label for="name" class="form-label">Nom de l'objet</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                                <label for="description" class="form-label">Description</label>
+                                <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="object_type_id" class="form-label">Type d'objet</label>
+                                    <select class="form-select" id="object_type_id" name="object_type_id" required>
+                                        {% for type in object_types %}
+                                        <option value="{{ type.id }}">{{ type.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="room_id" class="form-label">Pièce</label>
+                            <select class="form-select" id="room_id" name="room_id" required>
+                                {% for room in rooms %}
+                                <option value="{{ room.id }}">{{ room.name }} (Étage {{ room.floor }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <h5 class="border-bottom pb-2 mb-3 mt-4">Caractéristiques</h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="brand" class="form-label">Marque</label>
+                            <input type="text" class="form-control" id="brand" name="brand">
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="model" class="form-label">Modèle</label>
+                            <input type="text" class="form-control" id="model" name="model">
+                        </div>
+                    </div>
+                    
+                    <h5 class="border-bottom pb-2 mb-3 mt-4">Paramètres</h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="conso_min" class="form-label">Consommation Minimum (W)</label>
+                            <input type="number" name="conso_min" id="conso_min" class="form-control" required>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="conso_max" class="form-label">Consommation Maximum (W)</label>
+                            <input type="number" name="conso_max" id="conso_max" class="form-control" required>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="conso_visé" class="form-label">Consommation visé (W)</label>
+                            <input type="number" name="conso_visé" id="conso_visé" class="form-control" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="temp_min" class="form-label">température Minimum (degré)</label>
+                            <input type="number" name="temp_min" id="temp_min" class="form-control" required>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="temp_max" class="form-label">température Maximum (degré)</label>
+                            <input type="number" name="temp_max" id="temp_max" class="form-control" required>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="temp_visé" class="form-label">température visé (degré)</label>
+                            <input type="number" name="temp_visé" id="temp_visé" class="form-control" required>
+                        </div>
+                    </div>
+                    
+                    <h5 class="border-bottom pb-2 mb-3 mt-4">État</h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="status" class="form-label">Statut</label>
+                            <select class="form-select" id="status" name="status">
+                                <option value="active" selected>Actif</option>
+                                <option value="inactive">Inactif</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="connection_status" class="form-label">État de connexion</label>
+                            <select class="form-select" id="connection_status" name="connection_status">
+                                <option value="connected" selected>Connecté</option>
+                                <option value="disconnected">Déconnecté</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="mb-3">
-                    <label for="description" class="form-label">Description</label>
-                    <textarea class="form-control" id="description" name="description" rows="3"></textarea>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="object_type_id" class="form-label">Type d'objet</label>
-                    <select class="form-select" id="object_type_id" name="object_type_id" required>
-                        {% for type in object_types %}
-                        <option value="{{ type.id }}">{{ type.name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label for="conso_min" class="form-label">Consommation Minimum (W)</label>
-                    <input type="number" name="conso_min" id="conso_min" class="form-control" required>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="conso_max" class="form-label">Consommation Maximum (W)</label>
-                    <input type="number" name="conso_max" id="conso_max" class="form-control" required>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="room_id" class="form-label">Pièce</label>
-                    <select class="form-select" id="room_id" name="room_id" required>
-                        {% for room in rooms %}
-                        <option value="{{ room.id }}">{{ room.name }} (Étage {{ room.floor }})</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="brand" class="form-label">Marque</label>
-                    <input type="text" class="form-control" id="brand" name="brand">
-                </div>
-                
-                <div class="mb-3">
-                    <label for="model" class="form-label">Modèle</label>
-                    <input type="text" class="form-control" id="model" name="model">
-                </div>
-                
-                <div class="mb-3">
-                    <label for="status" class="form-label">Statut</label>
-                    <select class="form-select" id="status" name="status">
-                        <option value="active" selected>Actif</option>
-                        <option value="inactive">Inactif</option>
-                    </select>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="connection_status" class="form-label">État de connexion</label>
-                    <select class="form-select" id="connection_status" name="connection_status">
-                        <option value="connected" selected>Connecté</option>
-                        <option value="disconnected">Déconnecté</option>
-                    </select>
-                </div>
-                
-                <div class="d-flex">
+                <div class="d-flex justify-content-between mt-3 pt-3 border-top">
                     <button type="submit" class="btn btn-primary">Ajouter</button>
                     <a href="{{ url_for('admin.manage_objects') }}" class="btn btn-secondary ms-2">Annuler</a>
                 </div>

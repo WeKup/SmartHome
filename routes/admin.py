@@ -18,7 +18,47 @@ admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 @admin_bp.route('/')
 @login_required
 def accueil():
-    return render_template('admin/dashboard.html')
+    house = House.query.get(current_user.house_id)
+    return render_template('admin/dashboard.html',house=house)
+
+
+@admin_bp.route('/ChangerJoin')
+@login_required
+def changerJoin():
+    if not current_user.is_admin:
+        flash("Vous n'avez pas les droits pour approuver des utilisateurs.", "danger")
+        return redirect(url_for('admin.accueil'))
+    house = House.query.get(current_user.house_id)
+    if house.Join_method == 'mail':
+        house.Join_method= 'Approbation'
+    else:
+        house.Join_method= 'mail'
+    
+    db.session.commit()
+    flash(f"Le mode d'admission a été changé en : {house.Join_method}", "success")
+    return render_template('admin/dashboard.html', house=house)
+
+@admin_bp.route('/requete')
+@login_required
+def requete():
+    listUser= User.query.filter_by(house_id=current_user.house_id, requete=1).all()
+    return render_template('admin/appro.html', users=listUser)
+
+@admin_bp.route('/approve-user/<int:user_id>', methods=['POST'])
+@login_required
+def approve_user(user_id):
+    if not current_user.is_admin:
+        flash("Vous n'avez pas les droits pour approuver des utilisateurs.", "danger")
+        return redirect(url_for('admin.requete'))
+
+    user = User.query.get_or_404(user_id)
+
+    user.requete = 0
+    db.session.commit()
+    
+    flash(f"L'utilisateur {user.username} a été approuvé avec succès.", "success")
+    return redirect(url_for('admin.requete'))
+
 
 @admin_bp.route('/users')
 @login_required
@@ -150,8 +190,14 @@ def add_object():
         model = request.form['model']
         conso_min = int(request.form['conso_min'])
         conso_max = int(request.form['conso_max'])
+        conso_visé= int(request.form['conso_visé'])
+        temp_min = int(request.form['temp_min'])
+        temp_max = int(request.form['temp_max'])
+        temp_visé= int(request.form['temp_visé'])
 
         conso_actuelle = random.randint(conso_min, conso_max)
+        temp_actuelle = random.randint(temp_min, temp_max)
+        batterie= random.randint(0,100)
 
         new_object = ConnectedObject(
             name=name,
@@ -166,7 +212,13 @@ def add_object():
             data={},
             conso_min=conso_min,
             conso_max=conso_max,
-            conso_actuelle=conso_actuelle
+            conso_actuelle=conso_actuelle,
+            conso_visé=conso_visé,
+            temp_min=temp_min,
+            temp_max=temp_max,
+            temp_actuelle=temp_actuelle,
+            temp_visé=temp_visé,
+            batterie=batterie
         )
         
         db.session.add(new_object)
@@ -195,6 +247,10 @@ def edit_object(object_id):
         obj.model = request.form['model']
         obj.status = request.form['status']
         obj.connection_status = request.form['connection_status']
+        obj.conso_actuelle = request.form['conso_actuelle']
+        obj.conso_visé = request.form['conso_visé']
+        obj.temp_actuelle = request.form['temp_actuelle']
+        obj.temp_visé = request.form['temp_visé']
         
         db.session.commit()
         

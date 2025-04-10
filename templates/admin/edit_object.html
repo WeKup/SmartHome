@@ -8,64 +8,103 @@
     
     <div class="card">
         <div class="card-body">
-            <form method="POST" action="{{ url_for('admin.edit_object', object_id=object.id) }}">
-                <div class="mb-3">
-                    <label for="name" class="form-label">Nom de l'objet</label>
-                    <input type="text" class="form-control" id="name" name="name" value="{{ object.name }}" required>
+            <!-- Conteneur avec hauteur maximale et défilement -->
+            <div style="max-height: 70vh; overflow-y: auto; padding-right: 10px;">
+                <form method="POST" action="{{ url_for('admin.edit_object', object_id=object.id) }}">
+                    <h5 class="border-bottom pb-2 mb-3">Informations générales</h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="name" class="form-label">Nom de l'objet</label>
+                            <input type="text" class="form-control" id="name" name="name" value="{{ object.name }}" required>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="object_type_id" class="form-label">Type d'objet</label>
+                            <select class="form-select" id="object_type_id" name="object_type_id" required>
+                                {% for type in object_types %}
+                                <option value="{{ type.id }}" {% if type.id == object.object_type_id %}selected{% endif %}>{{ type.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="2">{{ object.description }}</textarea>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="room_id" class="form-label">Pièce</label>
+                            <select class="form-select" id="room_id" name="room_id" required>
+                                {% for room in rooms %}
+                                <option value="{{ room.id }}" {% if room.id == object.room_id %}selected{% endif %}>{{ room.name }} (Étage {{ room.floor }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <h5 class="border-bottom pb-2 mb-3 mt-4">Caractéristiques</h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="brand" class="form-label">Marque</label>
+                            <input type="text" class="form-control" id="brand" name="brand" value="{{ object.brand }}">
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="model" class="form-label">Modèle</label>
+                            <input type="text" class="form-control" id="model" name="model" value="{{ object.model }}">
+                        </div>
+                    </div>
+                    
+                    <h5 class="border-bottom pb-2 mb-3 mt-4">Paramètres</h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="conso_actuelle" class="form-label">Consommation actuelle (W)</label>
+                            <input type="number" class="form-control" id="conso_actuelle" name="conso_actuelle" value="{{ object.conso_actuelle }}">
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="conso_visé" class="form-label">Consommation cible (W)</label>
+                            <input type="number" class="form-control" id="conso_visé" name="conso_visé" value="{{ object.conso_visé }}">
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="temp_actuelle" class="form-label">Température actuelle (°C)</label>
+                            <input type="number" step="0.1" class="form-control" id="temp_actuelle" name="temp_actuelle" value="{{ object.temp_actuelle }}">
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="temp_visé" class="form-label">Température cible (°C)</label>
+                            <input type="number" step="0.1" class="form-control" id="temp_visé" name="temp_visé" value="{{ object.temp_visé }}">
+                        </div>
+                    </div>
+                    
+                    <h5 class="border-bottom pb-2 mb-3 mt-4">État</h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="status" class="form-label">Statut</label>
+                            <select class="form-select" id="status" name="status">
+                                <option value="active" {% if object.status == 'active' %}selected{% endif %}>Actif</option>
+                                <option value="inactive" {% if object.status == 'inactive' %}selected{% endif %}>Inactif</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="connection_status" class="form-label">État de connexion</label>
+                            <select class="form-select" id="connection_status" name="connection_status">
+                                <option value="connected" {% if object.connection_status == 'connected' %}selected{% endif %}>Connecté</option>
+                                <option value="disconnected" {% if object.connection_status == 'disconnected' %}selected{% endif %}>Déconnecté</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="mb-3">
-                    <label for="description" class="form-label">Description</label>
-                    <textarea class="form-control" id="description" name="description" rows="3">{{ object.description }}</textarea>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="object_type_id" class="form-label">Type d'objet</label>
-                    <select class="form-select" id="object_type_id" name="object_type_id" required>
-                        {% for type in object_types %}
-                        <option value="{{ type.id }}" {% if type.id == object.object_type_id %}selected{% endif %}>{{ type.name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="room_id" class="form-label">Pièce</label>
-                    <select class="form-select" id="room_id" name="room_id" required>
-                        {% for room in rooms %}
-                        <option value="{{ room.id }}" {% if room.id == object.room_id %}selected{% endif %}>{{ room.name }} (Étage {{ room.floor }})</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="brand" class="form-label">Marque</label>
-                    <input type="text" class="form-control" id="brand" name="brand" value="{{ object.brand }}">
-                </div>
-                
-                <div class="mb-3">
-                    <label for="model" class="form-label">Modèle</label>
-                    <input type="text" class="form-control" id="model" name="model" value="{{ object.model }}">
-                </div>
-                
-                <div class="mb-3">
-                    <label for="status" class="form-label">Statut</label>
-                    <select class="form-select" id="status" name="status">
-                        <option value="active" {% if object.status == 'active' %}selected{% endif %}>Actif</option>
-                        <option value="inactive" {% if object.status == 'inactive' %}selected{% endif %}>Inactif</option>
-                    </select>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="connection_status" class="form-label">État de connexion</label>
-                    <select class="form-select" id="connection_status" name="connection_status">
-                        <option value="connected" {% if object.connection_status == 'connected' %}selected{% endif %}>Connecté</option>
-                        <option value="disconnected" {% if object.connection_status == 'disconnected' %}selected{% endif %}>Déconnecté</option>
-                    </select>
-                </div>
-                
-                <div class="d-flex">
+                <div class="d-flex justify-content-between mt-3 pt-3 border-top">
+                    <a href="{{ url_for('admin.manage_objects') }}" class="btn btn-secondary">Annuler</a>
                     <button type="submit" class="btn btn-primary">Mettre à jour</button>
-                    <a href="{{ url_for('admin.manage_objects') }}" class="btn btn-secondary ms-2">Annuler</a>
                 </div>
             </form>
         </div>

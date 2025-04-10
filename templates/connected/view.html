@@ -38,8 +38,45 @@
                             <td>{{ object.model }}</td>
                         </tr>
                         <tr>
+                            <th>température :</th>
+                            <td>
+                                {{ object.temp_actuelle }} °C
+                                {% if object.temp_actuelle >= 0.8 * object.temp_max %}
+                                    <p style="color:red;">Urgent : baisser la température l'objet / la pièce est en surchauffe</p>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
                             <th>Consommation :</th>
-                            <td>{{ object.conso_actuelle }} W</td>
+                            <td>
+                                {{ object.conso_actuelle }} W
+                                {% if object.conso_actuelle >= 0.8 * object.conso_max %}
+                                    <p style="color:red;">Urgent : baisser la consommation actuelle</p>
+                                {% endif %}
+                            </td>
+                        </tr>                        
+                        <tr>
+                            <th>batterie :</th>
+                            <td>{{ object.batterie }} %
+                                {% if object.batterie <= 20 %}
+                                    <p style="color:red;">Urgent : batterie faible</p>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Connectivité :</th>
+                            <td>
+                                {% if object.room.floor <= 2  %}
+                                    <p>Très bon Wifi </p>
+
+                                {% elif object.room.floor <= 4  %}
+                                    <p> bon Wifi </p>
+                                    
+                                {% elif object.room.floor >= 5 %}
+                                    <p>mauvais Wifi </p>
+                                    <p style="color:red;">Urgent : mettez une boxe internet a l'étage ou changer l'objet d'étage</p>
+                                {% endif %}
+                            </td>
                         </tr>
                         <tr>
                             <th>État :</th>
