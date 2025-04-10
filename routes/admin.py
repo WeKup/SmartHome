@@ -54,6 +54,7 @@ def approve_user(user_id):
     user = User.query.get_or_404(user_id)
 
     user.requete = 0
+    User.nb(current_user,'nbAU')
     db.session.commit()
     
     flash(f"L'utilisateur {user.username} a été approuvé avec succès.", "success")
@@ -74,6 +75,8 @@ def add_user():
     if request.method == 'POST':
         username = request.form['username']
         email = request.form['email']
+        nom = request.form['nom']
+        prénom = request.form['prénom']
         password = request.form['password']
         gender = request.form['gender']
         birthdate = datetime.strptime(request.form['birthdate'], '%Y-%m-%d').date()
@@ -91,6 +94,8 @@ def add_user():
         new_user = User(
             username=username,
             email=email,
+            nom=nom,
+            prénom=prénom,
             gender=gender,
             birthdate=birthdate,
             member_type=member_type,
@@ -117,6 +122,8 @@ def edit_user(user_id):
     if request.method == 'POST':
         user.username = request.form['username']
         user.email = request.form['email']
+        user.nom = request.form['nom']
+        user.prénom = request.form['prénom']
         if request.form.get('password'):
             user.set_password(request.form['password'])
         user.gender = request.form['gender']
@@ -455,6 +462,11 @@ def stats_data():
             ConnectedObject.conso_actuelle
         ).filter(ConnectedObject.house_id == house_id).all()
 
+        temp = db.session.query(
+            ConnectedObject.name, 
+            ConnectedObject.temp_actuelle
+        ).filter(ConnectedObject.house_id == house_id).all()
+
         service_stats = db.session.query(
             func.sum(User.nbR).label('recherches'),
             func.sum(User.nbAU).label('ajout_utilisateurs'),
@@ -480,6 +492,7 @@ def stats_data():
             'objects_by_room': [list(item) for item in objects_by_room],
             'connexions_by_day': [list(item) for item in connexions_by_day],
             'conso': [list(item) for item in conso],
+            'temp': [list(item) for item in temp],
             'service_stats': {
                     'recherches': service_stats.recherches or 0,
                     'ajout_utilisateurs': service_stats.ajout_utilisateurs or 0,
@@ -514,6 +527,13 @@ def export_stats_pdf():
         ).filter(
                 ConnectedObject.house_id == house_id,
                 ConnectedObject.conso_actuelle !=  None 
+        ).all()
+    temp = db.session.query(
+            ConnectedObject.name, 
+            ConnectedObject.temp_actuelle
+        ).filter(
+                ConnectedObject.house_id == house_id,
+                ConnectedObject.temp_actuelle !=  None 
         ).all()
     service_stats = db.session.query(
             func.sum(User.nbR).label('Recherches'),
@@ -564,7 +584,8 @@ def export_stats_pdf():
         'Bon_service_data': generate_pie_chart(service_data_tuples, "statistique des services utiliser"),
         'objects_by_type': generate_bar_chart(objects_by_type, "Objets par type"),
         'objects_by_room': generate_bar_chart(objects_by_room, "Objets par pièce"),
-        'consomation': generate_bar_chart(conso,'consomation','conso')
+        'consomation': generate_bar_chart(conso,'consomation','conso'),
+        'température': generate_bar_chart(temp,'température','temp')
     }
     
     html = render_template('admin/pdf/stats_report.html', 
@@ -617,6 +638,8 @@ def generate_bar_chart(data, title,n= None):
     plt.xlabel('Catégories')
     if n == 'conso':
         plt.ylabel('Consomation en Watts')
+    elif n == 'temp':
+        plt.ylabel('température en degré')
     else:
         plt.ylabel('Nombre')
     plt.title(title)

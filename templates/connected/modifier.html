@@ -1,52 +1,170 @@
 {% extends 'LayoutCo.html' %}
-{% block title %}Accueil{% endblock %}
+{% block title %}Modifier mon profil{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <h1>modifie ton profil:</h1>
-    <form action="{{ url_for('connected.modifier') }}" method="POST" enctype="multipart/form-data">
-        <div class="mb-3">
-            <label for="profile_photo" class="form-label">Photo de profil</label>
-            <input type="file" class="form-control" id="profile_photo" name="profile_picture">
-            {% if current_user.profile_photo %}
-                <div class="mt-2">
-                    <p>Photo actuelle :</p>
-                    <img src="{{ url_for('static', filename=current_user.profile_photo) }}" 
-                         alt="Photo de profil" class="img-thumbnail" style="max-width: 150px;">
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0"><i class="fas fa-user-edit me-2"></i>Modifier mon profil</h2>
                 </div>
-            {% endif %}
+                <div class="card-body">
+                    <form action="{{ url_for('connected.modifier') }}" method="POST" enctype="multipart/form-data">
+                        <div class="row mb-4">
+                            <div class="col-md-4 text-center">
+                                {% if current_user.profile_photo %}
+                                    <img src="{{ url_for('static', filename=current_user.profile_photo) }}" 
+                                         alt="Photo de profil" class="img-thumbnail rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                                {% else %}
+                                    <div class="bg-light d-flex align-items-center justify-content-center rounded-circle mb-3 mx-auto" style="width: 150px; height: 150px;">
+                                        <i class="fas fa-user fa-4x text-secondary"></i>
+                                    </div>
+                                {% endif %}
+                                <div class="mb-3">
+                                    <label for="profile_photo" class="form-label d-block">Photo de profil</label>
+                                    <input type="file" class="form-control" id="profile_photo" name="profile_picture">
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="mb-3">
+                                    <label for="nom" class="form-label">Nom</label>
+                                    <input type="text" class="form-control" id="nom" name="nom" value="{{ user.nom }}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="prénom" class="form-label">Prénom</label>
+                                    <input type="text" class="form-control" id="prénom" name="prénom" value="{{ user.prénom }}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="username" class="form-label">Nom d'utilisateur</label>
+                                    <input type="text" name="username" id="username" class="form-control" value="{{ user.username }}">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" name="email" id="email" class="form-control" value="{{ user.email }}">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h4 class="mb-3 border-bottom pb-2"><i class="fas fa-id-card me-2"></i>Informations personnelles</h4>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="gender" class="form-label">Genre</label>
+                                    <select class="form-select" id="gender" name="gender">
+                                        <option value="" {% if not user.gender %}selected{% endif %}>Non spécifié</option>
+                                        <option value="homme" {% if user.gender == 'homme' %}selected{% endif %}>Homme</option>
+                                        <option value="femme" {% if user.gender == 'femme' %}selected{% endif %}>Femme</option>
+                                        <option value="autre" {% if user.gender == 'autre' %}selected{% endif %}>Autre</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="birthdate" class="form-label">Date de naissance</label>
+                                    <input type="date" name="birthdate" id="birthdate" class="form-control" 
+                                           value="{{ user.birthdate.strftime('%Y-%m-%d') if user.birthdate else '' }}">
+                                </div>
+                            </div>
+                        </div>
+                        
+                      
+                        <div class="mb-4">
+                            <div class="mb-3">
+                                <label for="member_type" class="form-label">Rôle dans la famille</label>
+                                <select class="form-select" id="member_type" name="member_type">
+                                    <option value="" {% if not user.member_type %}selected{% endif %}>Non spécifié</option>
+                                    <option value="père" {% if user.member_type == 'père' %}selected{% endif %}>Père</option>
+                                    <option value="mère" {% if user.member_type == 'mère' %}selected{% endif %}>Mère</option>
+                                    <option value="enfant" {% if user.member_type == 'enfant' %}selected{% endif %}>Enfant</option>
+                                    <option value="grand-parent" {% if user.member_type == 'grand-parent' %}selected{% endif %}>Grand-parent</option>
+                                    <option value="autre" {% if user.member_type == 'autre' %}selected{% endif %}>Autre membre</option>
+                                </select>
+                                <div class="form-text">Ce rôle permet de personnaliser votre expérience dans la maison connectée.</div>
+                            </div>
+                        </div>
+                        
+                    
+                        <h4 class="mb-3 border-bottom pb-2"><i class="fas fa-cog me-2"></i>Préférences</h4>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="level" class="form-label">Niveau d'expertise</label>
+                                    <select class="form-select" id="level" name="level">
+                                        <option value="débutant" {% if current_user.level == 'débutant' %}selected{% endif %}>Débutant</option>
+                                        <option value="intermédiaire" 
+                                                {% if current_user.level == 'intermédiaire' %}selected{% endif %}
+                                                {% if current_user.level not in ['intermédiaire', 'avancé', 'expert'] %}disabled{% endif %}>
+                                            Intermédiaire
+                                        </option>
+                                        <option value="avancé" 
+                                                {% if current_user.level == 'avancé' %}selected{% endif %}
+                                                {% if current_user.level not in ['avancé', 'expert'] %}disabled{% endif %}>
+                                            Avancé
+                                        </option>
+                                        <option value="expert" 
+                                                {% if current_user.level == 'expert' %}selected{% endif %}
+                                                {% if current_user.level != 'expert' %}disabled{% endif %}>
+                                            Expert
+                                        </option>
+                                    </select>
+                                    <div class="form-text">Votre niveau détermine les fonctionnalités accessibles.</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                       
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('connected.accueil') }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-1"></i>Retour
+                            </a>
+                            <div>
+                                <button type="button" class="btn btn-outline-danger me-2" data-bs-toggle="modal" data-bs-target="#passwordModal">
+                                    <i class="fas fa-key me-1"></i>Changer le mot de passe
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-1"></i>Enregistrer les modifications
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-    
-        <label for="username">Username :</label>
-        <input type="text" name="username" id="username" class="input-field" value="{{ user.username }}"><br>
-    
-        <label for="level">Niveau :</label>
-        <select class="form-select" id="level" name="level">
-            <option value="débutant" {% if current_user.level == 'débutant' %}selected{% endif %}>Débutant</option>
-            
-            <option value="intermédiaire" 
-                    {% if current_user.level == 'intermédiaire' %}selected{% endif %}
-                    {% if current_user.level not in ['intermédiaire', 'avancé', 'expert'] %}disabled{% endif %}>
-                Intermédiaire
-            </option>
-            
-            <option value="avancé" 
-                    {% if current_user.level == 'avancé' %}selected{% endif %}
-                    {% if current_user.level not in ['avancé', 'expert'] %}disabled{% endif %}>
-                Avancé
-            </option>
-            
-            <option value="expert" 
-                    {% if current_user.level == 'expert' %}selected{% endif %}
-                    {% if current_user.level != 'expert' %}disabled{% endif %}>
-                Expert
-            </option>
-        </select>
-    
-        <label for="email">Email :</label>
-        <input type="email" name="email" id="email" class="input-field" value="{{ user.email }}"><br>
-    
-        <button type="submit" class="btn btn-primary">Mettre à jour</button>
-    </form>
+    </div>
+</div>
+
+<div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="passwordModalLabel">Changer mon mot de passe</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ url_for('connected.change_password') }}" method="POST">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="current_password" class="form-label">Mot de passe actuel</label>
+                        <input type="password" class="form-control" id="current_password" name="current_password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="new_password" class="form-label">Nouveau mot de passe</label>
+                        <input type="password" class="form-control" id="new_password" name="new_password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirm_password" class="form-label">Confirmer le nouveau mot de passe</label>
+                        <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Changer le mot de passe</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 {% endblock %}

@@ -1,11 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Fonction de débogage globale
     function debugLog(message, data = null) {
         console.log(`[STATS DEBUG] ${message}`);
         if (data) console.log(data);
     }
 
-    // Function to create charts with fetched data
     function createChart(chartElement, chartType, labels, data, options = {}) {
         debugLog(`Tentative de création du graphique: ${chartElement.id}`);
         
@@ -143,6 +141,28 @@ document.addEventListener('DOMContentLoaded', function() {
                     );
                 }
             }
+            if (data.temp && data.temp.length) {
+                const temp = document.getElementById('temp');
+                if (temp) {
+                    const labels = data.temp.map(item => item[0]);
+                    const consumptions = data.temp.map(item => item[1] || 0);
+                    
+                    createChart(
+                        temp, 
+                        'bar', 
+                        labels, 
+                        consumptions,
+                        {
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: 'température des objet en °C'
+                                },
+                            }
+                        }
+                    );
+                }
+            }
             if (data.service_stats) {
                 const serviceStatsCtx = document.getElementById('serviceStatsChart');
                 if (serviceStatsCtx) {
@@ -185,7 +205,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     );
                 }
             }
-            // Graphique des objets par pièce
             if (data.objects_by_room && data.objects_by_room.length) {
                 const objectsByRoomCtx = document.getElementById('objectsByRoomChart');
                 if (objectsByRoomCtx) {
@@ -209,7 +228,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
 
-            // Graphique des actions par jour
             if (data.connexions_by_day && data.connexions_by_day.length) {
                 const connexionsByDayChart = document.getElementById('connexionsByDayChart');
                 if (connexionsByDayChart) {
@@ -238,7 +256,6 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => {
             debugLog('ERREUR FATALE lors du chargement des statistiques:', error);
             
-            // Afficher un message d'erreur à l'utilisateur
             const errorContainer = document.createElement('div');
             errorContainer.classList.add('alert', 'alert-danger');
             errorContainer.textContent = `Impossible de charger les statistiques : ${error.message}`;

@@ -74,7 +74,7 @@ def added():
             temp_visé=temp_visé,
             batterie=batterie
         )
-
+    User.nb(current_user,'nbA')
     db.session.add(Objet)
     db.session.commit()
 
@@ -141,24 +141,24 @@ def modifiedObj():
     old_status = objet.status
     old_brand = objet.brand
     old_model = objet.model
-    old_conso_min = objet.conso_min
-    old_conso_max = objet.conso_max
+    old_temp_actuelle = objet.temp_actuelle
+    old_conso_actuelle = objet.conso_actuelle
     old_room_id = objet.room_id
 
     # Nouvelles valeurs
     new_room_id = int(request.form.get("room_id"))
     salle = Room.query.get(new_room_id)
-    nom_base = request.form.get("name").split(" ")[0]  # Extrait la base du nom (ex: "Thermostat")
 
-    objet.name = nom_base + " " + salle.name  # Reconstruit le nom complet
+    objet.name =  request.form.get("name") 
     objet.description = request.form.get("description")
     objet.status = request.form.get("status")
     objet.brand = request.form.get("brand")
     objet.model = request.form.get("model")
-    objet.conso_min = int(request.form.get("conso_min", 0))
-    objet.conso_max = int(request.form.get("conso_max", 100))
+    objet.conso_actuelle = int(request.form.get("conso_actuelle"))
+    objet.temp_actuelle = int(request.form.get("temp_actuelle"))
     objet.room_id = new_room_id
-
+    if objet.status == 'inactive':
+        objet.conso_actuelle= 0
     # Historique
     changes = []
     if old_name != objet.name:
@@ -174,10 +174,11 @@ def modifiedObj():
         changes.append(f"Marque changée de '{old_brand}' à '{objet.brand}'")
     if old_model != objet.model:
         changes.append(f"Modèle changé de '{old_model}' à '{objet.model}'")
-    if old_conso_min != objet.conso_min:
-        changes.append(f"Conso min changée de {old_conso_min} à {objet.conso_min}")
-    if old_conso_max != objet.conso_max:
-        changes.append(f"Conso max changée de {old_conso_max} à {objet.conso_max}")
+    if old_temp_actuelle != objet.temp_actuelle:
+        changes.append(f"Conso min changée de {old_temp_actuelle} à {objet.temp_actuelle}")
+    if old_conso_actuelle != objet.conso_actuelle:
+        changes.append(f"Conso max changée de {old_conso_actuelle} à {objet.conso_actuelle}")
+  
 
     if changes:
         historique = ObjetHistorique(
@@ -187,7 +188,7 @@ def modifiedObj():
             status=objet.status
         )
         db.session.add(historique)
-
+    User.nb(current_user,'nbMO')
     db.session.commit()
     flash("Objet modifié avec succès !", "success")
     return redirect(url_for("gestion.analyse"))

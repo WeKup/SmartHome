@@ -30,11 +30,11 @@
                                 
                                 <div class="progress mt-2">
                                     <div class="progress-bar bg-success" role="progressbar" 
-                                        style="width: {% if user.level == 'débutant' %}25%
-                                        {% elif user.level == 'intermédiaire' %}50%
-                                        {% elif user.level == 'avancé' %}75%
-                                        {% elif user.level == 'expert' %}100%{% endif %};" 
-                                        aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                                                 style="width: {{ user.get_level_percent() }}%"
+                                                 aria-valuenow="{{ user.get_level_percent() }}" 
+                                                 aria-valuemin="0" 
+                                                 aria-valuemax="100"
+                                                 title="{{ user.get_level_percent() }}%">
                                         {{ user.points }} points
                                     </div>
                                 </div>

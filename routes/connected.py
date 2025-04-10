@@ -2,8 +2,10 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from flask_login import login_required, current_user
 from models.auth import db, User, House, ConnectedObject, Room, ObjectType
 import os
+from datetime import *
 import time
 from werkzeug.utils import secure_filename
+from werkzeug.security import generate_password_hash, check_password_hash
 from config import *
 connected_bp = Blueprint('connected', __name__, url_prefix='/connected')
 
@@ -32,10 +34,30 @@ def modifier():
         username = request.form.get('username')
         if username and username != current_user.username:
             current_user.username = username
-        
+
+        nom = request.form.get('nom')
+        if nom and nom != current_user.nom:
+            current_user.nom = nom
+
+        prénom = request.form.get('prénom')
+        if prénom and prénom != current_user.prénom:
+            current_user.prénom = prénom
+
         email = request.form.get('email')
         if email and email != current_user.email:
             current_user.email = email
+        gender = request.form.get('gender')
+        if gender != current_user.gender:
+            current_user.gender = gender
+        
+        birthdate = request.form.get('birthdate')
+        if birthdate:
+            try:
+                birthdate_obj = datetime.strptime(birthdate, '%Y-%m-%d').date()
+                if birthdate_obj != current_user.birthdate:
+                    current_user.birthdate = birthdate_obj
+            except ValueError:
+                pass
 
         member_type = request.form.get('member_type')
         if member_type and member_type != current_user.member_type:
@@ -43,6 +65,14 @@ def modifier():
         level = request.form.get('level')
         if level and level != current_user.level:
             current_user.level = level
+            if level== 'débutant':
+                current_user.points=0
+            if level == 'intermédiaire':
+                current_user.points=3
+            if level == 'expert':
+                current_user.points=7
+            if level == 'avancé':
+                current_user.points=5
 
         if 'profile_picture' in request.files:
             file = request.files['profile_picture']
@@ -110,3 +140,23 @@ def view(object_id):
     object = ConnectedObject.query.get_or_404(object_id)
     User.update_user_points(current_user,'view')
     return render_template('connected/view.html',object=object)
+
+@connected_bp.route('/change_password', methods=['POST'])
+@login_required
+def change_password():
+    current_password = request.form.get('current_password')
+    new_password = request.form.get('new_password')
+    confirm_password = request.form.get('confirm_password')
+    
+    if not check_password_hash(current_user.password_hash, current_password):
+        flash('Le mot de passe actuel est incorrect', 'danger')
+        return redirect(url_for('connected.modifier'))
+    if new_password != confirm_password:
+        flash('Les nouveaux mots de passe ne correspondent pas', 'danger')
+        return redirect(url_for('connected.modifier'))
+    
+    current_user.password_hash = generate_password_hash(new_password)
+    db.session.commit()
+    
+    flash('Mot de passe modifié avec succès', 'success')
+    return redirect(url_for('connected.profil'))

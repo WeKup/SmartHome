@@ -10,6 +10,14 @@
         <div class="card-body">
             <form method="POST" action="{{ url_for('admin.edit_user', user_id=user.id) }}">
                 <div class="mb-3">
+                    <label for="nom" class="form-label">Nom</label>
+                    <input type="text" class="form-control" id="nom" name="nom" value="{{ user.nom }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="prénom" class="form-label">Prénom</label>
+                    <input type="text" class="form-control" id="prénom" name="prénom" value="{{ user.prénom }}" required>
+                </div>
+                <div class="mb-3">
                     <label for="username" class="form-label">Nom d'utilisateur</label>
                     <input type="text" class="form-control" id="username" name="username" value="{{ user.username }}" required>
                 </div>

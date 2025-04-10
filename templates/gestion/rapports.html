@@ -5,7 +5,6 @@
 <div class="container mt-4">
     <h1 class="mb-4">Générer un rapport</h1>
 
-    <!-- Formulaire de sélection de pièce (GET) -->
     <form method="GET" class="mb-4">
         <label for="room_id">Choisir une pièce :</label>
         <select name="room_id" id="room_id" class="form-select" onchange="this.form.submit()" required>
@@ -19,7 +18,6 @@
     </form>
 
     {% if connected_objects %}
-    <!-- Formulaire de création de rapport (POST) -->
     <form method="POST">
         <input type="hidden" name="room_id" value="{{ selected_room_id }}">
 

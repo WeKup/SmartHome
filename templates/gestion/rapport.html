@@ -18,10 +18,16 @@
                         <h5>Données de consommation :</h5>
                         <ul class="list-group">
                             <li class="list-group-item">
-                                <strong>Consommation minimale :</strong> {{ objet.conso_min }} W
+                                <strong>Consommation actuelle :</strong> {{ objet.conso_actuelle }} W
+                                {% if objet.conso_actuelle >= 0.8* objet.conso_max %}
+                                <p style="color: red;"> URGENCE LA CONSOMMATION EST TROP ELEVER</p>
+                                {% endif %}
                             </li>
                             <li class="list-group-item">
-                                <strong>Consommation maximale :</strong> {{ objet.conso_max }} W
+                                <strong>température actuelle :</strong> {{ objet.temp_actuelle }} °
+                                {% if objet.temp_actuelle >= 0.8* objet.temp_max and objet.temp_actuelle != 0 %}
+                                <p style="color: red;"> URGENCE LA TEMPERATURE EST TROP ELEVER</p>
+                                {% endif %}
                             </li>
                         </ul>
                     </div>

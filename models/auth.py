@@ -48,6 +48,8 @@ class User(db.Model, UserMixin):
     
     # Informations de profil
     gender = db.Column(db.String(10), nullable=True)
+    nom= db.Column(db.String(50), nullable=True)
+    prénom= db.Column(db.String(50), nullable=True)
     birthdate = db.Column(db.Date, nullable=True)
     member_type = db.Column(db.String(20), nullable=True)  # père, mère, enfant, etc.
     profile_photo = db.Column(db.String(255), nullable=True)

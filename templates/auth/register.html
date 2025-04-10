@@ -14,6 +14,14 @@
                     <form method="POST" action="{{ url_for('auth.register') }}" enctype="multipart/form-data">
                         <div class="row">
                             <div class="col-md-6 mb-3">
+                                <label for="nom" class="form-label">Nom</label>
+                                <input type="text" class="form-control" id="nom" name="nom" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="prénom" class="form-label">Prénom</label>
+                                <input type="text" class="form-control" id="prénom" name="prénom" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
                                 <label for="username" class="form-label">Nom d'utilisateur *</label>
                                 <input type="text" class="form-control" id="username" name="username" required>
                             </div>

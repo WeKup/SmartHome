@@ -6,7 +6,6 @@
 <div class="container mt-4">
     <h1>Rechercher des objets connectés</h1>
     
-    <!-- Formulaire de recherche -->
     <div class="card mb-4">
         <div class="card-body">
             <form method="POST" action="{{ url_for('connected.search') }}">
@@ -49,7 +48,6 @@
         </div>
     </div>
     
-    <!-- Résultats de recherche -->
     <div class="row">
         <div class="col-12">
             <h2>Résultats {% if query or selected_type != 'all' or selected_room != 'all' %}de recherche{% endif %}</h2>

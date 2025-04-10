@@ -69,6 +69,8 @@ def register():
         
     if request.method == 'POST':
         username = request.form.get('username')
+        nom=request.form.get('nom')
+        prénom=request.form.get('prénom')
         email = request.form.get('email')
         password = request.form.get('password')
         confirm_password = request.form.get('confirm_password')
@@ -116,6 +118,8 @@ def register():
         
         new_user = User(
             username=username,
+            nom=nom,
+            prénom=prénom,
             email=email,
             gender=gender,
             birthdate=parsed_birthdate,
@@ -154,6 +158,7 @@ def register():
             return redirect(url_for('auth.login'))
         if house.Join_method == 'Approbation':
             new_user.requete=1
+            new_user.email_verified=1
             db.session.commit()
             flash('Plus qu' 'a attendre qu' 'un admin vous valide')
             return redirect(url_for('auth.login'))
@@ -166,10 +171,16 @@ def register():
 def create_house():
     """Page de création de maison"""
     if current_user.is_authenticated:
-        return redirect(url_for('connected.accueil'))
+        house = House.query.get(current_user.house_id)
+        if house.Join_method == 'mail' and current_user.email_verified:
+            return redirect(url_for('connected.accueil'))
+        elif house.Join_method == 'Approbation' and current_user.requete == 0:
+            return redirect(url_for('connected.accueil'))
         
     if request.method == 'POST':
         username = request.form.get('username')
+        prénom=request.form.get('prénom')
+        email = request.form.get('email')
         email = request.form.get('email')
         password = request.form.get('password')
         confirm_password = request.form.get('confirm_password')
@@ -208,6 +219,8 @@ def create_house():
         
         new_user = User(
             username=username,
+            nom=nom,
+            prénom=prénom,
             email=email,
             member_type=member_type,
             level='débutant',

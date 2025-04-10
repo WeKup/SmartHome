@@ -13,6 +13,8 @@
                     <thead class="table-light">
                         <tr>
                             <th>Photo</th>
+                            <th>Nom</th>
+                            <th>Prénom</th>
                             <th>Pseudo</th>
                             <th>Genre</th>
                             <th>Email</th>
@@ -32,6 +34,8 @@
                                 <img src="{{ url_for('static', filename='images/default_profile.jpg') }}" alt="Photo par défaut" class="rounded-circle" width="50" height="50">
                                 {% endif %}
                             </td>
+                            <td><strong>{{ personne.prénom }}</strong></td>
+                            <td><strong>{{ personne.nom }}</strong></td>
                             <td><strong>{{ personne.username }}</strong></td>
                             <td>{{ personne.gender }}</td>
                             <td><a href="mailto:{{ personne.email }}">{{ personne.email }}</a></td>

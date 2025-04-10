@@ -27,7 +27,9 @@
                     <th>Niveau</th>
                     <th>Points</th>
                     <th>Administrateur</th>
+                    {% if current_user.is_admin or current_user.level == 'expert' %}
                     <th>Actions</th>
+                    {% endif %}
                 </tr>
             </thead>
             <tbody>
@@ -47,15 +49,16 @@
                         {% endif %}
                     </td>
                     <td>
+                        {% if current_user.is_admin or current_user.level == 'expert' %}
                         <a href="{{ url_for('admin.edit_user', user_id=user.id) }}" class="btn btn-sm btn-info">
                             <i class="fas fa-edit"></i> Modifier
                         </a>
-                        {% if user.id != current_user.id %}
+                        {% endif %}
+                        {% if user.id != current_user.id and current_user.is_admin %}
                         <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteUserModal{{ user.id }}">
                             <i class="fas fa-trash"></i> Supprimer
                         </button>
                         
-                        <!-- Modal de confirmation de suppression -->
                         <div class="modal fade" id="deleteUserModal{{ user.id }}" tabindex="-1" aria-labelledby="deleteUserModalLabel{{ user.id }}" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
