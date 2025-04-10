@@ -36,7 +36,7 @@ def changerJoin():
     
     db.session.commit()
     flash(f"Le mode d'admission a été changé en : {house.Join_method}", "success")
-    return render_template('admin/dashboard.html', house=house)
+    return redirect(url_for('admin.accueil'))
 
 @admin_bp.route('/requete')
 @login_required

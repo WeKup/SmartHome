@@ -180,7 +180,7 @@ def create_house():
     if request.method == 'POST':
         username = request.form.get('username')
         prénom=request.form.get('prénom')
-        email = request.form.get('email')
+        nom = request.form.get('nom')
         email = request.form.get('email')
         password = request.form.get('password')
         confirm_password = request.form.get('confirm_password')
@@ -229,7 +229,7 @@ def create_house():
             is_admin=True 
         )
         new_user.set_password(password)
-        
+        send_verification_email(new_user, mail)
         db.session.add(new_user)
         db.session.commit()
         
