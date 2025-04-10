@@ -33,7 +33,7 @@ def add():
     obj= ObjectType.query.filter_by(house_id=current_user.house_id).all()
     return render_template('gestion/add.html', user=current_user,listeRoom=liste_salle, obj=obj)
 
-@gestion_bp.route('/added', methods=['GET', 'POST'])
+@gestion_bp.route('/added', methods=["POST"])
 @login_required
 def added():
     if request.method == 'POST':
@@ -92,48 +92,6 @@ def added():
     return render_template('gestion/add.html', user=current_user, listeRoom=liste_salle, obj=obj_types)
 
 
-"""
-@gestion_bp.route('/added', methods=["POST"])
-@login_required
-def added():
-    nomObj = request.form.get("nomObj")
-    salleObj = request.form.get("salleObj")
-    brandObj = request.form.get("brandObj")
-    modeleObj = request.form.get("modeleObj")
-    descriptionObj = request.form.get("descriptionObj")
-
-    max_id = db.session.query(func.max(ConnectedObject.id)).scalar() or 0
-    new_id = max_id + 1
-
-    # 👇 On crée l'objet AVEC un statut initial "active"
-    Objet = ConnectedObject(
-        id=new_id,
-        name=nomObj + " " + salleObj,
-        object_type_id=new_id,
-        room_id=get_room_id_by_name(salleObj),
-        description=descriptionObj,
-        brand=brandObj,
-        model=modeleObj,
-        house_id=current_user.house_id,
-        status="active"  # 👈 si tu as ce champ dans ton modèle
-    )
-
-    db.session.add(Objet)
-    db.session.commit()
-
-    # ✅ 👇 Ajouter une entrée dans l'historique dès la création
-    historique = ObjetHistorique(
-        object_id=Objet.id,
-        timestamp=datetime.utcnow(),
-        action="Création",
-        status="active"
-    )
-    db.session.add(historique)
-    db.session.commit()
-
-    flash("Objet ajouté avec succès", "success")
-    return render_template('gestion/add.html', user=current_user)
-"""
    
 @gestion_bp.route('/delete', methods=["GET", "POST"])
 @login_required
@@ -158,12 +116,14 @@ def modif():
     connected_objects = ConnectedObject.query.filter_by(house_id=current_user.house_id).all()    
     return render_template('gestion/modif.html', listeObj=connected_objects)
 
-@gestion_bp.route('/modified',methods=["POST","GET"])
+@gestion_bp.route('/modified', methods=["POST", "GET"])
 @login_required
 def modified():
     objet_id = request.form.get("objet_id")
     objet = ConnectedObject.query.get_or_404(objet_id)
-    return render_template('gestion/modified.html', obj=objet)
+    rooms = Room.query.filter_by(house_id=current_user.house_id).all()  #  On récupère les salles
+    return render_template('gestion/modified.html', obj=objet, rooms=rooms)
+
 
 @gestion_bp.route('/modifiedObj', methods=["POST", "GET"])
 @login_required
@@ -175,6 +135,7 @@ def modifiedObj():
         flash("Vous n'avez pas l'autorisation de modifier cet objet.", "danger")
         return redirect(url_for("connected.accueil"))
 
+    # Anciennes valeurs
     old_name = objet.name
     old_description = objet.description
     old_status = objet.status
@@ -182,18 +143,29 @@ def modifiedObj():
     old_model = objet.model
     old_conso_min = objet.conso_min
     old_conso_max = objet.conso_max
+    old_room_id = objet.room_id
 
-    objet.name = request.form.get("name")
+    # Nouvelles valeurs
+    new_room_id = int(request.form.get("room_id"))
+    salle = Room.query.get(new_room_id)
+    nom_base = request.form.get("name").split(" ")[0]  # Extrait la base du nom (ex: "Thermostat")
+
+    objet.name = nom_base + " " + salle.name  # Reconstruit le nom complet
     objet.description = request.form.get("description")
     objet.status = request.form.get("status")
     objet.brand = request.form.get("brand")
     objet.model = request.form.get("model")
     objet.conso_min = int(request.form.get("conso_min", 0))
     objet.conso_max = int(request.form.get("conso_max", 100))
+    objet.room_id = new_room_id
 
+    # Historique
     changes = []
     if old_name != objet.name:
         changes.append(f"Nom changé de '{old_name}' à '{objet.name}'")
+    if old_room_id != new_room_id:
+        old_room = Room.query.get(old_room_id)
+        changes.append(f"Salle changée de '{old_room.name}' à '{salle.name}'")
     if old_description != objet.description:
         changes.append("Description changée")
     if old_status != objet.status:
@@ -219,6 +191,8 @@ def modifiedObj():
     db.session.commit()
     flash("Objet modifié avec succès !", "success")
     return redirect(url_for("gestion.analyse"))
+
+
 """
 
 @gestion_bp.route('/modifiedObj', methods=["POST", "GET"])
@@ -292,92 +266,6 @@ def analyse():
 
     return render_template("gestion/analyse.html", listeObj=connected_objects)
 
-"""
-@gestion_bp.route('/stats', methods=['GET'])
-@login_required
-def stats():
-    objet_id = request.args.get("objet_id")
-    objet = ConnectedObject.query.get_or_404(objet_id)
-
-    start_date = datetime.utcnow() - timedelta(days=7)
-
-    # Récupérer les changements d’état
-    changements = db.session.query(ObjetHistorique.timestamp, ObjetHistorique.status).filter(
-        ObjetHistorique.object_id == objet.id,
-        ObjetHistorique.timestamp >= start_date
-    ).order_by(ObjetHistorique.timestamp.asc()).all()
-
-    total_time_active = 0
-    last_active_time = None
-
-    for action in changements:
-        if action.status == "active":
-            last_active_time = action.timestamp  # Début d'activation
-        elif action.status == "inactive" and last_active_time:
-            total_time_active += (action.timestamp - last_active_time).total_seconds()
-            last_active_time = None  # Remise à zéro
-
-    return render_template("gestion/stats.html", objet=objet, total_time_active=total_time_active)
-
-@gestion_bp.route('/rapport', methods=['GET'])
-@login_required
-def rapport():
-    objet_id = request.args.get("objet_id")
-    objet = ConnectedObject.query.get_or_404(objet_id)
-
-    start_date = datetime.utcnow() - timedelta(days=7)
-
-    activations = db.session.query(ObjetHistorique.timestamp, ObjetHistorique.status).filter(
-        ObjetHistorique.object_id == objet.id,
-        ObjetHistorique.timestamp >= start_date
-    ).order_by(ObjetHistorique.timestamp.desc()).all()
-
-    return render_template("gestion/rapport.html", objet=objet, activations=activations)
-
-
-@gestion_bp.route('/historique', methods=['GET'])
-@login_required
-def historique():
-    objet_id = request.args.get("objet_id")
-    objet = ConnectedObject.query.get_or_404(objet_id)
-
-    modifications = db.session.query(ObjetHistorique.timestamp, ObjetHistorique.action, ObjetHistorique.status).filter(
-        ObjetHistorique.object_id == objet.id
-    ).order_by(ObjetHistorique.timestamp.desc()).all()
-
-    return render_template("gestion/historique.html", objet=objet, modifications=modifications)
-"""
-
-"""
-
-@gestion_bp.route('/stats', methods=['GET'])
-@login_required
-def stats():
-    objet_id = request.args.get("objet_id")
-    objet = ConnectedObject.query.get_or_404(objet_id)
-
-    start_date = datetime.utcnow() - timedelta(days=7)
-
-    changements = db.session.query(ObjetHistorique.timestamp, ObjetHistorique.status).filter(
-        ObjetHistorique.object_id == objet.id,
-        ObjetHistorique.timestamp >= start_date
-    ).order_by(ObjetHistorique.timestamp.asc()).all()
-
-    total_time_active = 0
-    last_active_time = None
-
-    # ➕ Décalage des timestamps
-    changements = [(c.timestamp + timedelta(hours=2), c.status) for c in changements]
-
-    for timestamp, status in changements:
-        if status == "active":
-            last_active_time = timestamp
-        elif status == "inactive" and last_active_time:
-            total_time_active += (timestamp - last_active_time).total_seconds()
-            last_active_time = None
-
-    return render_template("gestion/stats.html", objet=objet, total_time_active=total_time_active)
-"""
 @gestion_bp.route('/stats', methods=['GET'])
 @login_required
 def stats():
@@ -630,3 +518,255 @@ def traitement():
     return redirect(url_for('gestion.parametres'))
 
 """
+
+@gestion_bp.route('/parametres', methods=['GET', 'POST'])
+def parametres():
+    if not current_user.house_id:
+        flash("Vous devez avoir une maison associée", "warning")
+        return redirect(url_for('auth.profile'))
+
+    room_for_object = Room.query.filter_by(house_id=current_user.house_id).all()
+
+    selected_room = None
+    selected_object = None
+    parametres = []
+    objects = []
+
+    if request.method == 'POST':
+        room_id = request.form.get('room')
+        object_id = request.form.get('object')
+
+        if room_id:
+            selected_room = Room.query.get(room_id)
+            if selected_room:
+                objects = db.session.query(ConnectedObject).join(Association).filter(Association.room_id == room_id).all()
+
+        if object_id:
+            selected_object = ConnectedObject.query.get(object_id)
+            if selected_object and selected_room:
+                # Vérifie si l'utilisateur a déjà des paramètres personnalisés
+                existing_user_params = ObjectParametres.query.filter_by(
+                    object_id=object_id,
+                    room_id=room_id,
+                    user_id=current_user.id
+                ).all()
+
+                # Si aucun paramètre utilisateur, injecter les valeurs par défaut
+                if not existing_user_params:
+                    default_params = DefaultObjectParametre.query.filter_by(type_id=selected_object.object_type_id).all()
+                    for d in default_params:
+                        new_param = ObjectParametres(
+                            object_id=selected_object.id,
+                            room_id=selected_room.id,
+                            user_id=current_user.id,
+                            parametre=d.parametre,
+                            value=d.default_value
+                        )
+                        db.session.add(new_param)
+                    db.session.commit()
+
+                # Recharger tous les paramètres (y compris ceux nouvellement ajoutés)
+                all_param_names = db.session.query(ObjectParametres.parametre).filter_by(
+                    object_id=object_id,
+                    room_id=room_id
+                ).distinct().all()
+
+                param_names = [p[0] for p in all_param_names]
+                parametres = []
+                for name in param_names:
+                    user_param = ObjectParametres.query.filter_by(
+                        object_id=object_id,
+                        room_id=room_id,
+                        parametre=name,
+                        user_id=current_user.id
+                    ).first()
+
+                    if user_param:
+                        parametres.append(user_param)
+                    else:
+                        default_param = ObjectParametres.query.filter_by(
+                            object_id=object_id,
+                            room_id=room_id,
+                            parametre=name
+                        ).first()
+                        parametres.append(default_param)
+
+                for p in parametres:
+                    print(f"Paramètre trouvé : {p.parametre}, valeur={p.value}, user_id={p.user_id}")
+
+                print("Object ID:", object_id)
+                print("Room ID:", room_id)
+
+
+            # Injecter des paramètres par défaut s'il n'y en a aucun pour cet utilisateur
+            if selected_object and selected_room and not parametres:
+                default_params = DefaultObjectParametre.query.filter_by(type_id=selected_object.object_type_id).all()
+                for d in default_params:
+                    new_param = ObjectParametres(
+                        object_id=selected_object.id,
+                        room_id=selected_room.id,
+                        user_id=current_user.id,
+                        parametre=d.parametre,
+                        value=d.default_value
+                    )
+                    db.session.add(new_param)
+                    parametres.append(new_param)
+                db.session.commit()
+
+
+    return render_template('gestion/parametres.html',
+                           room_for_object=room_for_object,
+                           objects=objects,
+                           selected_room=selected_room,
+                           selected_object=selected_object,
+                           parametres=parametres)
+
+
+
+
+
+@gestion_bp.route('/traitement', methods=['POST'])
+def traitement():
+    object_id = request.form.get('object')
+    room_id = request.form.get('room')
+
+    if not all([object_id, room_id]):
+        flash("Données manquantes", "error")
+        return redirect(url_for('gestion.parametres'))
+
+    # Traiter les paramètres envoyés dans le formulaire
+    for key, value in request.form.items():
+        if key not in ['object', 'room', 'csrf_token']:
+            # Vérifier si le paramètre existe déjà pour cet objet et cette pièce
+            param = ObjectParametres.query.filter_by(
+                object_id=object_id,
+                room_id=room_id,
+                user_id=current_user.id,
+                parametre=key
+            ).first()
+
+            if param:
+                param.value = value  # Mettre à jour la valeur existante
+            else:
+                # Ajouter un nouveau paramètre si il n'existe pas
+                new_param = ObjectParametres(
+                    object_id=object_id,
+                    room_id=room_id,
+                    user_id=current_user.id,
+                    parametre=key,
+                    value=value
+                )
+                db.session.add(new_param)
+
+    try:
+        db.session.commit()
+        flash("Paramètres mis à jour avec succès", "success")
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Erreur lors de la mise à jour : {str(e)}", "error")
+
+    return redirect(url_for('gestion.parametres'))
+
+
+
+
+@gestion_bp.route('/association', methods=['GET', 'POST'])
+def association():
+    if not current_user.house_id:
+        flash("Vous devez avoir une maison associée", "warning")
+        return redirect(url_for('auth.profile'))
+
+    if request.method == 'POST':
+        object_id = request.form.get('object')
+        room_id = request.form.get('room')
+        action = request.form.get('action')
+
+        if not all([object_id, room_id, action]):
+            flash("Données manquantes", "error")
+            return redirect(url_for('gestion.association'))
+
+        assoc = Association.query.filter_by(
+            object_id=object_id,
+            room_id=room_id
+        ).first()
+
+        try:
+            if action == 'add' and not assoc:
+                new_assoc = Association(object_id=object_id, room_id=room_id)
+                db.session.add(new_assoc)
+                flash("Association créée avec succès", "success")
+            elif action == 'remove' and assoc:
+                db.session.delete(assoc)
+                flash("Association supprimée avec succès", "success")
+            
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            flash(f"Erreur : {str(e)}", "error")
+
+    # Récupération des données pour l'affichage
+    objects = ConnectedObject.query.filter_by(house_id=current_user.house_id).all()
+    rooms = Room.query.filter_by(house_id=current_user.house_id).all()
+    associations = Association.query.join(
+        ConnectedObject, ConnectedObject.id == Association.object_id
+    ).filter(
+        ConnectedObject.house_id == current_user.house_id
+    ).all()
+
+    return render_template('gestion/association.html',
+                         objects=objects,
+                         rooms=rooms,
+                         associations=associations)
+
+@gestion_bp.route('/rapports', methods=['GET', 'POST'])
+@login_required
+def rapports():
+    rooms = Room.query.filter_by(house_id=current_user.house_id).all()
+    selected_room_id = request.args.get('room_id') or request.form.get('room_id')
+    connected_objects = []
+
+    if selected_room_id:
+        connected_objects = ConnectedObject.query.filter_by(room_id=selected_room_id).all()
+
+    if request.method == 'POST':
+        connected_object_id = request.form.get('connected_object_id')
+        contenu = request.form.get('contenu')
+
+        if not connected_object_id or not contenu:
+            flash("Tous les champs sont requis", "error")
+            return redirect(url_for('gestion.rapports', room_id=selected_room_id))
+
+        connected_object = ConnectedObject.query.get_or_404(connected_object_id)
+        if connected_object.house_id != current_user.house_id:
+            flash("Accès non autorisé", "error")
+            return redirect(url_for('gestion.rapports'))
+
+        rapport = Rapport(
+            object_id=connected_object_id,
+            house_id=connected_object.house_id,
+            contenu=contenu,
+            date_creation=datetime.utcnow()
+        )
+
+        try:
+            db.session.add(rapport)
+            db.session.commit()
+            flash("Rapport généré avec succès", "success")
+            return redirect(url_for('gestion.rapports', room_id=selected_room_id))
+        except Exception as e:
+            db.session.rollback()
+            flash(f"Erreur lors de la génération du rapport : {str(e)}", "error")
+
+    # Charger tous les rapports liés à la maison
+    rapports = Rapport.query.join(ConnectedObject).filter(
+        ConnectedObject.house_id == current_user.house_id
+    ).order_by(Rapport.date_creation.desc()).all()
+
+    return render_template(
+        'gestion/rapports.html',
+        rooms=rooms,
+        connected_objects=connected_objects,
+        rapports=rapports,
+        selected_room_id=selected_room_id
+    )
+

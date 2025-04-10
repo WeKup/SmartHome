@@ -19,6 +19,17 @@
                         </div>
 
                         <div class="mb-3">
+                            <label for="room_id" class="form-label">Salle</label>
+                            <select class="form-select" name="room_id" id="room_id">
+                                {% for room in rooms %}
+                                    <option value="{{ room.id }}" {% if room.id == obj.room_id %}selected{% endif %}>
+                                        {{ room.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>                        
+
+                        <div class="mb-3">
                             <label for="description" class="form-label">Description</label>
                             <textarea class="form-control" name="description" id="description">{{ obj.description }}</textarea>
                         </div>
