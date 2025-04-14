@@ -1,7 +1,18 @@
 {% extends 'base.html' %}
 
 {% block title %}Modifier l'objet{% endblock %}
-
+{% block styles %}
+<style>
+  .BoutonFormu {
+    display: none;
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin-top: 15px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+  }
+</style>
+{% endblock %}
 {% block content %}
 <div class="container py-4">
     <h1 class="mb-4">Modifier l'objet: {{ object.name }}</h1>
@@ -57,29 +68,132 @@
                     </div>
                     
                     <h5 class="border-bottom pb-2 mb-3 mt-4">Paramètres</h5>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="conso_actuelle" class="form-label">Consommation actuelle (W)</label>
-                            <input type="number" class="form-control" id="conso_actuelle" name="conso_actuelle" value="{{ object.conso_actuelle }}">
+                    <button type="button" class="btn btn-primary me-2" onclick="AfficherFormulaire('form_conso')">Paramètres Consommation</button>
+                    <button type="button" class="btn btn-primary me-2" onclick="AfficherFormulaire('form_temp')">Paramètres Température</button>
+                    <button type="button" class="btn btn-primary me-2" onclick="AfficherFormulaire('form_eau')">Paramètres d'eau</button>
+                    <button type="button" class="btn btn-primary me-2" onclick="AfficherFormulaire('form_gaz')">Paramètres de gaz</button>
+                    <button type="button" class="btn btn-primary me-2" onclick="AfficherFormulaire('form_autre')">Paramètres d'autre Consommation</button>
+                    
+                    <div id="form_conso" class="BoutonFormu">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="conso_actuelle" class="form-label">Consommation actuelle (W)</label>
+                                <input type="number" name="conso_actuelle" id="conso_actuelle" class="form-control" value="{{ object.conso_actuelle or 0 }}">
+                            </div>
+
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="conso_visé" class="form-label">Consommation visé (W)</label>
+                                <input type="number" name="conso_visé" id="conso_visé" class="form-control" value="{{ object.conso_visé or 0 }}">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="conso_min" class="form-label">Consommation min (W)</label>
+                                <input type="number" name="conso_min" id="conso_min" class="form-control" value="{{ object.conso_min or 0 }}">
+                            </div>
+
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="conso_max" class="form-label">Consommation max (W)</label>
+                                <input type="number" name="conso_max" id="conso_max" class="form-control" value="{{ object.conso_max or 0 }}">
+                            </div>
                         </div>
-                        
-                        <div class="col-md-6 mb-3">
-                            <label for="conso_visé" class="form-label">Consommation cible (W)</label>
-                            <input type="number" class="form-control" id="conso_visé" name="conso_visé" value="{{ object.conso_visé }}">
+                    </div>
+                    <div id="form_temp" class="BoutonFormu">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="temp_actuelle" class="form-label">Température actuelle (°C)</label>
+                                <input type="number" name="temp_actuelle" id="temp_actuelle" class="form-control" value="{{ object.temp_actuelle or 0 }}">
+                            </div>
+                    
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="temp_visé" class="form-label">Température visée (°C)</label>
+                                <input type="number" name="temp_visé" id="temp_visé" class="form-control" value="{{ object.temp_visé or 0 }}">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="temp_min" class="form-label">Température min (°C)</label>
+                                <input type="number" name="temp_min" id="temp_min" class="form-control" value="{{ object.temp_min or 0 }}">
+                            </div>
+                    
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="temp_max" class="form-label">Température max (°C)</label>
+                                <input type="number" name="temp_max" id="temp_max" class="form-control" value="{{ object.temp_max or 0 }}">
+                            </div>
                         </div>
                     </div>
                     
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="temp_actuelle" class="form-label">Température actuelle (°C)</label>
-                            <input type="number" step="0.1" class="form-control" id="temp_actuelle" name="temp_actuelle" value="{{ object.temp_actuelle }}">
-                        </div>
-                        
-                        <div class="col-md-6 mb-3">
-                            <label for="temp_visé" class="form-label">Température cible (°C)</label>
-                            <input type="number" step="0.1" class="form-control" id="temp_visé" name="temp_visé" value="{{ object.temp_visé }}">
+                    <div id="form_eau" class="BoutonFormu">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="eau_actuelle" class="form-label">Consommation d'eau actuelle (L)</label>
+                                <input type="number" name="eau_actuelle" id="eau_actuelle" class="form-control" value="{{ object.eau_actuelle or 0 }}">
+                            </div>
+
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="eau_visé" class="form-label">Consommation d'eau visé (L)</label>
+                                <input type="number" name="eau_visé" id="eau_visé" class="form-control" value="{{ object.eau_visé or 0 }}">
+                            </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="eau_min" class="form-label">Consommation d'eau min (L)</label>
+                                <input type="number" name="eau_min" id="eau_min" class="form-control" value="{{ object.eau_min or 0 }}">
+                            </div>
+
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="eau_max" class="form-label">Consommation d'eau max (L)</label>
+                                <input type="number" name="eau_max" id="eau_max" class="form-control" value="{{ object.eau_max or 0 }}">
+                            </div>
+                    </div>
+                    <div id="form_gaz" class="BoutonFormu">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="gaz_actuelle" class="form-label">Consommation de gaz actuelle ( m^3 )</label>
+                                <input type="number" name="gaz_actuelle" id="gaz_actuelle" class="form-control" value="{{ object.gaz_actuelle or 0 }}">
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="gaz_visé" class="form-label">Consommation de gaz visé ( m^3 )</label>
+                                <input type="number" name="gaz_visé" id="gaz_visé" class="form-control" value="{{ object.gaz_visé or 0 }}">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="gaz_max" class="form-label">Consommation de gaz maximum ( m^3 )</label>
+                                <input type="number" name="gaz_max" id="gaz_max" class="form-control" value="{{ object.gaz_max or 0 }}">
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="gaz_min" class="form-label">Consommation de gaz min ( m^3 )</label>
+                                <input type="number" name="gaz_min" id="gaz_min" class="form-control" value="{{ object.gaz_min or 0 }}">
+                            </div>
                         </div>
                     </div>
+                    <div id="form_autre" class="BoutonFormu">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="autre_actuelle" class="form-label">Consommation autre actuelle</label>
+                                <input type="number" name="autre_actuelle" id="autre_actuelle" class="form-control" value="{{ object.autre_actuelle or 0 }}">
+                            </div>
+
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="autre_visé" class="form-label">Consommation autre visé </label>
+                                <input type="number" name="autre_visé" id="autre_visé" class="form-control" value="{{ object.autre_visé or 0 }}">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="autre_min" class="form-label">Consommation autre min</label>
+                                <input type="number" name="autre_min" id="autre_min" class="form-control" value="{{ object.autre_min or 0 }}">
+                            </div>
+
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="autre_max" class="form-label">Consommation autre max </label>
+                                <input type="number" name="autre_max" id="autre_max" class="form-control" value="{{ object.autre_max or 0 }}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
                     
                     <h5 class="border-bottom pb-2 mb-3 mt-4">État</h5>
                     <div class="row">

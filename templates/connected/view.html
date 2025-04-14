@@ -37,6 +37,7 @@
                             <th>Modèle :</th>
                             <td>{{ object.model }}</td>
                         </tr>
+                        {% if object.temp_actuelle != 0 %}
                         <tr>
                             <th>température :</th>
                             <td>
@@ -46,6 +47,8 @@
                                 {% endif %}
                             </td>
                         </tr>
+                        {%endif%}
+                        {% if object.conso_actuelle != 0 %}
                         <tr>
                             <th>Consommation :</th>
                             <td>
@@ -54,7 +57,41 @@
                                     <p style="color:red;">Urgent : baisser la consommation actuelle</p>
                                 {% endif %}
                             </td>
-                        </tr>                        
+                        </tr>
+                        {%endif%}
+                        {% if object.eau_actuelle != 0 %}
+                        <tr>
+                            <th>Consommation d'eau :</th>
+                            <td>
+                                {{ object.eau_actuelle }} L
+                                {% if object.eau_actuelle >= 0.8 * object.eau_max %}
+                                    <p style="color:red;">Urgent : baisser la consommation d'eau actuelle</p>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {%endif%} 
+                        {% if object.gaz_actuelle != 0 %}
+                        <tr>
+                            <th>Consommation de gaz :</th>
+                            <td>
+                                {{ object.gaz_actuelle }} m^3
+                                {% if object.gaz_actuelle >= 0.8 * object.gaz_max %}
+                                    <p style="color:red;">Urgent : baisser la consommation de gaz actuelle</p>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {%endif%}
+                        {% if object.autre_actuelle != 0 %}
+                        <tr>
+                            <th>Consommation de gaz :</th>
+                            <td>
+                                {{ object.autre_actuelle }} m^3
+                                {% if object.autre_actuelle >= 0.8 * object.autre_max %}
+                                    <p style="color:red;">Urgent : baisser la consommation autre actuelle</p>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {%endif%}                       
                         <tr>
                             <th>batterie :</th>
                             <td>{{ object.batterie }} %

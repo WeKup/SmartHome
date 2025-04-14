@@ -141,6 +141,11 @@ def view(object_id):
     User.update_user_points(current_user,'view')
     return render_template('connected/view.html',object=object)
 
+@connected_bp.route('/PasserLevel')
+def PasserLevel():
+    User.update_user_level(current_user)
+    return render_template('connected/profil.html', user=current_user)
+
 @connected_bp.route('/change_password', methods=['POST'])
 @login_required
 def change_password():

@@ -1,6 +1,19 @@
 {% extends 'LayoutCo.html' %}
 {% block title %}Ajout d'un objet connecté{% endblock %}
 
+{% block styles %}
+<style>
+  .BoutonFormu {
+    display: none !important;
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin-top: 15px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+  }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="container mt-5">
     <div class="row">
@@ -9,7 +22,7 @@
                 <div class="card-header bg-primary text-white">
                     <h2 class="mb-0"><i class="fas fa-plus-circle me-2"></i>Ajouter un nouvel objet</h2>
                 </div>
-                <div class="card-body">
+                <div class="card-body" style="max-height: 70vh; overflow-y: auto;">
                     <form action="{{ url_for('gestion.added') }}" method="POST">
                         <div class="mb-3">
                             <label for="nomObj" class="form-label">Nom de l'objet</label>
@@ -25,7 +38,7 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="Typeobj" class="form-label">Type</label>
+                            <label for="typeobj" class="form-label">Type</label>
                             <select class="form-select" name="typeobj" id="typeobj" required>
                                 <option selected disabled>Choisissez un type</option>
                                 {% for o in obj %}
@@ -43,34 +56,105 @@
                         </div>
                         <div class="mb-3">
                             <label for="descriptionObj" class="form-label">Description</label>
-                            <textarea class="form-control" name="descriptionObj" id="descriptionObj" rows="4"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="conso_min" class="form-label">Consommation minimale (W)</label>
-                            <input type="number" class="form-control" name="conso_min" id="conso_min" required min="0" placeholder="Ex: 10">
-                        </div>
-                        <div class="mb-3">
-                            <label for="conso_max" class="form-label">Consommation maximale (W)</label>
-                            <input type="number" class="form-control" name="conso_max" id="conso_max" required min="0" placeholder="Ex: 100">
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="conso_visé" class="form-label">Consommation visé (W)</label>
-                            <input type="number" name="conso_visé" id="conso_visé" class="form-control" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="temp_min" class="form-label">température Minimum (degré)</label>
-                            <input type="number" name="temp_min" id="temp_min" class="form-control" required>
+                            <textarea class="form-control" name="descriptionObj" id="descriptionObj" rows="3"></textarea>
                         </div>
 
-                        <div class="col-md-6 mb-3">
-                            <label for="temp_max" class="form-label">température Maximum (degré)</label>
-                            <input type="number" name="temp_max" id="temp_max" class="form-control" required>
+                        <h5 class="border-bottom pb-2 mb-3 mt-4">Paramètres</h5>
+                        <div class="mb-3">
+                            <button type="button" class="btn btn-primary me-2 mb-2" onclick="AfficherFormulaire('form_conso')">Paramètres Consommation</button>
+                            <button type="button" class="btn btn-primary me-2 mb-2" onclick="AfficherFormulaire('form_temp')">Paramètres Température</button>
+                            <button type="button" class="btn btn-primary me-2 mb-2" onclick="AfficherFormulaire('form_eau')">Paramètres d'eau</button>
+                            <button type="button" class="btn btn-primary me-2 mb-2" onclick="AfficherFormulaire('form_gaz')">Paramètres de gaz</button>
+                            <button type="button" class="btn btn-primary me-2 mb-2" onclick="AfficherFormulaire('form_autre')">Paramètres d'autre Consommation</button>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="temp_visé" class="form-label">température visé (degré)</label>
-                            <input type="number" name="temp_visé" id="temp_visé" class="form-control" required>
+
+                        <div id="form_conso" class="BoutonFormu" style="display: none;">
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="conso_min">Consommation d'éléctricté Min (W)</label>
+                                    <input type="number" class="form-control" name="conso_min" id="conso_min" min="0">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="conso_max">Consommation d'éléctricté Max (W)</label>
+                                    <input type="number" class="form-control" name="conso_max" id="conso_max" min="0">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="conso_visé">Consommation d'éléctricté Visé (W)</label>
+                                    <input type="number" class="form-control" name="conso_visé" id="conso_visé" min="0">
+                                </div>
+                            </div>
                         </div>
-                        <div class="text-end">
+
+                        <div id="form_temp" class="BoutonFormu" style="display: none;">
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="temp_min">Température Min (°C)</label>
+                                    <input type="number" class="form-control" name="temp_min" id="temp_min">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="temp_max">Température Max (°C)</label>
+                                    <input type="number" class="form-control" name="temp_max" id="temp_max">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="temp_visé">Température Visé (°C)</label>
+                                    <input type="number" class="form-control" name="temp_visé" id="temp_visé">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="form_eau" class="BoutonFormu" style="display: none;">
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="eau_min">Consommation d'eau Min (L)</label>
+                                    <input type="number" class="form-control" name="eau_min" id="eau_min">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="eau_max">Consommation d'eau Max (L)</label>
+                                    <input type="number" class="form-control" name="eau_max" id="eau_max">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="eau_visé">Consommation d'eau Visé (L)</label>
+                                    <input type="number" class="form-control" name="eau_visé" id="eau_visé">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="form_gaz" class="BoutonFormu" style="display: none;">
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="gaz_min">Consommation de gaz Min (m³)</label>
+                                    <input type="number" class="form-control" name="gaz_min" id="gaz_min">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="gaz_max">Consommation de gaz Max (m³)</label>
+                                    <input type="number" class="form-control" name="gaz_max" id="gaz_max">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="gaz_visé">Consommation de gaz Visé (m³)</label>
+                                    <input type="number" class="form-control" name="gaz_visé" id="gaz_visé">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="form_autre" class="BoutonFormu" style="display: none;">
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="autre_min">Consommation autre Min</label>
+                                    <input type="number" class="form-control" name="autre_min" id="autre_min">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="autre_max">Consommation autre Max</label>
+                                    <input type="number" class="form-control" name="autre_max" id="autre_max">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="autre_visé">Consommation autre visé</label>
+                                    <input type="number" class="form-control" name="autre_visé" id="autre_visé">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="mt-4 text-end">
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-check me-1"></i>Ajouter l'objet
                             </button>

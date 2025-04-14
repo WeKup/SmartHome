@@ -216,7 +216,7 @@ def create_house():
         )
         db.session.add(new_house)
         db.session.flush()
-        
+        create_default_object_types(new_house.id)
         new_user = User(
             username=username,
             nom=nom,

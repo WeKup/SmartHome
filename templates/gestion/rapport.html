@@ -17,18 +17,46 @@
                     <div class="mb-4">
                         <h5>Données de consommation :</h5>
                         <ul class="list-group">
+                            {%if objet.conso_actuelle != 0%}
                             <li class="list-group-item">
                                 <strong>Consommation actuelle :</strong> {{ objet.conso_actuelle }} W
                                 {% if objet.conso_actuelle >= 0.8* objet.conso_max %}
                                 <p style="color: red;"> URGENCE LA CONSOMMATION EST TROP ELEVER</p>
                                 {% endif %}
                             </li>
+                            {%endif%}
+                            {%if objet.temp_actuelle != 0%}
                             <li class="list-group-item">
                                 <strong>température actuelle :</strong> {{ objet.temp_actuelle }} °
                                 {% if objet.temp_actuelle >= 0.8* objet.temp_max and objet.temp_actuelle != 0 %}
                                 <p style="color: red;"> URGENCE LA TEMPERATURE EST TROP ELEVER</p>
                                 {% endif %}
                             </li>
+                            {% endif %}
+                            {%if objet.eau_actuelle != 0%}
+                            <li class="list-group-item">
+                                <strong>Consommation d'eau actuelle :</strong> {{ objet.eau_actuelle }} W
+                                {% if objet.eau_actuelle >= 0.8* objet.eau_max %}
+                                <p style="color: red;"> URGENCE LA CONSOMMATION D'EAU EST TROP ELEVER</p>
+                                {% endif %}
+                            </li>
+                            {%endif%}
+                            {%if objet.gaz_actuelle != 0%}
+                            <li class="list-group-item">
+                                <strong>Consommation de gaz actuelle :</strong> {{ objet.gaz_actuelle }} W
+                                {% if objet.gaz_actuelle >= 0.8* objet.gaz_max %}
+                                <p style="color: red;"> URGENCE LA CONSOMMATION DE GAZ EST TROP ELEVER</p>
+                                {% endif %}
+                            </li>
+                            {%endif%}
+                            {%if objet.autre_actuelle != 0%}
+                            <li class="list-group-item">
+                                <strong>Consommation actuelle :</strong> {{ objet.autre_actuelle }} W
+                                {% if objet.autre_actuelle >= 0.8* objet.autre_max %}
+                                <p style="color: red;"> URGENCE LES CONSOMMATION D'AUTRE TYPES SONT TROP ELEVER</p>
+                                {% endif %}
+                            </li>
+                            {%endif%}
                         </ul>
                     </div>
 

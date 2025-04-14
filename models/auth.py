@@ -119,12 +119,7 @@ class User(db.Model, UserMixin):
         return min(max(0, percentage), 100)
 
     def update_user_points(user, action_type):
-        levels = {
-            'débutant': 0,
-            'intermédiaire': 3,
-            'avancé': 5,
-            'expert': 7
-        }
+        
         if action_type == 'connection':
             user.connection_count += 1
             user.points += 0.25
@@ -134,13 +129,23 @@ class User(db.Model, UserMixin):
         elif action_type == 'search':
             user.action_count += 1
             user.points += 0.50
-        
+            
+            db.session.commit()
+    def update_user_level(user):
+        levels = {
+            'débutant': 0,
+            'intermédiaire': 3,
+            'avancé': 5,
+            'expert': 7
+        }
+
         if user.level == 'débutant' and user.points >= levels['intermédiaire']:
             user.level = 'intermédiaire'
         elif user.level == 'intermédiaire' and user.points >= levels['avancé']:
             user.level = 'avancé'
         elif user.level == 'avancé' and user.points >= levels['expert']:
             user.level = 'expert'
+        
         
         db.session.commit()
     
@@ -190,13 +195,25 @@ class ConnectedObject(db.Model):
     house_id = db.Column(db.Integer, db.ForeignKey('houses.id'), nullable=False)
     brand = db.Column(db.String(50), nullable=True)
     conso_min = db.Column(db.Integer, nullable=False, default=0)
-    conso_max = db.Column(db.Integer, nullable=False, default=100)
-    conso_actuelle = db.Column(db.Integer, nullable=True)
-    conso_visé = db.Column(db.Integer, nullable=True)
+    conso_max = db.Column(db.Integer, nullable=False, default=0)
+    conso_actuelle = db.Column(db.Integer, nullable=True,default=0)
+    conso_visé = db.Column(db.Integer, nullable=True,default=0)
+    gaz_min = db.Column(db.Integer, nullable=False, default=0)
+    gaz_max = db.Column(db.Integer, nullable=False, default=0)
+    gaz_actuelle = db.Column(db.Integer, nullable=True,default=0)
+    gaz_visé = db.Column(db.Integer, nullable=True,default=0)
+    eau_min = db.Column(db.Integer, nullable=False, default=0)
+    eau_max = db.Column(db.Integer, nullable=False, default=0)
+    eau_actuelle = db.Column(db.Integer, nullable=True,default=0)
+    eau_visé = db.Column(db.Integer, nullable=True,default=0)
+    autre_min = db.Column(db.Integer, nullable=False, default=0)
+    autre_max = db.Column(db.Integer, nullable=False, default=0)
+    autre_actuelle = db.Column(db.Integer, nullable=True,default=0)
+    autre_visé = db.Column(db.Integer, nullable=True,default=0)
     temp_min = db.Column(db.Integer, nullable=False, default=0)
-    temp_max = db.Column(db.Integer, nullable=False, default=100)
-    temp_actuelle = db.Column(db.Integer, nullable=True)
-    temp_visé = db.Column(db.Integer, nullable=True)
+    temp_max = db.Column(db.Integer, nullable=False, default=0)
+    temp_actuelle = db.Column(db.Integer, nullable=True, default=0)
+    temp_visé = db.Column(db.Integer, nullable=True, default=0)
     batterie = db.Column(db.Integer, default=random_battery_level)
     model = db.Column(db.String(50), nullable=True)
     status = db.Column(db.String(20), default='active')
@@ -218,10 +235,39 @@ class ObjectType(db.Model):
     icon = db.Column(db.String(50), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     house_id = db.Column(db.Integer, db.ForeignKey('houses.id'), nullable=True)
-    
     # Relations
     objects = db.relationship('ConnectedObject', backref='type', lazy=True)
     house = db.relationship('House', backref='object_types', lazy=True)
+
+
+    def create_default_object_types(house_id):
+        default_types = [
+            {
+                'name': 'Lampe',
+                'description': 'Appareil d\'éclairage électrique',
+                'icone': 'fa-solid fa-lightbulb'
+            },
+            {
+                'name': 'Téléviseur',
+                'description': 'Écran pour regarder des programmes',
+                'icone': 'fa-solid fa-tv'
+            },
+            {
+                'name': 'Chaudière',
+                'description': 'Appareil de chauffage',
+                'icone': 'fa-solid fa-water'
+            },
+            {
+                'name': 'Lave-linge',
+                'description': 'Machine à laver le linge',
+                'icone': 'fa-solid fa-fire-flame-simple'
+            },
+            {
+                'name': 'Climatiseur',
+                'description': 'Appareil de climatisation',
+                'icone': 'fa-solid fa-wind'
+            }
+        ]
 
 class ObjectAction(db.Model):
     """Modèle pour les actions sur les objets"""

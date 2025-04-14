@@ -195,15 +195,87 @@ def add_object():
         room_id = request.form['room_id']
         brand = request.form['brand']
         model = request.form['model']
-        conso_min = int(request.form['conso_min'])
-        conso_max = int(request.form['conso_max'])
-        conso_visé= int(request.form['conso_visé'])
-        temp_min = int(request.form['temp_min'])
-        temp_max = int(request.form['temp_max'])
-        temp_visé= int(request.form['temp_visé'])
+        conso_min = request.form['conso_min']
+        if conso_min:
+            conso_min = int(conso_min)
+        else:
+            conso_min = 0 
+        conso_max = (request.form['conso_max'])
+        if conso_max:
+            conso_max = int(conso_max)
+        else:
+            conso_max = 0 
+        conso_visé= (request.form['conso_visé'])
+        if conso_visé:
+            conso_visé = int(conso_visé)
+        else:
+            conso_visé = 0 
+        temp_min = (request.form['temp_min'])
+        if temp_min:
+            temp_min = int(temp_min)
+        else:
+            temp_min = 0 
+        temp_max = (request.form['temp_max'])
+        if temp_max:
+            temp_max = int(temp_max)
+        else:
+            temp_max = 0 
+        temp_visé= (request.form['temp_visé'])
+        if temp_visé:
+            temp_visé = int(temp_visé)
+        else:
+            temp_visé = 0 
+        eau_visé= (request.form['eau_visé'])
+        if eau_visé:
+            eau_visé = int(eau_visé)
+        else:
+            eau_visé = 0 
+        eau_min = (request.form['eau_min'])
+        if eau_min:
+            eau_min = int(eau_min)
+        else:
+            eau_min = 0 
+        eau_max = (request.form['eau_max'])
+        if eau_max:
+            eau_max = int(eau_max)
+        else:
+            eau_max = 0 
+        gaz_visé= (request.form['gaz_visé'])
+        if gaz_visé:
+            gaz_visé = int(gaz_visé)
+        else:
+            gaz_visé = 0 
+        gaz_min = (request.form['gaz_min'])
+        if gaz_min:
+            gaz_min = int(gaz_min)
+        else:
+            gaz_min = 0 
+        gaz_max = (request.form['gaz_max'])
+        if gaz_max:
+            gaz_max = int(gaz_max)
+        else:
+            gaz_max = 0 
+        autre_visé= (request.form['autre_visé'])
+        if autre_visé:
+            autre_visé = int(autre_visé)
+        else:
+            autre_visé = 0 
+        autre_min = (request.form['autre_min'])
+        if autre_min:
+            autre_min = int(autre_min)
+        else:
+            autre_min = 0 
+        autre_max = (request.form['autre_max'])
+        if autre_max:
+            autre_max = int(autre_max)
+        else:
+            autre_max = 0 
 
         conso_actuelle = random.randint(conso_min, conso_max)
         temp_actuelle = random.randint(temp_min, temp_max)
+        eau_actuelle=random.randint(eau_min,eau_max)
+        gaz_actuelle=random.randint(gaz_min,gaz_max)
+        autre_actuelle=random.randint(autre_min,autre_max)
         batterie= random.randint(0,100)
 
         new_object = ConnectedObject(
@@ -225,7 +297,19 @@ def add_object():
             temp_max=temp_max,
             temp_actuelle=temp_actuelle,
             temp_visé=temp_visé,
-            batterie=batterie
+            batterie=batterie,
+            eau_min=eau_min,
+            eau_max=eau_max,
+            eau_actuelle=eau_actuelle,
+            eau_visé=eau_visé,
+            gaz_min=gaz_min,
+            gaz_max=gaz_max,
+            gaz_actuelle=gaz_actuelle,
+            gaz_visé=gaz_visé,
+            autre_min=autre_min,
+            autre_max=autre_max,
+            autre_actuelle=autre_actuelle,
+            autre_visé=autre_visé
         )
         
         db.session.add(new_object)
@@ -244,6 +328,7 @@ def edit_object(object_id):
     house_id = current_user.house_id
     room_list = Room.query.filter_by(house_id=house_id).all()
     object_types = ObjectType.query.filter_by(house_id=house_id).all()
+    oldstatu=obj.status
     
     if request.method == 'POST':
         obj.name = request.form['name']
@@ -254,11 +339,70 @@ def edit_object(object_id):
         obj.model = request.form['model']
         obj.status = request.form['status']
         obj.connection_status = request.form['connection_status']
-        obj.conso_actuelle = request.form['conso_actuelle']
-        obj.conso_visé = request.form['conso_visé']
-        obj.temp_actuelle = request.form['temp_actuelle']
-        obj.temp_visé = request.form['temp_visé']
+        obj.conso_actuelle = (request.form['conso_actuelle'])
+        if obj.conso_actuelle:
+            obj.conso_actuelle = int(obj.conso_actuelle)
+        else:
+            obj.conso_actuelle = 0 
+        obj.conso_visé= (request.form['conso_visé'])
+        if obj.conso_visé:
+            obj.conso_visé = int(obj.conso_visé)
+        else:
+            obj.conso_visé = 0 
+        obj.temp_actuelle = (request.form['temp_actuelle'])
+        if obj.temp_actuelle:
+            obj.temp_actuelle = int(obj.temp_actuelle)
+        else:
+            obj.temp_actuelle = 0 
+        obj.temp_visé= (request.form['temp_visé'])
+        if obj.temp_visé:
+            obj.temp_visé = int(obj.temp_visé)
+        else:
+            obj.temp_visé = 0 
+        obj.eau_visé= (request.form['eau_visé'])
+        if obj.eau_visé:
+            obj.eau_visé = int(obj.eau_visé)
+        else:
+            obj.eau_visé = 0  
+        obj.eau_actuelle = (request.form['eau_actuelle'])
+        if obj.eau_actuelle:
+            obj.eau_actuelle = int(obj.eau_actuelle)
+        else:
+            obj.eau_actuelle = 0 
+        obj.gaz_visé= (request.form['gaz_visé'])
+        if obj.gaz_visé:
+            obj.gaz_visé = int(obj.gaz_visé)
+        else:
+            obj.gaz_visé = 0 
+        obj.gaz_actuelle = (request.form['gaz_actuelle'])
+        if obj.gaz_actuelle:
+            obj.gaz_actuelle = int(obj.gaz_actuelle)
+        else:
+            obj.gaz_actuelle = 0 
+        obj.autre_visé= (request.form['autre_visé'])
+        if obj.autre_visé:
+            obj.autre_visé = int(obj.autre_visé)
+        else:
+            obj.autre_visé = 0 
+        obj.autre_actuelle = (request.form['autre_actuelle'])
+        if obj.autre_actuelle:
+            obj.autre_actuelle = int(obj.autre_actuelle)
+        else:
+            obj.autre_actuelle = 0 
         
+        if oldstatu != obj.status:
+            if obj.status == 'active':
+                obj.conso_actuelle=random.randint(obj.conso_min,obj.conso_max)
+                obj.eau_actuelle=random.randint(obj.eau_min,obj.eau_max)
+                obj.gaz_actuelle=random.randint(obj.gaz_min,obj.gaz_max)
+                obj.autre_actuelle=random.randint(obj.autre_min,obj.autre_max)
+                obj.temp_actuelle=random.randint(obj.temp_min,obj.temp_max)
+            elif obj.status == 'inactive':
+                obj.conso_actuelle= 0
+                obj.eau_actuelle= 0
+                obj.gaz_actuelle= 0
+                obj.temp_actuelle= 0
+                obj.autre_actuelle= 0
         db.session.commit()
         
         flash(f'Objet {obj.name} mis à jour avec succès!', 'success')
@@ -278,7 +422,7 @@ def delete_object(object_id):
     object_name = obj.name
     for action in obj.actions:
         db.session.delete(action)
-    
+    ObjetHistorique.query.filter_by(object_id=object_id).delete()
     db.session.delete(obj)
     db.session.commit()
     

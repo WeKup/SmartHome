@@ -1,77 +1,160 @@
 {% extends 'LayoutCo.html' %}
 {% block title %}Modification de l'objet{% endblock %}
 
+{% block styles %}
+<style>
+  .BoutonFormu {
+    display: none !important;
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin-top: 15px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+  }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="container mt-5">
-    <div class="row">
-        <div class="col-lg-8 mx-auto">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h2 class="mb-0"><i class="fas fa-pen-to-square me-2"></i>Modifier les informations</h2>
-                </div>
-                <div class="card-body">
-                    <form action="{{ url_for('gestion.modifiedObj') }}" method="POST">
-                        <input type="hidden" name="Id" value="{{ obj.id }}">
-
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Nom</label>
-                            <input type="text" class="form-control" name="name" id="name" value="{{ obj.name }}" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="room_id" class="form-label">Salle</label>
-                            <select class="form-select" name="room_id" id="room_id">
-                                {% for room in rooms %}
-                                    <option value="{{ room.id }}" {% if room.id == obj.room_id %}selected{% endif %}>
-                                        {{ room.name }}
-                                    </option>
-                                {% endfor %}
-                            </select>
-                        </div>                        
-
-                        <div class="mb-3">
-                            <label for="description" class="form-label">Description</label>
-                            <textarea class="form-control" name="description" id="description">{{ obj.description }}</textarea>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="brand" class="form-label">Marque</label>
-                            <input type="text" class="form-control" name="brand" id="brand" value="{{ obj.brand }}">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="model" class="form-label">Modèle</label>
-                            <input type="text" class="form-control" name="model" id="model" value="{{ obj.model }}">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="conso_actuelle" class="form-label">Consommation Actuelle (W)</label>
-                            <input type="number" class="form-control" name="conso_actuelle" id="conso_min" value="{{ obj.conso_actuelle }}">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="temp_actuelle" class="form-label">température actuelle (°C)</label>
-                            <input type="number" class="form-control" name="temp_actuelle" id="temp_actuelle" value="{{ obj.temp_actuelle }}">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="status" class="form-label">Statut</label>
-                            <select class="form-select" name="status" id="status">
-                                <option value="active" {% if obj.status == "active" %}selected{% endif %}>Actif</option>
-                                <option value="inactive" {% if obj.status == "inactive" %}selected{% endif %}>Inactif</option>
-                            </select>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-check me-1"></i> Enregistrer les modifications
-                        </button>
-                        <a href="{{ url_for('gestion.gestion') }}" class="btn btn-secondary ms-2">
-                            <i class="fas fa-arrow-left me-1"></i>Retour
-                        </a>
-                    </form>
-                </div>
-            </div>
+  <div class="row">
+    <div class="col-lg-8 mx-auto">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+          <h2 class="mb-0"><i class="fas fa-pen-to-square me-2"></i>Modifier les informations</h2>
         </div>
+        <div class="card-body" style="max-height: 70vh; overflow-y: auto; padding-right: 10px;">
+          <form action="{{ url_for('gestion.modifiedObj') }}" method="POST">
+            <input type="hidden" name="Id" value="{{ obj.id }}">
+
+            <div class="mb-3">
+              <label for="name" class="form-label">Nom</label>
+              <input type="text" class="form-control" name="name" id="name" value="{{ obj.name }}" required>
+            </div>
+
+            <div class="mb-3">
+              <label for="room_id" class="form-label">Salle</label>
+              <select class="form-select" name="room_id" id="room_id">
+                {% for room in rooms %}
+                  <option value="{{ room.id }}" {% if room.id == obj.room_id %}selected{% endif %}>
+                    {{ room.name }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label for="description" class="form-label">Description</label>
+              <textarea class="form-control" name="description" id="description">{{ obj.description }}</textarea>
+            </div>
+
+            <div class="mb-3">
+              <label for="brand" class="form-label">Marque</label>
+              <input type="text" class="form-control" name="brand" id="brand" value="{{ obj.brand }}">
+            </div>
+
+            <div class="mb-3">
+              <label for="model" class="form-label">Modèle</label>
+              <input type="text" class="form-control" name="model" id="model" value="{{ obj.model }}">
+            </div>
+
+            <h5 class="border-bottom pb-2 mb-3 mt-4">Paramètres</h5>
+            <div class="mb-3">
+              <button type="button" class="btn btn-primary me-2 mb-2" onclick="AfficherFormulaire('form_conso')">Paramètres Consommation</button>
+              <button type="button" class="btn btn-primary me-2 mb-2" onclick="AfficherFormulaire('form_temp')">Paramètres Température</button>
+              <button type="button" class="btn btn-primary me-2 mb-2" onclick="AfficherFormulaire('form_eau')">Paramètres d'eau</button>
+              <button type="button" class="btn btn-primary me-2 mb-2" onclick="AfficherFormulaire('form_gaz')">Paramètres de gaz</button>
+              <button type="button" class="btn btn-primary me-2 mb-2" onclick="AfficherFormulaire('form_autre')">Paramètres d'autre Consommation</button>
+            </div>
+
+            <!-- Formulaires dynamiques masqués -->
+            <div id="form_conso" class="BoutonFormu" style="display: none;">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="conso_actuelle" class="form-label">Consommation actuelle (W)</label>
+                  <input type="number" name="conso_actuelle" id="conso_actuelle" class="form-control" value="{{ obj.conso_actuelle or 0 }}">
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="conso_visé" class="form-label">Consommation visée (W)</label>
+                  <input type="number" name="conso_visé" id="conso_visé" class="form-control" value="{{ obj.conso_visé or 0 }}">
+                </div>
+              </div>
+            </div>
+
+            <div id="form_temp" class="BoutonFormu" style="display: none;">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="temp_actuelle" class="form-label">Température actuelle (°C)</label>
+                  <input type="number" name="temp_actuelle" id="temp_actuelle" class="form-control" value="{{ obj.temp_actuelle or 0 }}">
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="temp_visé" class="form-label">Température visée (°C)</label>
+                  <input type="number" name="temp_visé" id="temp_visé" class="form-control" value="{{ obj.temp_visé or 0 }}">
+                </div>
+              </div>
+            </div>
+
+            <div id="form_eau" class="BoutonFormu" style="display: none;">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="eau_actuelle" class="form-label">Consommation d'eau actuelle (L)</label>
+                  <input type="number" name="eau_actuelle" id="eau_actuelle" class="form-control" value="{{ obj.eau_actuelle or 0 }}">
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="eau_visé" class="form-label">Consommation d'eau visée (L)</label>
+                  <input type="number" name="eau_visé" id="eau_visé" class="form-control" value="{{ obj.eau_visé or 0 }}">
+                </div>
+              </div>
+            </div>
+
+            <div id="form_gaz" class="BoutonFormu" style="display: none;">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="gaz_actuelle" class="form-label">Consommation de gaz actuelle (m³)</label>
+                  <input type="number" name="gaz_actuelle" id="gaz_actuelle" class="form-control" value="{{ obj.gaz_actuelle or 0 }}">
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="gaz_visé" class="form-label">Consommation de gaz visée (m³)</label>
+                  <input type="number" name="gaz_visé" id="gaz_visé" class="form-control" value="{{ obj.gaz_visé or 0 }}">
+                </div>
+              </div>
+            </div>
+
+            <div id="form_autre" class="BoutonFormu" style="display: none;">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="autre_actuelle" class="form-label">Consommation autre actuelle</label>
+                  <input type="number" name="autre_actuelle" id="autre_actuelle" class="form-control" value="{{ obj.autre_actuelle or 0 }}">
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="autre_visé" class="form-label">Consommation autre visée</label>
+                  <input type="number" name="autre_visé" id="autre_visé" class="form-control" value="{{ obj.autre_visé or 0 }}">
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-3 mt-4">
+              <label for="status" class="form-label">Statut</label>
+              <select class="form-select" name="status" id="status">
+                <option value="active" {% if obj.status == "active" %}selected{% endif %}>Actif</option>
+                <option value="inactive" {% if obj.status == "inactive" %}selected{% endif %}>Inactif</option>
+              </select>
+            </div>
+
+            <input type="hidden" name="connection_status" value="{{ obj.connection_status or 'connected' }}">
+
+            <div class="mt-4">
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-check me-1"></i> Enregistrer les modifications
+              </button>
+              <a href="{{ url_for('gestion.gestion') }}" class="btn btn-secondary ms-2">
+                <i class="fas fa-arrow-left me-1"></i>Retour
+              </a>
+            </div>
+
+          </form>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 {% endblock %}
