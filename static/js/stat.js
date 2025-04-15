@@ -163,6 +163,72 @@ document.addEventListener('DOMContentLoaded', function() {
                     );
                 }
             }
+            if (data.eau && data.eau.length) {
+                const eau = document.getElementById('eau');
+                if (eau) {
+                    const labels = data.eau.map(item => item[0]);
+                    const consumptions = data.eau.map(item => item[1] || 0);
+                    
+                    createChart(
+                        eau, 
+                        'bar', 
+                        labels, 
+                        consumptions,
+                        {
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: 'consommation d eau en Litres des objets'
+                                },
+                            }
+                        }
+                    );
+                }
+            }
+            if (data.gaz && data.gaz.length) {
+                const gaz = document.getElementById('gaz');
+                if (gaz) {
+                    const labels = data.gaz.map(item => item[0]);
+                    const consumptions = data.gaz.map(item => item[1] || 0);
+                    
+                    createChart(
+                        gaz, 
+                        'bar', 
+                        labels, 
+                        consumptions,
+                        {
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: 'consommation en gaz des objet en m^3'
+                                },
+                            }
+                        }
+                    );
+                }
+            }
+            if (data.autre && data.autre.length) {
+                const autre = document.getElementById('autre');
+                if (autre) {
+                    const labels = data.autre.map(item => item[0]);
+                    const consumptions = data.autre.map(item => item[1] || 0);
+                    
+                    createChart(
+                        autre, 
+                        'bar', 
+                        labels, 
+                        consumptions,
+                        {
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: 'Consommation autre des objet'
+                                },
+                            }
+                        }
+                    );
+                }
+            }
             if (data.service_stats) {
                 const serviceStatsCtx = document.getElementById('serviceStatsChart');
                 if (serviceStatsCtx) {

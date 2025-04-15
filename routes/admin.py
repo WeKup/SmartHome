@@ -343,7 +343,17 @@ def edit_object(object_id):
         if obj.conso_actuelle:
             obj.conso_actuelle = int(obj.conso_actuelle)
         else:
-            obj.conso_actuelle = 0 
+            obj.conso_actuelle = 0
+        obj.conso_min = (request.form['conso_min'])
+        if obj.conso_min:
+            obj.conso_min = int(obj.conso_min)
+        else:
+            obj.conso_min = 0
+        obj.conso_max = (request.form['conso_max'])
+        if obj.conso_max:
+            obj.conso_max = int(obj.conso_max)
+        else:
+            obj.conso_max = 0
         obj.conso_visé= (request.form['conso_visé'])
         if obj.conso_visé:
             obj.conso_visé = int(obj.conso_visé)
@@ -358,7 +368,17 @@ def edit_object(object_id):
         if obj.temp_visé:
             obj.temp_visé = int(obj.temp_visé)
         else:
-            obj.temp_visé = 0 
+            obj.temp_visé = 0
+        obj.temp_min= (request.form['temp_min'])
+        if obj.temp_min:
+            obj.temp_min = int(obj.temp_min)
+        else:
+            obj.temp_min = 0
+        obj.temp_max= (request.form['temp_max'])
+        if obj.temp_max:
+            obj.temp_max = int(obj.temp_max)
+        else:
+            obj.temp_max = 0 
         obj.eau_visé= (request.form['eau_visé'])
         if obj.eau_visé:
             obj.eau_visé = int(obj.eau_visé)
@@ -369,6 +389,17 @@ def edit_object(object_id):
             obj.eau_actuelle = int(obj.eau_actuelle)
         else:
             obj.eau_actuelle = 0 
+        obj.eau_min = (request.form['eau_min'])
+        if obj.eau_min:
+            obj.eau_min = int(obj.eau_min)
+        else:
+            obj.eau_min = 0
+        obj.eau_max = (request.form['eau_max'])
+        if obj.eau_max:
+            obj.eau_max = int(obj.eau_max)
+        else:
+            obj.eau_max = 0 
+        
         obj.gaz_visé= (request.form['gaz_visé'])
         if obj.gaz_visé:
             obj.gaz_visé = int(obj.gaz_visé)
@@ -379,6 +410,16 @@ def edit_object(object_id):
             obj.gaz_actuelle = int(obj.gaz_actuelle)
         else:
             obj.gaz_actuelle = 0 
+        obj.gaz_min = (request.form['gaz_min'])
+        if obj.gaz_min:
+            obj.gaz_min = int(obj.gaz_min)
+        else:
+            obj.gaz_min = 0 
+        obj.gaz_max = (request.form['gaz_max'])
+        if obj.gaz_max:
+            obj.gaz_max = int(obj.gaz_max)
+        else:
+            obj.gaz_max = 0 
         obj.autre_visé= (request.form['autre_visé'])
         if obj.autre_visé:
             obj.autre_visé = int(obj.autre_visé)
@@ -388,7 +429,17 @@ def edit_object(object_id):
         if obj.autre_actuelle:
             obj.autre_actuelle = int(obj.autre_actuelle)
         else:
-            obj.autre_actuelle = 0 
+            obj.autre_actuelle = 0
+        obj.autre_min = (request.form['autre_min'])
+        if obj.autre_min:
+            obj.autre_min = int(obj.autre_min)
+        else:
+            obj.autre_min = 0
+        obj.autre_max = (request.form['autre_max'])
+        if obj.autre_max:
+            obj.autre_max = int(obj.autre_max)
+        else:
+            obj.autre_max = 0 
         
         if oldstatu != obj.status:
             if obj.status == 'active':
@@ -606,6 +657,21 @@ def stats_data():
             ConnectedObject.conso_actuelle
         ).filter(ConnectedObject.house_id == house_id).all()
 
+        eau = db.session.query(
+            ConnectedObject.name, 
+            ConnectedObject.eau_actuelle
+        ).filter(ConnectedObject.house_id == house_id).all()
+
+        gaz = db.session.query(
+            ConnectedObject.name, 
+            ConnectedObject.gaz_actuelle
+        ).filter(ConnectedObject.house_id == house_id).all()
+
+        autre = db.session.query(
+            ConnectedObject.name, 
+            ConnectedObject.autre_actuelle
+        ).filter(ConnectedObject.house_id == house_id).all()
+
         temp = db.session.query(
             ConnectedObject.name, 
             ConnectedObject.temp_actuelle
@@ -636,6 +702,9 @@ def stats_data():
             'objects_by_room': [list(item) for item in objects_by_room],
             'connexions_by_day': [list(item) for item in connexions_by_day],
             'conso': [list(item) for item in conso],
+            'eau': [list(item) for item in eau],
+            'gaz': [list(item) for item in gaz],
+            'autre': [list(item) for item in autre],
             'temp': [list(item) for item in temp],
             'service_stats': {
                     'recherches': service_stats.recherches or 0,
@@ -678,6 +747,27 @@ def export_stats_pdf():
         ).filter(
                 ConnectedObject.house_id == house_id,
                 ConnectedObject.temp_actuelle !=  None 
+        ).all()
+    eau = db.session.query(
+            ConnectedObject.name, 
+            ConnectedObject.eau_actuelle
+        ).filter(
+                ConnectedObject.house_id == house_id,
+                ConnectedObject.eau_actuelle !=  None 
+        ).all()
+    gaz = db.session.query(
+            ConnectedObject.name, 
+            ConnectedObject.gaz_actuelle
+        ).filter(
+                ConnectedObject.house_id == house_id,
+                ConnectedObject.gaz_actuelle !=  None 
+        ).all()
+    autre = db.session.query(
+            ConnectedObject.name, 
+            ConnectedObject.autre_actuelle
+        ).filter(
+                ConnectedObject.house_id == house_id,
+                ConnectedObject.autre_actuelle !=  None 
         ).all()
     service_stats = db.session.query(
             func.sum(User.nbR).label('Recherches'),
@@ -729,7 +819,10 @@ def export_stats_pdf():
         'objects_by_type': generate_bar_chart(objects_by_type, "Objets par type"),
         'objects_by_room': generate_bar_chart(objects_by_room, "Objets par pièce"),
         'consomation': generate_bar_chart(conso,'consomation','conso'),
-        'température': generate_bar_chart(temp,'température','temp')
+        'température': generate_bar_chart(temp,'température','temp'),
+        'eau': generate_bar_chart(eau,'eau','eau'),
+        'gaz': generate_bar_chart(gaz,'gaz','gaz'),
+        'autre': generate_bar_chart(autre,'autre','autre')
     }
     
     html = render_template('admin/pdf/stats_report.html', 
@@ -784,6 +877,12 @@ def generate_bar_chart(data, title,n= None):
         plt.ylabel('Consomation en Watts')
     elif n == 'temp':
         plt.ylabel('température en degré')
+    elif n == 'eau':
+        plt.ylabel('consomation en Litre')
+    elif n == 'gaz':
+        plt.ylabel('Consomation en metre cube')
+    elif n == 'autre':
+        plt.ylabel('Consomation autre')
     else:
         plt.ylabel('Nombre')
     plt.title(title)
