@@ -42,6 +42,7 @@
 - Python 3.8 ou supérieur  
 - WampServer (Windows) ou équivalent LAMP (Linux)  
 - Environnement GTK (Windows uniquement)
+- Avoir Internet au moment du Lancement pour que tout s'affiche bien
 
 ---
 
