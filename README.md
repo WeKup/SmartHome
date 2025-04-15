@@ -1,4 +1,4 @@
-# 🏠 Smart-Home
+# Smart-Home
 
 
 
@@ -12,7 +12,7 @@
 - [@nonooow ](https://www.github.com/nonooow)
 
 
-## 🚀 Fonctionnalités principales
+## Fonctionnalités principales
 
 - **Tableau de bord** : Visualisez et contrôlez tous vos appareils depuis une interface intuitive  
 - **Gestion des objets connectés** : Ajoutez, modifiez et suivez l'état de vos différents appareils  
@@ -25,7 +25,7 @@
 
 ---
 
-## 🛠️ Technologies utilisées
+## Technologies utilisées
 
 - **Backend** : Python, Flask, SQLAlchemy  
 - **Frontend** : HTML, CSS, JavaScript, Bootstrap  
@@ -35,7 +35,7 @@
 
 ---
 
-## ⚙️ Installation
+## Installation
 
 ### Prérequis
 
@@ -45,7 +45,7 @@
 
 ---
 
-### 💻 Installation sur Windows
+### Installation sur Windows
 
 #### 1. Préparer la base de données
 
@@ -78,7 +78,7 @@ avec tout cela votre base de données a reçu toute les informations necessaire
 
 ---
 ---
-### 💻 Installation sur Linux
+### Installation sur Linux
 
 ### 1 installation automatisé
 - installez le dossier puis ouvrez un terminal à l'intérieur
