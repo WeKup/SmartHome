@@ -78,7 +78,6 @@ def register():
         gender = request.form.get('gender')
         birthdate = request.form.get('birthdate')
         member_type = request.form.get('member_type')
-        is_admin = request.form.get('is_admin') == 'on'
         
         if not username or not email or not password:
             flash('Tous les champs sont obligatoires!', 'danger')
