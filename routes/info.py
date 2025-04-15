@@ -46,7 +46,8 @@ def search():
 def searchS():
     category = request.args.get('category', '')
     upcoming_only = request.args.get('upcoming', '') == '1'
-    services = get_services(category, upcoming_only)
+    query = request.args.get('query', '')
+    services = get_services(category, upcoming_only,query)
     categories = list(SERVICES_BY_CATEGORY.keys())
     
     return render_template('info/searchService.html', 

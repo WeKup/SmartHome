@@ -13,6 +13,12 @@
         <div class="card-body">
             <form method="GET" action="{{ url_for('info.searchS') }}">
                 <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label for="query" class="form-label">Recherche par mot-clé</label>
+                        <input type="text" class="form-control" id="query" name="query" 
+                               placeholder="Entrez un nom ou mot-clé" value="{{ query }}">
+                    </div>
+                    
                     <div class="col-md-6 mb-3">
                         <label for="category" class="form-label">Catégorie</label>
                         <select class="form-select" id="category" name="category">
@@ -49,8 +55,11 @@
         <div class="card-header bg-light">
             <h5 class="mb-0">
                 Résultats 
+                {% if query %}
+                pour "{{ query }}"
+                {% endif %}
                 {% if selected_category %}
-                pour "{{ selected_category|capitalize }}"
+                dans "{{ selected_category|capitalize }}"
                 {% endif %}
                 {% if upcoming_only %}
                 (à venir uniquement)

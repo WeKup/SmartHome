@@ -153,8 +153,8 @@
                             <h5 class="card-title">{{ item.title }}</h5>
                             <p class="card-text">{{ item.content|truncate(100) }}</p>
                         </div>
-                        <div class="card-footer bg-white border-0">
-                            <small class="text-muted">{{ item.date }}</small>
+                        <div class="card-footer border-0">
+                            <small class="text-black">{{ item.date }}</small>
                             <a href="{{ url_for('info.news') }}" class="btn btn-sm btn-primary float-end">Lire plus</a>
                         </div>
                     </div>

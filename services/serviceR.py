@@ -31,7 +31,7 @@ SERVICES_BY_CATEGORY = {
     ]
 }
 
-def get_services(category=None, upcoming_only=False):
+def get_services(category=None, upcoming_only=False, query=None):
     if category:
         services = SERVICES_BY_CATEGORY.get(category, [])
     else:
@@ -41,5 +41,8 @@ def get_services(category=None, upcoming_only=False):
     
     if upcoming_only:
         services = [service for service in services if service["is_upcoming"]]
-    
+
+    if query:
+        query = query.lower()
+        services = [s for s in services if query in s.get('name', '').lower() or query in s.get('description', '').lower()]    
     return services

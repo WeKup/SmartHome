@@ -219,7 +219,6 @@ def modifiedObj():
         flash("Vous n'avez pas l'autorisation de modifier cet objet.", "danger")
         return redirect(url_for("connected.accueil"))
 
-    # Anciennes valeurs
     old_name = objet.name
     old_description = objet.description
     old_status = objet.status
@@ -232,7 +231,6 @@ def modifiedObj():
     old_autre_actuelle = objet.autre_actuelle
     old_room_id = objet.room_id
 
-    # Nouvelles valeurs
     new_room_id = int(request.form.get("room_id"))
     salle = Room.query.get(new_room_id)
 
@@ -274,7 +272,6 @@ def modifiedObj():
             objet.conso_actuelle=random.randint(objet.conso_min,objet.conso_max)
         elif objet.status == 'inactive':
             objet.conso_actuelle= 0
-    # Historique
     changes = []
     if old_name != objet.name:
         changes.append(f"Nom changé de '{old_name}' à '{objet.name}'")

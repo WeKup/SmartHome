@@ -47,7 +47,6 @@
 
     </form>
 
-    <!-- Affichage des paramètres -->
     {% if selected_object and selected_room %}
     <h3>Paramètres pour {{ selected_object.name }} dans {{ selected_room.name }}</h3>
     <form action="{{ url_for('gestion.traitement') }}" method="POST">
