@@ -95,14 +95,26 @@
 .dark-mode * {
     color: #e2e8f0 !important;
 }
+.dark-mode .alert {
+    color: #8ecdf7; /* Bleu clair, plus lisible en mode sombre */
+}
 
+/* Si vous voulez aussi modifier l'icône */
+.dark-mode .alert i {
+    color: #61b7ff; /* Bleu légèrement plus vif pour l'icône */
+}
+
+/* Pour un style plus complet, vous pouvez aussi ajuster le fond et la bordure */
+.dark-mode .alert{
+    background-color: #1a2638; /* Fond bleu très foncé */
+    border-color: #2a4766; /* Bordure bleu foncé */
+    color: #8ecdf7; /* Bleu clair pour le texte */
+}
 .dark-mode .btn-light,
 .dark-mode .badge-light,
 .dark-mode .alert-light {
     color: #1a202c !important;
 }
-
-/* Spécifiquement pour les tableaux */
 .dark-mode .table td,
 .dark-mode .table th,
 .dark-mode .table tbody tr td {

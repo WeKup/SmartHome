@@ -20,7 +20,7 @@ from datetime import datetime, timedelta
 @gestion_bp.route('/gestion')
 @login_required
 def gestion():
-    if current_user.level not in ['avancé', 'expert']:
+    if not (current_user.level in ['avancé', 'expert'] or current_user.is_admin):
         flash("Vous n'avez pas les droits pour accéder à cette page.", "danger")
         return redirect(url_for('connected.accueil'))     
     """Page de gestion pour utilisateurs connectés"""

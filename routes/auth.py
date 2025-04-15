@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from flask_login import login_user, logout_user, login_required, current_user
-from models.auth import db, User, House
+from models.auth import *
 from werkzeug.security import generate_password_hash
 import random
 import string
@@ -216,7 +216,7 @@ def create_house():
         )
         db.session.add(new_house)
         db.session.flush()
-        create_default_object_types(new_house.id)
+        ObjectType.create_default_object_types(new_house.id)
         new_user = User(
             username=username,
             nom=nom,

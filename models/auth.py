@@ -239,35 +239,45 @@ class ObjectType(db.Model):
     objects = db.relationship('ConnectedObject', backref='type', lazy=True)
     house = db.relationship('House', backref='object_types', lazy=True)
 
-
+    @staticmethod
     def create_default_object_types(house_id):
         default_types = [
             {
                 'name': 'Lampe',
                 'description': 'Appareil d\'éclairage électrique',
-                'icone': 'fa-solid fa-lightbulb'
+                'icon': 'fa-solid fa-lightbulb'
             },
             {
                 'name': 'Téléviseur',
                 'description': 'Écran pour regarder des programmes',
-                'icone': 'fa-solid fa-tv'
+                'icon': 'fa-solid fa-tv'
             },
             {
                 'name': 'Chaudière',
                 'description': 'Appareil de chauffage',
-                'icone': 'fa-solid fa-water'
+                'icon': 'fa-solid fa-water'
             },
             {
                 'name': 'Lave-linge',
                 'description': 'Machine à laver le linge',
-                'icone': 'fa-solid fa-fire-flame-simple'
+                'icon': 'fa-solid fa-fire-flame-simple'
             },
             {
                 'name': 'Climatiseur',
                 'description': 'Appareil de climatisation',
-                'icone': 'fa-solid fa-wind'
+                'icon': 'fa-solid fa-wind'
             }
         ]
+        for type_data in default_types:
+            new_type = ObjectType(
+                name=type_data['name'],
+                description=type_data['description'],
+                icon=type_data['icon'],
+                house_id=house_id
+            )
+            db.session.add(new_type)
+        db.session.commit()
+
 
 class ObjectAction(db.Model):
     """Modèle pour les actions sur les objets"""
