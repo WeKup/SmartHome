@@ -1,7 +1,15 @@
 # 🏠 Smart-Home
 
-Une solution complète pour gérer et optimiser votre maison connectée.  
-Ce projet vous permet de contrôler tous vos objets connectés depuis une interface unique, d'analyser vos consommations et de partager l'accès avec les membres de votre foyer.
+
+
+
+## Auteurs
+
+- [@WeKup](https://www.github.com/WeKup)
+
+- [@jawhrz ](https://www.github.com/jawhrz)
+
+- [@nonooow ](https://www.github.com/nonooow)
 
 
 ## 🚀 Fonctionnalités principales
@@ -59,9 +67,9 @@ Ce projet vous permet de contrôler tous vos objets connectés depuis une interf
 
 ### 4.Initialiser la base de données
 - une fois cela fait, veuillez:
-- réaliser la commande flask db init
-- puis flask db migrate
-- et enfin flask db upgrade
+- réaliser la commande flask db upgrade directement car le fichier migrations existe déjà.
+
+( si il y'a une erreur alors réalisez la commande flask db init, puis flask db migrate et enfin flask db upgrade)
 
 avec tout cela votre base de données a reçu toute les informations necessaire
 ### 5. Lancer l'application:
@@ -86,4 +94,8 @@ après avoir utilisé le site comme ça, si vous souhaitez le lancez manuellemen
 - Activez l'environnement virtuel : source venv/bin/activate
 - Lancez l'application : flask run ou python3 app.py
 - puis le serveur est lancé au http://127.0.0.1:5000
+
+---
+---
+
 
