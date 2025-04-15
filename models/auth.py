@@ -17,22 +17,22 @@ class House(db.Model):
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=True)
     is_demo = db.Column(db.Boolean, default=False)
-    # Code unique pour rejoindre la maison
+    
     house_code = db.Column(db.String(10), unique=True, nullable=False)
     Join_method= db.Column(db.String(20), default='mail')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
-    # Relations
+    
     users = db.relationship('User', backref='house', lazy=True)
     rooms = db.relationship('Room', backref='house', lazy=True)
     
     @staticmethod
     def generate_unique_code():
-        """Génère un code unique pour la maison"""
+        
         while True:
-            # Générer un code de 6 caractères alphanumériques
+            
             code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
-            # Vérifier si le code existe déjà
+           
             existing = House.query.filter_by(house_code=code).first()
             if not existing:
                 return code
@@ -46,16 +46,16 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(100), unique=True, nullable=False)
     password_hash = db.Column(db.String(256), nullable=False)
     
-    # Informations de profil
+   
     gender = db.Column(db.String(10), nullable=True)
     nom= db.Column(db.String(50), nullable=True)
     prénom= db.Column(db.String(50), nullable=True)
     birthdate = db.Column(db.Date, nullable=True)
-    member_type = db.Column(db.String(20), nullable=True)  # père, mère, enfant, etc.
+    member_type = db.Column(db.String(20), nullable=True)  
     profile_photo = db.Column(db.String(255), nullable=True)
     
-    # Niveau et points
-    level = db.Column(db.String(20), default='débutant')  # débutant, intermédiaire, avancé, expert
+    
+    level = db.Column(db.String(20), default='débutant')  
     points = db.Column(db.Float, default=0)
     connection_count = db.Column(db.Integer, default=0)
     action_count = db.Column(db.Integer, default=0)
@@ -71,11 +71,11 @@ class User(db.Model, UserMixin):
     requete=db.Column(db.Integer, default=0)
 
     
-    # Relation avec la maison
+
     house_id = db.Column(db.Integer, db.ForeignKey('houses.id'), nullable=True)
-    is_admin = db.Column(db.Boolean, default=False)  # Admin de la maison?
+    is_admin = db.Column(db.Boolean, default=False)  
     
-    # Dates
+
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     email_verified = db.Column(db.Boolean, default=False)
     verification_token = db.Column(db.String(100), nullable=True)
@@ -180,7 +180,7 @@ class Room(db.Model):
     is_demo = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
-    # Relations
+    
     objects = db.relationship('ConnectedObject', backref='room', lazy=True)
 
 class ConnectedObject(db.Model):
@@ -222,7 +222,7 @@ class ConnectedObject(db.Model):
     is_demo = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
-    # Relations
+    
     actions = db.relationship('ObjectAction', backref='object', lazy=True)
 
 class ObjectType(db.Model):
@@ -235,7 +235,8 @@ class ObjectType(db.Model):
     icon = db.Column(db.String(50), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     house_id = db.Column(db.Integer, db.ForeignKey('houses.id'), nullable=True)
-    # Relations
+
+
     objects = db.relationship('ConnectedObject', backref='type', lazy=True)
     house = db.relationship('House', backref='object_types', lazy=True)
 
@@ -290,7 +291,6 @@ class ObjectAction(db.Model):
     details = db.Column(db.JSON, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
-    # Relations
     user = db.relationship('User', backref='actions', lazy=True)
 
 class ObjetHistorique(db.Model):
@@ -299,8 +299,8 @@ class ObjetHistorique(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     object_id = db.Column(db.Integer, db.ForeignKey('connected_objects.id'), nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
-    action = db.Column(db.String(400), nullable=False)  # "Modification", "Activation", "Désactivation"
-    status = db.Column(db.String(250), nullable=True)  # "active" ou "inactive"
-    details = db.Column(db.Text, nullable=True)  # Description des changements
+    action = db.Column(db.String(400), nullable=False)
+    status = db.Column(db.String(250), nullable=True)
+    details = db.Column(db.Text, nullable=True)
 
 

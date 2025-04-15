@@ -26,7 +26,7 @@ def get_room_id_by_name(name):
         if room['name'].strip().lower() == name.strip().lower():
             return room['id']
     
-    # Si la salle n'existe pas, retourne le max ID + 1
+
     max_id = max(room['id'] for room in rooms)
     return max_id + 1
 
@@ -214,18 +214,7 @@ def get_default_object_parametres():
     ]
 
 def search_demo_objects(query='', type_id='', room_id=''):
-    """
-    Recherche dans les objets connectés de démo
     
-    Args:
-        query (str): Texte de recherche
-        type_id (str): ID du type d'objet
-        room_id (str): ID de la pièce
-    
-    Returns:
-        list: Liste d'objets correspondant aux critères
-    """
-    # Convertir en entiers si non vides
     type_id = int(type_id) if type_id else None
     room_id = int(room_id) if room_id else None
     
@@ -233,19 +222,19 @@ def search_demo_objects(query='', type_id='', room_id=''):
     results = []
     
     for obj in objects:
-        # Filtre par mot-clé (nom ou description)
+        
         if query and query.lower() not in obj['name'].lower() and query.lower() not in obj['description'].lower():
             continue
         
-        # Filtre par type
+        
         if type_id and obj['type_id'] != type_id:
             continue
         
-        # Filtre par pièce
+        
         if room_id and obj['room_id'] != room_id:
             continue
         
-        # Ajouter les informations sur le type et la pièce
+        
         obj_type = next((t for t in get_object_types() if t['id'] == obj['type_id']), None)
         room = next((r for r in get_demo_rooms() if r['id'] == obj['room_id']), None)
         
